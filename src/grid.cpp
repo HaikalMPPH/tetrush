@@ -23,7 +23,6 @@ Grid::debug() const {
     }
 }
 
-
 void
 Grid::draw() const {
     for (int row = 0; row < num_of_rows; row++) {
@@ -52,5 +51,42 @@ Grid::is_grid_empty(int row, int col) {
 
 bool
 Grid::is_row_full(int row) {
+    for (int col = 0; col < num_of_column; col++) {
+        if (grid_cell[row][col] == 0) {
+            return false;
+        }
+    }
 
+    return true;
+}
+
+void
+Grid::clear_row(int row) {
+    for (int col = 0; col < num_of_column; col++) {
+        grid_cell[row][col] = 0;
+    }
+}
+
+void
+Grid::move_row_down(int row, int n_times) {
+    for (int col = 0; col < num_of_column; col++) {
+        grid_cell[row + n_times][col] = grid_cell[row][col];
+        grid_cell[row][col] = 0;
+    }
+}
+
+int
+Grid::clear_full_row() {
+    int completed = 0;
+    for (int row = num_of_rows - 1; row >= 0; row--) {
+        if (is_row_full(row)) {
+            clear_row(row);
+            completed++;
+        }
+        else if (completed > 0) {
+            move_row_down(row, completed);
+        }
+    }
+
+    return completed;
 }

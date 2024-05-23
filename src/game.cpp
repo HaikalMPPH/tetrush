@@ -138,6 +138,8 @@ Game::lock_block() {
     // Update the block
     current_block = next_block;
     next_block = get_random_block();
+
+    grid.clear_full_row();
 }
 
 bool

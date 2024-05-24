@@ -8,7 +8,7 @@ Block::Block()
     : color_id {0}
     , rotation_state {BlockRotation::Up} // Default rotaion state.
     , cells {}
-    , cell_size {config::cell_size} // match the grid cell_size
+    , cell_size {config::CellSize} // match the grid cell_size
     , row_offset {0}
     , col_offset {0}
     , color {color::get_color()}

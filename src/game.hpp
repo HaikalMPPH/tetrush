@@ -40,12 +40,16 @@ struct Game {
     void block_move_left();
     void block_move_right();
     void block_move_down();
+    void block_instant_move_down();
+
     void rotate_block();
 
     // Check if the grid next to/below the block is occupied.
     bool is_grid_occupied();
     // Called when the block reaches the ground.
     void lock_block();
+
+    void debug_render_rect();
 
 
     bool is_block_outside();

@@ -10,16 +10,16 @@ Player::Player(const Game& game)
     : speed {200.f}
     , vertical_speed {0.f}
     , jump_height {-300.f}
-    , player_size {config::cell_size / 2}
-    , player_rect {config::WinW/2, 
-                   config::WinH/2, 
+    , player_size {config::CellSize / 2.f}
+    , player_rect {config::WinW/2.f, 
+                   config::WinH/2.f, 
                    player_size, 
                    player_size}
     , move_direction_x {0.f}
     , player_gravity {20.f}
     , is_grounded {false}
     // Note: hardcoded num of rows. be careful when changing it in grid.cpp
-    , ground_y {config::cell_size * 20 + config::GridOffsetY}
+    , ground_y {config::CellSize * 20 + config::GridOffsetY}
     , game_ref {game}
 {}
 
@@ -70,7 +70,7 @@ Player::handle_gravity() {
 
     }
     else {
-        is_grounded = false;
+        // is_grounded = false;
         player_gravity = 10.f;
     }
 }
@@ -83,8 +83,8 @@ Player::handle_wall_collision() {
     }
 
     // Collision with right wall.
-    else if (player_rect.x + player_size >= config::GridOffsetX + game_ref.grid.num_of_column * config::cell_size) {
-        player_rect.x = (config::GridOffsetX + game_ref.grid.num_of_column * config::cell_size) - player_size;
+    else if (player_rect.x + player_size >= config::GridOffsetX + game_ref.grid.num_of_column * config::CellSize) {
+        player_rect.x = (config::GridOffsetX + game_ref.grid.num_of_column * config::CellSize) - player_size;
     }
 }
 
@@ -92,6 +92,7 @@ void
 Player::jump() {
     if (is_grounded) {
         vertical_speed = jump_height;
+        is_grounded = false;
     }
 }
 
@@ -104,7 +105,7 @@ Player::handle_game_rect_collsion() {
                 player_rect.y + player_size >= rect.y &&
                 player_rect.y < rect.y
             ) {
-                std::cout << "Collide from above" << std::endl;
+                // std::cout << "Collide from above" << std::endl;
                 player_rect.y = rect.y - player_size;
                 vertical_speed = 0.f;
                 player_gravity = 0.f;
@@ -114,7 +115,7 @@ Player::handle_game_rect_collsion() {
             // if collide from left
             else if (
                 player_rect.x + player_size >= rect.x &&
-                player_rect.x + player_size < rect.x + config::cell_size &&
+                player_rect.x + player_size < rect.x + config::CellSize &&
                 player_rect.y + player_size >= rect.y
             ){
                 player_rect.x = rect.x - player_size;
@@ -123,12 +124,12 @@ Player::handle_game_rect_collsion() {
             // if collide from right
             // TODO: this does not work. 
             else if (
-                player_rect.x <= rect.x + config::cell_size &&
+                player_rect.x <= rect.x + config::CellSize &&
                 player_rect.x > rect.x &&
                 player_rect.y + player_size >= rect.y
             ){
-                std::cout << "collide from right" << std::endl;
-                player_rect.x = rect.x + config::cell_size;
+                // std::cout << "collide from right" << std::endl;
+                player_rect.x = rect.x + config::CellSize;
             }
         }
     }

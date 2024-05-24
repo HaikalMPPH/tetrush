@@ -1,15 +1,14 @@
-#include "game.hpp"
-#include "config.hpp"
-#include "position.hpp"
-#include "tetromino.hpp"
 #include <raylib.h>
 #include <vector>
 #include <cstdlib>
 
-// TODO: Find a way to move the rect vector down/remove it with the colored grid.
+#include "game.hpp"
+#include "config.hpp"
+#include "position.hpp"
+#include "tetromino.hpp"
 
 Game::Game() 
-    : grid {Grid()}
+    : grid {Grid(*this)}
     , blocks {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()}
     , current_block(get_random_block())
     , next_block(get_random_block())
@@ -43,6 +42,7 @@ Game::render() {
     grid.draw();
     current_block.draw();
     player.render();
+
 }
 
 void
@@ -81,7 +81,8 @@ Game::handle_input() {
         block_move_right();
         break;
     case KEY_K:
-        block_move_down();
+        // block_move_down();
+        block_instant_move_down();
         break;
     case KEY_I:
         rotate_block();
@@ -115,6 +116,17 @@ Game::block_move_down() {
         lock_block();
     }
 }
+void
+Game::block_instant_move_down() {
+    while(true) {
+        current_block.move(1, 0);
+        if (is_block_outside() || is_grid_occupied() == false) {
+            current_block.move(-1, 0);
+            break;
+        }
+    }
+    lock_block();
+}
 
 void
 Game::rotate_block() {
@@ -146,10 +158,10 @@ Game::lock_block() {
     for (Position tile : current_checked_cell) {
         grid.grid_cell[tile.row][tile.col] = current_block.color_id;
         grid_rect.push_back({
-            (float)tile.col * config::cell_size + config::GridOffsetX, 
-            (float)tile.row * config::cell_size + config::GridOffsetY, 
-            config::cell_size, 
-            config::cell_size
+            (float)tile.col * config::CellSize + config::GridOffsetX, 
+            (float)tile.row * config::CellSize + config::GridOffsetY, 
+            config::CellSize, 
+            config::CellSize
         });
     }
 
@@ -158,6 +170,14 @@ Game::lock_block() {
     next_block = get_random_block();
 
     grid.clear_full_row();
+}
+
+void
+Game::debug_render_rect() {
+    // DEBUG: Render grid_rect
+    for (Rectangle rect : grid_rect) {
+        DrawRectangleRec(rect, PINK);
+    }
 }
 
 bool

@@ -1,5 +1,5 @@
-obj/Debug/game.o: src/game.cpp src/game.hpp src/grid.hpp \
-  /usr/include/raylib.h /usr/lib/clang/17/include/stdarg.h \
+obj/Debug/game.o: src/game.cpp /usr/include/raylib.h \
+  /usr/lib/clang/17/include/stdarg.h \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/vector \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/requires_hosted.h \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
@@ -60,15 +60,6 @@ obj/Debug/game.o: src/game.cpp src/game.hpp src/grid.hpp \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/uses_allocator.h \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/uses_allocator_args.h \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/tuple \
-  src/block.hpp \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/map \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_tree.h \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/ext/aligned_buffer.h \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/node_handle.h \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_map.h \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_multimap.h \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/erase_if.h \
-  src/position.hpp src/player.hpp src/config.hpp src/tetromino.hpp \
   /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/cstdlib \
   /usr/include/stdlib.h /usr/include/bits/libc-header-start.h \
   /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
@@ -92,9 +83,16 @@ obj/Debug/game.o: src/game.cpp src/game.hpp src/grid.hpp \
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/struct_mutex.h /usr/include/bits/struct_rwlock.h \
   /usr/include/alloca.h /usr/include/bits/stdlib-float.h \
-  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/std_abs.h
-src/game.hpp:
-src/grid.hpp:
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/std_abs.h \
+  src/game.hpp src/grid.hpp src/block.hpp \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/map \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_tree.h \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/ext/aligned_buffer.h \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/node_handle.h \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_map.h \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_multimap.h \
+  /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/erase_if.h \
+  src/position.hpp src/player.hpp src/config.hpp src/tetromino.hpp
 /usr/include/raylib.h:
 /usr/lib/clang/17/include/stdarg.h:
 /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/vector:
@@ -161,18 +159,6 @@ src/grid.hpp:
 /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/uses_allocator.h:
 /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/uses_allocator_args.h:
 /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/tuple:
-src/block.hpp:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/map:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_tree.h:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/ext/aligned_buffer.h:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/node_handle.h:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_map.h:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_multimap.h:
-/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/erase_if.h:
-src/position.hpp:
-src/player.hpp:
-src/config.hpp:
-src/tetromino.hpp:
 /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/cstdlib:
 /usr/include/stdlib.h:
 /usr/include/bits/libc-header-start.h:
@@ -211,3 +197,17 @@ src/tetromino.hpp:
 /usr/include/alloca.h:
 /usr/include/bits/stdlib-float.h:
 /sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/std_abs.h:
+src/game.hpp:
+src/grid.hpp:
+src/block.hpp:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/map:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_tree.h:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/ext/aligned_buffer.h:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/node_handle.h:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_map.h:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/stl_multimap.h:
+/sbin/../lib64/gcc/x86_64-pc-linux-gnu/14.1.1/../../../../include/c++/14.1.1/bits/erase_if.h:
+src/position.hpp:
+src/player.hpp:
+src/config.hpp:
+src/tetromino.hpp:

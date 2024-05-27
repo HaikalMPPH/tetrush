@@ -64,10 +64,13 @@ Grid::is_row_full(int row) {
 
 void
 Grid::clear_row(int row) {
+    // erase block
     for (int col = 0; col < num_of_column; col++) {
         grid_cell[row][col] = 0;
+
+        // erase block collider
         for (int i = 0; i < game.grid_rect.size(); i++) {
-            if (game.grid_rect[i].y >= row * config::CellSize + config::GridOffsetY) {
+            if (game.grid_rect[i].y == row * config::CellSize + config::GridOffsetY) {
                 game.grid_rect.erase(game.grid_rect.begin() + i);
             }
         }
@@ -84,16 +87,21 @@ Grid::move_row_down(int row, int n_times) {
 }
 
 void
-Grid::move_grid_rect_down(int n_times) {
+Grid::move_grid_rect_down(int row, int n_times) {
     // Move down the corresponding rect with the same height n times
     for (int i = 0; i < game.grid_rect.size(); i++) {
-        game.grid_rect[i].y += config::CellSize * n_times;
+        if (game.grid_rect[i].y == row * config::CellSize + config::GridOffsetY) {
+            std::cout << "MOVED!" << std::endl;
+            game.grid_rect[i].y += config::CellSize * n_times;
+        }
     }
 }
 
 int
 Grid::clear_full_row() {
     int completed = 0;
+
+    // start from the bottom row.
     for (int row = num_of_row - 1; row >= 0; row--) {
         if (is_row_full(row)) {
             clear_row(row);
@@ -101,10 +109,13 @@ Grid::clear_full_row() {
         }
         else if (completed > 0) {
             move_row_down(row, completed);
+            move_grid_rect_down(row, completed);
         }
     }
 
-    move_grid_rect_down(completed);
+
+
+    // move_grid_rect_down(completed);
 
     return completed;
 }

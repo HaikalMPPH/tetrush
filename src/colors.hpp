@@ -13,6 +13,7 @@ namespace color {
   constexpr Color Blue = BLUE;
   constexpr Color Cyan = SKYBLUE;
   constexpr Color Purple = PURPLE;
+  constexpr Color ProjectionGrey = Color {200, 200, 200, 125};
 
   std::vector<Color> get_color();
 };

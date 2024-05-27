@@ -10,6 +10,7 @@ color::get_color() {
         color::Green, 
         color::Blue, 
         color::Cyan, 
-        color::Purple
+        color::Purple,
+        color::ProjectionGrey
     }; 
 }

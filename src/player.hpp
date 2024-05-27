@@ -36,6 +36,9 @@ struct Player {
     void jump();
 
     void handle_game_rect_collsion();
+
+    // Check if player is safe or not and only called in the Game::lock_block() method
+    void handle_death();
 };
 
 #endif // PLAYER_HPP

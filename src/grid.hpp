@@ -30,7 +30,7 @@ struct Grid {
     // move a row down n times
     void move_row_down(int row, int n_times);
 
-    void move_grid_rect_down(int n_times);
+    void move_grid_rect_down(int row, int n_times);
 
     // The int returned from the method will be calculated for the score.
     int clear_full_row();

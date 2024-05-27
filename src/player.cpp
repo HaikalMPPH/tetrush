@@ -122,7 +122,6 @@ Player::handle_game_rect_collsion() {
             }
 
             // if collide from right
-            // TODO: this does not work. 
             else if (
                 player_rect.x <= rect.x + config::CellSize &&
                 player_rect.x > rect.x &&
@@ -131,6 +130,22 @@ Player::handle_game_rect_collsion() {
                 // std::cout << "collide from right" << std::endl;
                 player_rect.x = rect.x + config::CellSize;
             }
+        }
+    }
+}
+
+void
+Player::handle_death() {
+    // TODO: just use block_projection x and y (above the block_projection) coordinate 
+    //       (scrap the projection rect)
+    // TODO: remove this
+    for (Rectangle kill_rect : game_ref.projection_rect) {
+        if (
+            player_rect.x >= kill_rect.x &&
+            player_rect.x <= kill_rect.x + config::CellSize
+        ) {
+            std::cout << "Game Over" << std::endl;
+            // TODO: make an
         }
     }
 }

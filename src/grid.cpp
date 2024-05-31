@@ -91,7 +91,7 @@ Grid::move_grid_rect_down(int row, int n_times) {
     // Move down the corresponding rect with the same height n times
     for (int i = 0; i < game.grid_rect.size(); i++) {
         if (game.grid_rect[i].y == row * config::CellSize + config::GridOffsetY) {
-            std::cout << "MOVED!" << std::endl;
+            // std::cout << "MOVED!" << std::endl;
             game.grid_rect[i].y += config::CellSize * n_times;
         }
     }

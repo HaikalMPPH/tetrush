@@ -1,3 +1,4 @@
+#include <ostream>
 #include <raylib.h>
 #include <vector>
 #include <cstdlib>
@@ -10,6 +11,9 @@
 #include "position.hpp"
 #include "tetromino.hpp"
 
+// TODO: Game over is now based on: - if player is below safe_y
+//                                  - if player position is inside grid_rect
+
 Game::Game() 
     : grid {Grid(*this)}
     , blocks {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()}
@@ -18,9 +22,9 @@ Game::Game()
     , block_projection {current_block}
     , last_update_time {0.0}
     , player {*this}
-    , safe_block_y {0.f}
-    , min_danger_x {config::WinW}   // make it very big
-    , max_danger_x {0.f}            // make it very small
+    , min_safe_y {0.f}
+    // , min_danger_x {config::WinW}   // make it very big
+    // , max_danger_x {0.f}            // make it very small
   
 {
     // Move the first block projection down.
@@ -65,11 +69,16 @@ Game::update() {
 
     if (event_triggered(0.5)) {
         block_move_down(current_block);
-        update_max_safe_y();
-
-        // DEBUG: testing max_safe_y
-        std::cout << safe_block_y << ", " << player.player_rect.y << std::endl;
+        update_min_max_safe_y();
     }
+
+    // DEBUG: testing safe y & danger x
+    std::cout << std::endl;
+    std::cout << std::endl;
+    // std::cout << "Danger x: " << min_danger_x << " - " << max_danger_x <<
+    //     " Player x: " << player.player_rect.x << std::endl;
+    std::cout << "Danger y:" << min_safe_y << " - " << max_safe_y << 
+        " player y: " << player.player_rect.y << std::endl;
 
 }
 
@@ -94,18 +103,22 @@ Game::handle_input() {
     case KEY_J:
         block_move_left(current_block);
         block_move_left(block_projection);
+        // update_min_max_danger_x();
         break;
     case KEY_L:
         block_move_right(current_block);
         block_move_right(block_projection);
+        // update_min_max_danger_x();
         break;
     case KEY_K:
+        update_min_max_safe_y();
         block_instant_move_down(current_block);
         lock_block();
         break;
     case KEY_I:
         rotate_block(current_block);
         rotate_block(block_projection);
+        update_min_max_safe_y();
         break;
     }
 
@@ -113,75 +126,87 @@ Game::handle_input() {
 }
 
 void
-Game::update_max_safe_y() {
-    const std::vector<Position>& block_pos = current_block.get_cell_position();
+Game::update_min_max_safe_y() {
+    reset_safe_y();
+
+    const std::vector<Position>& curr_block_pos = current_block.get_cell_position();
+    const std::vector<Position>& proj_block_pos = block_projection.get_cell_position();
     // start from the bottom grid
     // float safe_block_y = grid.num_of_row * config::CellSize + config::GridOffsetY;
 
-    for (Position pos : block_pos) {
-        if (pos.row * config::CellSize + config::GridOffsetY >= safe_block_y) {
-            safe_block_y = pos.row * config::CellSize + config::GridOffsetY;
+    for (Position curr_pos : curr_block_pos) {
+        float tmp_min = curr_pos.row * config::CellSize + config::GridOffsetY;
+        if (tmp_min <= min_safe_y) {
+            min_safe_y = tmp_min;
+        }
+    }
+    for (Position proj_pos : proj_block_pos) {
+        float tmp_max = proj_pos.row * config::CellSize + config::GridOffsetY + config::CellSize;
+        if (tmp_max >= max_safe_y) {
+            max_safe_y = tmp_max;
         }
     }
 }
 void
-Game::update_min_max_danger_x() {
-    reset_danger_x();
-
-    const std::vector<Position>& block_pos = current_block.get_cell_position();
-    for (Position pos : block_pos) {
-        float tmp_min = pos.col * config::CellSize + config::GridOffsetX;
-        // the end of block x coordinate.
-        float tmp_max = tmp_min + config::CellSize;
-
-        if (tmp_min < min_danger_x)
-            min_danger_x = tmp_min;
-        if (tmp_max > max_danger_x)
-            max_danger_x = tmp_max;
-    }
-
-    // DEBUG
-    std::cout << "Danger x: " << min_danger_x << " - " << max_danger_x << std::endl;
+Game::reset_safe_y() {
+    min_safe_y = config::WinH;
+    max_safe_y = 0.f;
 }
-void
-Game::reset_danger_x() {
-    max_danger_x = 0.f;             // make it very small
-    min_danger_x = config::WinW;    // make it very big
-}
+// void
+// Game::update_min_max_danger_x() {
+//     reset_danger_x();
+
+//     const std::vector<Position>& block_pos = current_block.get_cell_position();
+
+//     for (Position pos : block_pos) {
+//         float tmp_min = pos.col * config::CellSize + config::GridOffsetX;
+//         // the end of block x coordinate.
+//         float tmp_max = tmp_min + config::CellSize;
+
+//         if (tmp_min < min_danger_x)
+//             min_danger_x = tmp_min;
+//         if (tmp_max > max_danger_x)
+//             max_danger_x = tmp_max;
+//     }
+
+// }
+// void
+// Game::reset_danger_x() {
+//     max_danger_x = 0.f;             // make it very small
+//     min_danger_x = config::WinW;    // make it very big
+// }
 
 void
 Game::block_move_left(Block& block) {
     block.move(0, -1);
 
     block_instant_move_down(block_projection);
-    update_projection_rect_pos();
+    update_projection_pos();
 
     // if block out of bound to the left, move the block 1 cell to the right.
     if (is_block_outside(block) || is_grid_occupied(block) == false) {
         block.move(0, 1);
     }
 
-    update_min_max_danger_x();
 }
 void
 Game::block_move_right(Block& block) {
     block.move(0, 1);
 
     block_instant_move_down(block_projection);
-    update_projection_rect_pos();
+    update_projection_pos();
 
     if (is_block_outside(block) || is_grid_occupied(block) == false) {
         block.move(0, -1);
     }
 
-    update_min_max_danger_x();
 }
 void
 Game::block_move_down(Block& block) {
     block.move(1, 0);
 
     block_instant_move_down(block_projection);
-    update_projection_rect_pos();
+    update_projection_pos();
 
     if (is_block_outside(block) || is_grid_occupied(block) == false) {
         block.move(-1, 0);
@@ -203,10 +228,9 @@ void
 Game::rotate_block(Block& block) {
     block.rotate();
 
-    update_max_safe_y();
 
     block_instant_move_down(block_projection);
-    update_projection_rect_pos();
+    update_projection_pos();
 
     if (is_block_outside(block) || is_grid_occupied(block) == false) {
         block.undo_rotate();
@@ -227,8 +251,11 @@ Game::is_grid_occupied(Block& block) {
 
 void
 Game::lock_block() {
-    update_max_safe_y();
-    update_min_max_danger_x();
+    update_min_max_safe_y();
+    // update_min_max_danger_x();
+
+    // Process player.handle_death().
+    player.handle_death();
 
     std::vector<Position> current_checked_cell = current_block.get_cell_position();
 
@@ -244,11 +271,14 @@ Game::lock_block() {
             config::CellSize
         });
     }
-    // TODO: Process player.handle_death() here.
 
 
+    // reset_danger_x();
+    reset_safe_y();
     // Update the block
     current_block = next_block;
+    // update_min_max_danger_x();
+    update_min_max_safe_y();
 
     // Instantly move block projection to the ground when created.
     block_projection = current_block;
@@ -259,18 +289,11 @@ Game::lock_block() {
     next_block = get_random_block();
 
     grid.clear_full_row();
-    safe_block_y = 0.f;
-    reset_danger_x();
+    min_safe_y = 0.f;
 }
 
 void
-Game::draw_projection() {
-}
-void
-Game::create_projection_rect() {
-}
-void
-Game::update_projection_rect_pos() {
+Game::update_projection_pos() {
     while (is_grid_occupied(block_projection) == false) {
         block_projection.move(-1, 0);
     }

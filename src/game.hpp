@@ -18,10 +18,6 @@ struct Game {
 
     // Tetramino projection.
     Block block_projection;
-    // Vector of rects of the block_projection to be used to detect collision with the player
-    // and enemy.
-    // TODO: remove this.
-    std::vector<Rectangle> projection_rect;
 
     double last_update_time;
 
@@ -35,9 +31,10 @@ struct Game {
     // * The maximum height of the current_block. This allow the player to vault over the block if
     //   it's on the higher ground.
     // * Resets every lock_block() call.
-    float safe_block_y;
-    float min_danger_x,
-          max_danger_x;
+    float min_safe_y, // the very top of the current block y.
+          max_safe_y; // the very bottom of the projection block y.
+    // float min_danger_x,
+    //       max_danger_x;
 
 // = METHODS =============================================================
     Game();
@@ -59,7 +56,9 @@ struct Game {
     //   - block rotaion
     //   - event triggered
     //   - early in lock_block() call.
-    void update_max_safe_y();
+    void update_min_max_safe_y();
+    // * reset to a very big number.
+    void reset_safe_y();
 
     // * Update the min and max x coordinate that will kill the player/enemy.
     // * Called every move_right or move_left and when spawning current_block. 
@@ -79,13 +78,8 @@ struct Game {
     // Also processed if player/enemy is "squashable"
     void lock_block();
 
-    // * Draw the projected tetromino to ilustrated where it should land.
-    // * This projection is also used to kill the player if lock_block() is called. Player only
-    //   detect the x coordinate of the rects.
-    // * Draw projection only draw the Rectangle with the position of the block_projection.
-    void draw_projection();
-    void create_projection_rect();
-    void update_projection_rect_pos();
+    //
+    void update_projection_pos();
 
     // DEBUG: render tetromino collider.
     void debug_render_rect();

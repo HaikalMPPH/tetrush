@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <raylib.h>
 #include <raymath.h>
@@ -5,7 +6,8 @@
 #include "player.hpp"
 #include "config.hpp"
 #include "game.hpp"
-
+// TODO: fix player collision. Maybe use boolean flag like "is_collide_left", etc. and process 
+//       that in handle input.
 Player::Player(const Game& game)
     : speed {200.f}
     , vertical_speed {0.f}
@@ -18,6 +20,8 @@ Player::Player(const Game& game)
     , move_direction_x {0.f}
     , player_gravity {20.f}
     , is_grounded {false}
+    , can_move {true}
+
     // Note: hardcoded num of rows. be careful when changing it in grid.cpp
     , ground_y {config::CellSize * 20 + config::GridOffsetY}
     , game_ref {game}
@@ -69,8 +73,9 @@ Player::handle_gravity() {
         player_rect.y = ground_y - player_size;
 
     }
+
+    // return gravity to normal.
     else {
-        // is_grounded = false;
         player_gravity = 10.f;
     }
 }
@@ -100,35 +105,47 @@ void
 Player::handle_game_rect_collsion() {
     for (Rectangle rect : game_ref.grid_rect) {
         if (CheckCollisionRecs(player_rect, rect)) {
-            // if collide from above
-            if (
-                player_rect.y + player_size >= rect.y &&
-                player_rect.y < rect.y
-            ) {
-                // std::cout << "Collide from above" << std::endl;
-                player_rect.y = rect.y - player_size;
+            // const Rectangle coll_rect = GetCollisionRec(player_rect, rect);
+
+            // player & rect center point
+            const Vector2 player_center {
+                player_rect.x + player_size / 2.f,
+                player_rect.y + player_size / 2.f,
+            };
+            const Vector2 rect_center {
+                rect.x + config::CellSize / 2.f,
+                rect.y + config::CellSize / 2.f,
+            };
+
+            // distance between the 2 centers
+            const Vector2 center_delta = Vector2Subtract(player_center, rect_center);
+
+            // half widths & heights
+            const Vector2 player_halves {
+                player_size / 2.f,
+                player_size / 2.f,
+            };
+            const Vector2 rect_halves {
+                config::CellSize / 2.f,
+                config::CellSize / 2.f,
+            };
+
+            // seperate distance
+            const float distX = player_halves.x + rect_halves.x - fabsf(center_delta.x);
+            const float distY = player_halves.y + rect_halves.y - fabsf(center_delta.y);
+
+            // collide from the sides.
+            if (distX < distY) {
+                player_rect.x += distX * (center_delta.x / fabsf(center_delta.x));
+            }
+            // collide from top or bottom
+            else {
+                player_rect.y += distY * (center_delta.y / fabsf(center_delta.y));
                 vertical_speed = 0.f;
-                player_gravity = 0.f;
-                is_grounded = true;
-            }
 
-            // if collide from left
-            else if (
-                player_rect.x + player_size >= rect.x &&
-                player_rect.x + player_size < rect.x + config::CellSize &&
-                player_rect.y + player_size >= rect.y
-            ){
-                player_rect.x = rect.x - player_size;
-            }
-
-            // if collide from right
-            else if (
-                player_rect.x <= rect.x + config::CellSize &&
-                player_rect.x > rect.x &&
-                player_rect.y + player_size >= rect.y
-            ){
-                // std::cout << "collide from right" << std::endl;
-                player_rect.x = rect.x + config::CellSize;
+                // if player is above the rect it can jump
+                if (player_center.y < rect_center.y) 
+                    is_grounded = true;
             }
         }
     }
@@ -136,16 +153,13 @@ Player::handle_game_rect_collsion() {
 
 void
 Player::handle_death() {
-    // TODO: just use block_projection x and y (above the block_projection) coordinate 
-    //       (scrap the projection rect)
-    // TODO: remove this
-    for (Rectangle kill_rect : game_ref.projection_rect) {
-        if (
-            player_rect.x >= kill_rect.x &&
-            player_rect.x <= kill_rect.x + config::CellSize
-        ) {
-            std::cout << "Game Over" << std::endl;
-            // TODO: make an
-        }
+    if (
+        // player_rect.x + config::CellSize >= game_ref.min_danger_x &&
+        // player_rect.x <= game_ref.max_danger_x &&
+        player_rect.y + config::CellSize >= game_ref.min_safe_y &&
+        player_rect.y <= game_ref.max_safe_y
+    ) {
+        DrawText("GAME OVER", config::WinW / 2, config::WinH / 2, 30, BLACK);
+        std::cout << "GAME OVER" << std::endl;
     }
 }

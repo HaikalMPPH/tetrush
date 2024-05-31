@@ -14,7 +14,9 @@ struct Player {
     Rectangle player_rect;
     float move_direction_x;
     float player_gravity;
+
     bool is_grounded;
+    bool can_move;
 
     // The same height as the lowest grid 
     float ground_y;

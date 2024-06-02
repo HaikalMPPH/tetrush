@@ -69,9 +69,9 @@ Grid::clear_row(int row) {
         grid_cell[row][col] = 0;
 
         // erase block collider
-        for (int i = 0; i < game.grid_rect.size(); i++) {
-            if (game.grid_rect[i].y == row * config::CellSize + config::GridOffsetY) {
-                game.grid_rect.erase(game.grid_rect.begin() + i);
+        for (int i = 0; i < game.landed_block_rect.size(); i++) {
+            if (game.landed_block_rect[i].y == row * config::CellSize + config::GridOffsetY) {
+                game.landed_block_rect.erase(game.landed_block_rect.begin() + i);
             }
         }
     }
@@ -89,10 +89,10 @@ Grid::move_row_down(int row, int n_times) {
 void
 Grid::move_grid_rect_down(int row, int n_times) {
     // Move down the corresponding rect with the same height n times
-    for (int i = 0; i < game.grid_rect.size(); i++) {
-        if (game.grid_rect[i].y == row * config::CellSize + config::GridOffsetY) {
+    for (int i = 0; i < game.landed_block_rect.size(); i++) {
+        if (game.landed_block_rect[i].y == row * config::CellSize + config::GridOffsetY) {
             // std::cout << "MOVED!" << std::endl;
-            game.grid_rect[i].y += config::CellSize * n_times;
+            game.landed_block_rect[i].y += config::CellSize * n_times;
         }
     }
 }

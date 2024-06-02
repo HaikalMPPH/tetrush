@@ -6,8 +6,7 @@
 #include "player.hpp"
 #include "config.hpp"
 #include "game.hpp"
-// TODO: fix player collision. Maybe use boolean flag like "is_collide_left", etc. and process 
-//       that in handle input.
+
 Player::Player(const Game& game)
     : speed {200.f}
     , vertical_speed {0.f}
@@ -32,7 +31,7 @@ Player::update() {
     handle_wall_collision();
     move_to_direction();
     handle_gravity();
-    handle_game_rect_collsion();
+    handle_landed_rect_collsion();
 }
 
 void
@@ -102,11 +101,9 @@ Player::jump() {
 }
 
 void
-Player::handle_game_rect_collsion() {
-    for (Rectangle rect : game_ref.grid_rect) {
+Player::handle_landed_rect_collsion() {
+    for (Rectangle rect : game_ref.landed_block_rect) {
         if (CheckCollisionRecs(player_rect, rect)) {
-            // const Rectangle coll_rect = GetCollisionRec(player_rect, rect);
-
             // player & rect center point
             const Vector2 player_center {
                 player_rect.x + player_size / 2.f,
@@ -150,13 +147,15 @@ Player::handle_game_rect_collsion() {
         }
     }
 }
+// TODO: handle_current_rect_collision here
+//
 
 void
 Player::handle_death() {
     if (
         // player_rect.x + config::CellSize >= game_ref.min_danger_x &&
         // player_rect.x <= game_ref.max_danger_x &&
-        player_rect.y + config::CellSize >= game_ref.min_safe_y &&
+        player_rect.y + player_size >= game_ref.min_safe_y &&
         player_rect.y <= game_ref.max_safe_y
     ) {
         DrawText("GAME OVER", config::WinW / 2, config::WinH / 2, 30, BLACK);

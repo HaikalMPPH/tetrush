@@ -23,10 +23,10 @@ Game::Game()
     , last_update_time {0.0}
     , player {*this}
     , min_safe_y {0.f}
-    // , min_danger_x {config::WinW}   // make it very big
-    // , max_danger_x {0.f}            // make it very small
-  
 {
+    // 
+    create_current_block_rect();
+
     // Move the first block projection down.
     block_projection.color_id = 8;
     block_instant_move_down(block_projection);
@@ -58,7 +58,7 @@ Game::render() {
     current_block.draw();
     block_projection.draw();
     player.render();
-    // debug_render_rect();
+    debug_render_rect();
     // draw_projection();
 }
 
@@ -69,14 +69,12 @@ Game::update() {
 
     if (event_triggered(0.5)) {
         block_move_down(current_block);
-        update_min_max_safe_y();
+        update_current_block_rect();
     }
 
     // DEBUG: testing safe y & danger x
     std::cout << std::endl;
     std::cout << std::endl;
-    // std::cout << "Danger x: " << min_danger_x << " - " << max_danger_x <<
-    //     " Player x: " << player.player_rect.x << std::endl;
     std::cout << "Danger y:" << min_safe_y << " - " << max_safe_y << 
         " player y: " << player.player_rect.y << std::endl;
 
@@ -103,12 +101,12 @@ Game::handle_input() {
     case KEY_J:
         block_move_left(current_block);
         block_move_left(block_projection);
-        // update_min_max_danger_x();
+        update_current_block_rect();
         break;
     case KEY_L:
         block_move_right(current_block);
         block_move_right(block_projection);
-        // update_min_max_danger_x();
+        update_current_block_rect();
         break;
     case KEY_K:
         update_min_max_safe_y();
@@ -118,21 +116,20 @@ Game::handle_input() {
     case KEY_I:
         rotate_block(current_block);
         rotate_block(block_projection);
-        update_min_max_safe_y();
+        update_current_block_rect();
         break;
     }
 
     player.handle_input();
 }
 
+
 void
 Game::update_min_max_safe_y() {
-    reset_safe_y();
 
     const std::vector<Position>& curr_block_pos = current_block.get_cell_position();
     const std::vector<Position>& proj_block_pos = block_projection.get_cell_position();
     // start from the bottom grid
-    // float safe_block_y = grid.num_of_row * config::CellSize + config::GridOffsetY;
 
     for (Position curr_pos : curr_block_pos) {
         float tmp_min = curr_pos.row * config::CellSize + config::GridOffsetY;
@@ -147,34 +144,7 @@ Game::update_min_max_safe_y() {
         }
     }
 }
-void
-Game::reset_safe_y() {
-    min_safe_y = config::WinH;
-    max_safe_y = 0.f;
-}
-// void
-// Game::update_min_max_danger_x() {
-//     reset_danger_x();
 
-//     const std::vector<Position>& block_pos = current_block.get_cell_position();
-
-//     for (Position pos : block_pos) {
-//         float tmp_min = pos.col * config::CellSize + config::GridOffsetX;
-//         // the end of block x coordinate.
-//         float tmp_max = tmp_min + config::CellSize;
-
-//         if (tmp_min < min_danger_x)
-//             min_danger_x = tmp_min;
-//         if (tmp_max > max_danger_x)
-//             max_danger_x = tmp_max;
-//     }
-
-// }
-// void
-// Game::reset_danger_x() {
-//     max_danger_x = 0.f;             // make it very small
-//     min_danger_x = config::WinW;    // make it very big
-// }
 
 void
 Game::block_move_left(Block& block) {
@@ -252,7 +222,6 @@ Game::is_grid_occupied(Block& block) {
 void
 Game::lock_block() {
     update_min_max_safe_y();
-    // update_min_max_danger_x();
 
     // Process player.handle_death().
     player.handle_death();
@@ -264,7 +233,9 @@ Game::lock_block() {
     // Also spawn Rectangle for the player to collide.
     for (Position tile : current_checked_cell) {
         grid.grid_cell[tile.row][tile.col] = current_block.color_id;
-        grid_rect.push_back({
+
+        // TODO: wrap this in a function similar to create_current_block_rect()
+        landed_block_rect.push_back({
             (float)tile.col * config::CellSize + config::GridOffsetX, 
             (float)tile.row * config::CellSize + config::GridOffsetY, 
             config::CellSize, 
@@ -272,13 +243,13 @@ Game::lock_block() {
         });
     }
 
+    // TODO: handle player/enemy deaths here
+    //
 
-    // reset_danger_x();
-    reset_safe_y();
     // Update the block
     current_block = next_block;
-    // update_min_max_danger_x();
-    update_min_max_safe_y();
+
+    update_current_block_rect();
 
     // Instantly move block projection to the ground when created.
     block_projection = current_block;
@@ -289,8 +260,31 @@ Game::lock_block() {
     next_block = get_random_block();
 
     grid.clear_full_row();
-    min_safe_y = 0.f;
 }
+
+
+void
+Game::create_current_block_rect() {
+    const std::vector<Position>& curr_block_pos = current_block.get_cell_position();
+    for (Position pos : curr_block_pos) {
+        current_block_rect.push_back(Rectangle {
+            (float)pos.col * config::CellSize + config::GridOffsetX,
+            (float)pos.row * config::CellSize + config::GridOffsetY,
+            config::CellSize,
+            config::CellSize,
+        });
+    }
+}
+void
+Game::clear_current_block_rect() {
+    current_block_rect.clear();
+}
+void
+Game::update_current_block_rect() {
+    clear_current_block_rect();
+    create_current_block_rect();
+}
+
 
 void
 Game::update_projection_pos() {
@@ -301,9 +295,14 @@ Game::update_projection_pos() {
 
 void
 Game::debug_render_rect() {
-    // DEBUG: Render grid_rect
-    for (Rectangle rect : grid_rect) {
+    // DEBUG: 
+    // Render landed_block_rect
+    for (Rectangle rect : landed_block_rect) {
         DrawRectangleRec(rect, PINK);
+    }
+    // Render current_block_rect
+    for (Rectangle rect : current_block_rect) {
+        DrawRectangleRec(rect, SKYBLUE);
     }
 }
 

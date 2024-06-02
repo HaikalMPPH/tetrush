@@ -37,7 +37,8 @@ struct Player {
     void handle_wall_collision();
     void jump();
 
-    void handle_game_rect_collsion();
+    void handle_landed_rect_collsion();
+    void handle_current_rect_collision();
 
     // Check if player is safe or not and only called in the Game::lock_block() method
     void handle_death();

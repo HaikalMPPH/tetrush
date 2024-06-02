@@ -7,6 +7,8 @@
 #include "block.hpp"
 #include "player.hpp"
 
+// TODO: create update_current_block_rect() method.
+
 struct Game {
 // = VARIABLES ===========================================================
     Grid grid;
@@ -26,7 +28,8 @@ struct Game {
 
     // Vector of rect that the position is matched with the color grid.
     // The rect is used for the player collision
-    std::vector<Rectangle> grid_rect;
+    std::vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
+    std::vector<Rectangle> current_block_rect;    // collider of the current falling block.
 
     // * The maximum height of the current_block. This allow the player to vault over the block if
     //   it's on the higher ground.
@@ -74,9 +77,14 @@ struct Game {
 
     // Check if the grid next to/below the block is occupied.
     bool is_grid_occupied(Block& block);
+
     // Called when the block reaches the ground.
     // Also processed if player/enemy is "squashable"
     void lock_block();
+
+    void create_current_block_rect();
+    void clear_current_block_rect();
+    void update_current_block_rect();   // empty and recreate current_block_rect
 
     //
     void update_projection_pos();

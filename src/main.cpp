@@ -8,7 +8,7 @@ int main() {
     // Generate random seed.
     srand(time(nullptr));
 
-    Game game;
+    game_s game;
 
     InitWindow(1024, 720, "Tetrush");
     SetTargetFPS(60);

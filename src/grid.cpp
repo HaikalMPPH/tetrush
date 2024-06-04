@@ -1,4 +1,3 @@
-#include <climits>
 #include <raylib.h>
 #include <iostream>
 
@@ -7,32 +6,32 @@
 #include "config.hpp"
 #include "game.hpp"
 
-Grid::Grid(Game& t_game) 
+grid_s::grid_s(game_s& t_game) 
     : grid_cell {}
     , num_of_row {20} //y
-    , num_of_column {10}// x
-    , cell_size {config::CellSize}
+    , num_of_col {10}// x
+    , cell_size {config::cell_size}
     , colors {color::get_color()}
-    , game {t_game}
+    , game_ref {t_game}
 {}
 
 void
-Grid::debug() const {
+grid_s::debug() const {
     for (int y = 0; y < num_of_row; y++) {
-        for (int x = 0; x < num_of_column ; x++) {
+        for (int x = 0; x < num_of_col ; x++) {
             std::cout << grid_cell[y][x] << " ";
         }
         std::cout << std::endl;
     }
 }
 
-void Grid::draw() const {
+void grid_s::draw() const {
     for (int row = 0; row < num_of_row; row++) {
-        for (int col = 0; col < num_of_column; col++) {
+        for (int col = 0; col < num_of_col; col++) {
             int cell_val = grid_cell[row][col];
             DrawRectangle(
-                col * cell_size + config::GridOffsetX,
-                row * cell_size + config::GridOffsetY,
+                col * cell_size + config::grid_offset_x,
+                row * cell_size + config::grid_offset_y,
                 cell_size,
                 cell_size,
                 colors[cell_val]
@@ -42,18 +41,23 @@ void Grid::draw() const {
 }
 
 bool
-Grid::is_cell_outside(int row, int col) {
-    return !(row >= 0 && row < num_of_row && col >= 0 && col < num_of_column);
+grid_s::is_cell_outside(int row, int col) {
+    return !(row >= 0 && row < num_of_row && col >= 0 && col < num_of_col);
 }
 
 bool
-Grid::is_grid_empty(int row, int col) {
+grid_s::is_grid_empty(int row, int col) {
     return (grid_cell[row][col] == 0);
 }
 
+void 
+grid_s::update_grid_color(int row, int col, int colorId) {
+    grid_cell[row][col] = colorId;
+}
+
 bool
-Grid::is_row_full(int row) {
-    for (int col = 0; col < num_of_column; col++) {
+grid_s::is_row_full(int row) {
+    for (int col = 0; col < num_of_col; col++) {
         if (grid_cell[row][col] == 0) {
             return false;
         }
@@ -63,23 +67,23 @@ Grid::is_row_full(int row) {
 }
 
 void
-Grid::clear_row(int row) {
+grid_s::clear_row(int row) {
     // erase block
-    for (int col = 0; col < num_of_column; col++) {
+    for (int col = 0; col < num_of_col; col++) {
         grid_cell[row][col] = 0;
 
         // erase block collider
-        for (int i = 0; i < game.landed_block_rect.size(); i++) {
-            if (game.landed_block_rect[i].y == row * config::CellSize + config::GridOffsetY) {
-                game.landed_block_rect.erase(game.landed_block_rect.begin() + i);
+        for (int i = 0; i < game_ref.landed_block_rect.size(); i++) {
+            if (game_ref.landed_block_rect[i].y == row * config::cell_size + config::grid_offset_y) {
+                game_ref.landed_block_rect.erase(game_ref.landed_block_rect.begin() + i);
             }
         }
     }
 }
 
 void
-Grid::move_row_down(int row, int n_times) {
-    for (int col = 0; col < num_of_column; col++) {
+grid_s::move_row_down(int row, int n_times) {
+    for (int col = 0; col < num_of_col; col++) {
         grid_cell[row + n_times][col] = grid_cell[row][col];
         grid_cell[row][col] = 0;
     }
@@ -87,18 +91,18 @@ Grid::move_row_down(int row, int n_times) {
 }
 
 void
-Grid::move_grid_rect_down(int row, int n_times) {
+grid_s::move_grid_rect_down(int row, int n_times) {
     // Move down the corresponding rect with the same height n times
-    for (int i = 0; i < game.landed_block_rect.size(); i++) {
-        if (game.landed_block_rect[i].y == row * config::CellSize + config::GridOffsetY) {
+    for (int i = 0; i < game_ref.landed_block_rect.size(); i++) {
+        if (game_ref.landed_block_rect[i].y == row * config::cell_size + config::grid_offset_y) {
             // std::cout << "MOVED!" << std::endl;
-            game.landed_block_rect[i].y += config::CellSize * n_times;
+            game_ref.landed_block_rect[i].y += config::cell_size * n_times;
         }
     }
 }
 
 int
-Grid::clear_full_row() {
+grid_s::clear_full_row() {
     int completed = 0;
 
     // start from the bottom row.
@@ -112,10 +116,6 @@ Grid::clear_full_row() {
             move_grid_rect_down(row, completed);
         }
     }
-
-
-
-    // move_grid_rect_down(completed);
 
     return completed;
 }

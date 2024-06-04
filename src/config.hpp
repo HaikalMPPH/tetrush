@@ -2,13 +2,13 @@
 #define CONFIG_HPP
 
 namespace config {
-    constexpr int WinW = 1024;
-    constexpr int WinH = 720;
+    constexpr int win_w = 1024;
+    constexpr int win_h = 720;
 
-    constexpr int CellSize = 35;
+    constexpr int cell_size = 35;
 
-    constexpr float GridOffsetX = WinW / 3.f;
-    constexpr float GridOffsetY = 10.f;
+    constexpr float grid_offset_x = win_w / 3.f;
+    constexpr float grid_offset_y = 10.f;
 };
 
 #endif

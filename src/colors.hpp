@@ -5,15 +5,17 @@
 #include <raylib.h>
 
 namespace color {
-  constexpr Color Empty = RAYWHITE;
-  constexpr Color Red = RED;
-  constexpr Color Orange = ORANGE;
-  constexpr Color Yellow = YELLOW;
-  constexpr Color Green = GREEN;
-  constexpr Color Blue = BLUE;
-  constexpr Color Cyan = SKYBLUE;
-  constexpr Color Purple = PURPLE;
-  constexpr Color ProjectionGrey = Color {200, 200, 200, 125};
+// TODO: create custom color scheme and change the naming convention to all
+// uppercase
+  constexpr Color empty = RAYWHITE;
+  constexpr Color red = RED;
+  constexpr Color orange = ORANGE;
+  constexpr Color yellow = YELLOW;
+  constexpr Color green = GREEN;
+  constexpr Color blue = BLUE;
+  constexpr Color cyan = SKYBLUE;
+  constexpr Color purple = PURPLE;
+  constexpr Color projection_grey = Color {200, 200, 200, 125};
 
   std::vector<Color> get_color();
 };

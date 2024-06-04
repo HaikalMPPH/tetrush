@@ -70,22 +70,22 @@ endif
 GENERATED :=
 OBJECTS :=
 
-GENERATED += $(OBJDIR)/block.o
-GENERATED += $(OBJDIR)/colors.o
-GENERATED += $(OBJDIR)/game.o
-GENERATED += $(OBJDIR)/grid.o
-GENERATED += $(OBJDIR)/main.o
-GENERATED += $(OBJDIR)/player.o
-GENERATED += $(OBJDIR)/position.o
-GENERATED += $(OBJDIR)/tetromino.o
-OBJECTS += $(OBJDIR)/block.o
-OBJECTS += $(OBJDIR)/colors.o
-OBJECTS += $(OBJDIR)/game.o
-OBJECTS += $(OBJDIR)/grid.o
-OBJECTS += $(OBJDIR)/main.o
-OBJECTS += $(OBJDIR)/player.o
-OBJECTS += $(OBJDIR)/position.o
-OBJECTS += $(OBJDIR)/tetromino.o
+GENERATED += $(OBJDIR)/Block.o
+GENERATED += $(OBJDIR)/Colors.o
+GENERATED += $(OBJDIR)/Game.o
+GENERATED += $(OBJDIR)/Grid.o
+GENERATED += $(OBJDIR)/Main.o
+GENERATED += $(OBJDIR)/Player.o
+GENERATED += $(OBJDIR)/Position.o
+GENERATED += $(OBJDIR)/Tetromino.o
+OBJECTS += $(OBJDIR)/Block.o
+OBJECTS += $(OBJDIR)/Colors.o
+OBJECTS += $(OBJDIR)/Game.o
+OBJECTS += $(OBJDIR)/Grid.o
+OBJECTS += $(OBJDIR)/Main.o
+OBJECTS += $(OBJDIR)/Player.o
+OBJECTS += $(OBJDIR)/Position.o
+OBJECTS += $(OBJDIR)/Tetromino.o
 
 # Rules
 # #############################################
@@ -149,28 +149,28 @@ endif
 # File Rules
 # #############################################
 
-$(OBJDIR)/block.o: src/block.cpp
+$(OBJDIR)/Block.o: src/Block.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/colors.o: src/colors.cpp
+$(OBJDIR)/Colors.o: src/Colors.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/game.o: src/game.cpp
+$(OBJDIR)/Game.o: src/Game.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/grid.o: src/grid.cpp
+$(OBJDIR)/Grid.o: src/Grid.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/main.o: src/main.cpp
+$(OBJDIR)/Main.o: src/Main.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/player.o: src/player.cpp
+$(OBJDIR)/Player.o: src/Player.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/position.o: src/position.cpp
+$(OBJDIR)/Position.o: src/Position.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/tetromino.o: src/tetromino.cpp
+$(OBJDIR)/Tetromino.o: src/Tetromino.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

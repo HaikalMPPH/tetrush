@@ -4,33 +4,35 @@
 #include <raylib.h>
 #include <vector>
 
-struct Game;
+struct game_s;
 
-struct Grid {
+struct grid_s {
     int grid_cell[20][10]; // row, column or y. x
     int num_of_row;
-    int num_of_column;
+    int num_of_col;
     int cell_size;
     std::vector<Color> colors;
 
     // Game instance reference to manage the rect collider
-    Game& game;
+    game_s& game_ref;
 
-    Grid(Game& t_game);
+    grid_s(game_s& game);
 
     void debug() const;
     void draw() const;
     bool is_cell_outside(int row, int col);
     bool is_grid_empty(int row, int col);
 
+    void update_grid_color(int row, int col, int color_id);
+
     // Check if a row is full a cleared it up.
     bool is_row_full(int row);
     void clear_row(int row);
 
     // move a row down n times
-    void move_row_down(int row, int n_times);
+    void move_row_down(int row, int nTimes);
 
-    void move_grid_rect_down(int row, int n_times);
+    void move_grid_rect_down(int row, int nTimes);
 
     // The int returned from the method will be calculated for the score.
     int clear_full_row();

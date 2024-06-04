@@ -3,9 +3,9 @@
 
 #include <raylib.h>
 
-struct Game;
+struct game_s;
 
-struct Player {
+struct player_s {
 // = VARIABLES ===========================================================
     float speed;
     float vertical_speed;
@@ -21,11 +21,11 @@ struct Player {
     // The same height as the lowest grid 
     float ground_y;
 
-    const Game& game_ref;
+    const game_s& game_ref;
 
 
 // = METHODS =============================================================
-    Player(const Game& game);
+    player_s(const game_s& game);
 
     void update();
     void render();
@@ -37,7 +37,8 @@ struct Player {
     void handle_wall_collision();
     void jump();
 
-    void handle_landed_rect_collsion();
+    void handle_rect_collision(const Rectangle& rect);
+    void handle_landed_rect_collision();
     void handle_current_rect_collision();
 
     // Check if player is safe or not and only called in the Game::lock_block() method

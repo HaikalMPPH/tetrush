@@ -1,7 +1,7 @@
 #include "position.hpp"
 
-Position::Position(int t_row, int t_col)
-    : row {t_row}
-    , col {t_col}
+position_s::position_s(int row, int col)
+    : row {row}
+    , col {col}
 {
 }

@@ -1,4 +1,4 @@
-#include "Colors.hpp"
+#include "colors.hpp"
 
 std::vector<Color> 
 color::get_color() {

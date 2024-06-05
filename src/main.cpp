@@ -8,7 +8,7 @@ int main() {
     // Generate random seed.
     srand(time(nullptr));
 
-    game_s game;
+    Game game;
 
     InitWindow(1024, 720, "Tetrush");
     SetTargetFPS(60);
@@ -17,8 +17,8 @@ int main() {
     BeginDrawing();
 
         ClearBackground(DARKGRAY);
-        game.render();
-        game.update();
+        game.Render();
+        game.Update();
 
     EndDrawing();
     }

@@ -1,41 +1,45 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
+#include "config.hpp"
 #include <raylib.h>
 #include <vector>
 
-struct game_s;
+class Game;
 
-struct grid_s {
-    int grid_cell[20][10]; // row, column or y. x
+class Grid {
+public:
+    int grid_cell[config::kNumOfRows][config::kNumOfCols]; // row, column or y. x
     int num_of_row;
     int num_of_col;
     int cell_size;
     std::vector<Color> colors;
 
+public:
     // Game instance reference to manage the rect collider
-    game_s& game_ref;
+    Game& game;
 
-    grid_s(game_s& game);
+    Grid(Game& t_game);
 
-    void debug() const;
-    void draw() const;
-    bool is_cell_outside(int row, int col);
-    bool is_grid_empty(int row, int col);
+    void Debug();
+    void Draw();
+    bool IsCellOutside(int row, int col);
+    bool IsGridEmpty(int row, int col);
 
-    void update_grid_color(int row, int col, int color_id);
+    void UpdateGridColor(int row, int col, int color_id);
 
     // Check if a row is full a cleared it up.
-    bool is_row_full(int row);
-    void clear_row(int row);
+    bool IsRowFull(int row);
+    void ClearRow(int row);
 
     // move a row down n times
-    void move_row_down(int row, int nTimes);
+    void MoveRowDown(int row, int n_times);
 
-    void move_grid_rect_down(int row, int nTimes);
+    void MoveGridRowDown(int row, int n_times);
 
     // The int returned from the method will be calculated for the score.
-    int clear_full_row();
+    int ClearFullRow();
 };
+
 
 #endif // GRID_HPP

@@ -4,46 +4,46 @@
 #include "block.hpp"
 
 // L
-class el_c : public block_c {
+class El : public Block {
 public:
-    el_c();
+    El();
 private:
 };
 
 // J
-class jay_c : public block_c {
+class Jay : public Block {
 public:
-    jay_c();
+    Jay();
 };
 
 // I
-class straight_c : public block_c {
+class Straight : public Block {
 public:
-    straight_c();
+    Straight();
 };
 
 // O
-class square_c : public block_c {
+class Square : public Block {
 public:
-    square_c();
+    Square();
 };
 
 // T
-class tee_c : public block_c {
+class Tee : public Block {
 public:
-    tee_c();
+    Tee();
 };
 
 // S
-class skews_c : public block_c {
+class SkewS : public Block {
 public:
-    skews_c();
+    SkewS();
 };
 
 // Z
-class skewz_c : public block_c {
+class SkewZ : public Block {
 public:
-    skewz_c();
+    SkewZ();
 };
 
 #endif

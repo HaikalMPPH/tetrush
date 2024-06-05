@@ -9,87 +9,77 @@
 #include "block.hpp"
 #include "player.hpp"
 
-// namespace tetrush {
-    struct game_s {
-    // = VARIABLES ===========================================================
-        grid_s grid;
+class Game {
+public:
+  Game();
+  Block GetRandomBlock();
 
-        // list of the available tetraminos.
-        std::vector<block_c> blocks;
-        block_c current_block;
-        block_c next_block;
+  std::vector<Block> CreateTetrominos();
 
-        // Tetramino projection.
-        block_c block_projection;
+  void Render();
+  void Update();
+  // * Trigger an event every certain tick (this is for moving the tetraminos down automatically).
+  // * tick_interval: how many seconds before the event is triggered.
+  bool EventTriggered(double tick_interval);
 
-        double last_update_time;
-
-        // Player
-        player_s player;
-
-        // Vector of rect that the position is matched with the color grid.
-        // The rect is used for the player collision
-        std::vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
-        std::vector<Rectangle> current_block_rect;    // collider of the current falling block.
-
-        // * The maximum height of the current_block. This allow the player to vault over the block if
-        //   it's on the higher ground.
-        // * Resets every lock_block() call.
-        float min_safe_y, // the very top of the current block y.
-            max_safe_y; // the very bottom of the projection block y.
-        // float min_danger_x,
-        //       max_danger_x;
-
-    // = METHODS =============================================================
-        game_s();
-        block_c get_random_block();
-
-        std::vector<block_c> create_tetrominos();
-
-        void render();
-        void update();
-        // * Trigger an event every certain tick (this is for moving the tetraminos down automatically).
-        // * tick_interval: how many seconds before the event is triggered.
-        bool event_triggered(double tick_interval);
-
-        void handle_input();
+  void HandleInput();
 
 
-        // * Update the min and max x coordinate that will kill the player/enemy.
-        // * Called every move_right or move_left and when spawning current_block. 
-        void update_min_max_danger_x();
-        void reset_danger_x();
+  // * Update the min and max x coordinate that will kill the player/enemy.
+  // * Called every move_right or move_left and when spawning current_block. 
+  void UpdateMinMaxDangerX();
+  void ResetDangerX();
 
-        void block_move_left(block_c& block);
-        void block_move_right(block_c& block);
-        void block_move_down(block_c& block);
-        void block_instant_move_down(block_c& block);
-        void rotate_block(block_c& block);
+  void BlockMoveLeft(Block& block);
+  void BlockMoveRight(Block& block);
+  void BlockMoveDown(Block& block);
+  void BlockInstantMoveDown(Block& block);
+  void CurrentBlockInstantMoveDownAndCheckDeath();
+  void RotateBlock(Block& block);
 
-        // Check if the grid next to/below the block is occupied.
-        bool is_grid_occupied(block_c& block);
+  // Check if the grid next to/below the block is occupied.
+  bool IsGridOccupied(Block& block);
 
-        // Called when the block reaches the ground.
-        // Also processed if player/enemy is "squashable"
-        void lock_block();
-        void update_grid_color(std::vector<position_s> cell);
-        void update_landed_block_rect(std::vector<position_s> cell);
+  // Called when the block reaches the ground.
+  // Also processed if player/enemy is "squashable"
+  void LockBlock();
+  void UpdateGridColor(std::vector<Position> cell);
+  void UpdateLandedBlockRect(std::vector<Position> cell);
 
-        void create_current_block_rect();
-        void clear_current_block_rect();
-        void update_current_block_rect();   // empty and recreate current_block_rect
+  void CreateCurrentBlockRect();
+  void ClearCurrentBlockRect();
+  void UpdateCurrentBlockRect();   // empty and recreate current_block_rect
 
-        //
-        void update_projection();
-        void update_projection_pos();
+  //
+  void UpdateProjection();
 
-        // DEBUG: render tetromino collider.
-        void debug_render_rect();
-
-
-        bool is_block_outside(block_c& block);
-    };
+  // DEBUG: render tetromino collider.
+  void DebugRenderRect();
 
 
-// }
+  bool IsBlockOutside(Block& block);
+
+public:
+  Grid grid;
+  const float ground_y;
+
+  // list of the available tetraminos.
+  std::vector<Block> blocks;
+  Block current_block;
+  Block next_block;
+
+  // Tetramino projection.
+  Block block_projection;
+
+  double last_update_time;
+
+  // Player
+  Player player;
+
+  // Vector of rect that the position is matched with the color grid.
+  // The rect is used for the player collision
+  std::vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
+  std::vector<Rectangle> current_block_rect;    // collider of the current falling block.
+};
+
 #endif // GAME_HPP

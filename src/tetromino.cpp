@@ -1,15 +1,16 @@
 #include "tetromino.hpp"
 #include "position.hpp"
 
-el_c::el_c() 
+
+El::El() 
 {
     color_id = 1;
     //  . . #
     //  # # #
     //  . . .
     cells[0] = {
-                                        position_s(0, 2),
-        position_s(1, 0), position_s(1, 1), position_s(1, 2),
+                                        Position(0, 2),
+        Position(1, 0), Position(1, 1), Position(1, 2),
         //              
     };
 
@@ -17,9 +18,9 @@ el_c::el_c()
     // . # .
     // . # #
     cells[1] = {
-                        position_s(0, 1),
-                        position_s(1, 1),
-                        position_s(2, 1), position_s(2, 2)
+                        Position(0, 1),
+                        Position(1, 1),
+                        Position(2, 1), Position(2, 2)
     };
 
     // . . .
@@ -27,33 +28,33 @@ el_c::el_c()
     // # . .
     cells[2] = {
         //              
-        position_s(1, 0), position_s(1, 1), position_s(1, 2),
-        position_s(2, 0),
+        Position(1, 0), Position(1, 1), Position(1, 2),
+        Position(2, 0),
     };
 
     // # # .
     // . # .
     // . # .
     cells[3] = {
-        position_s(0, 0), position_s(0, 1),
-                        position_s(1, 1),
-                        position_s(2, 1)
+        Position(0, 0), Position(0, 1),
+                        Position(1, 1),
+                        Position(2, 1)
     };
 
-    move(0, 3);
+    Move(0, 3);
 }
 
 
 
-jay_c::jay_c()
+Jay::Jay()
 {
     color_id = 2;
     //  # . .
     //  # # #
     //  . . .
     cells[0] = {
-        position_s(0, 0),
-        position_s(1, 0), position_s(1, 1), position_s(1, 2),
+        Position(0, 0),
+        Position(1, 0), Position(1, 1), Position(1, 2),
         //              
     };
 
@@ -61,9 +62,9 @@ jay_c::jay_c()
     // . # .
     // . # .
     cells[1] = {
-                        position_s(0, 1), position_s(0, 2),
-                        position_s(1, 1),
-                        position_s(2, 1),
+                        Position(0, 1), Position(0, 2),
+                        Position(1, 1),
+                        Position(2, 1),
     };
 
     // . . .
@@ -71,24 +72,24 @@ jay_c::jay_c()
     // . . #
     cells[2] = {
         //              
-        position_s(1, 0), position_s(1, 1), position_s(1, 2),
-                                        position_s(2, 2),
+        Position(1, 0), Position(1, 1), Position(1, 2),
+                                        Position(2, 2),
     };
 
     // . # .
     // . # .
     // # # .
     cells[3] = {
-                        position_s(0, 1),
-                        position_s(1, 1),
-        position_s(2, 0), position_s(2, 1)
+                        Position(0, 1),
+                        Position(1, 1),
+        Position(2, 0), Position(2, 1)
     };
-    move(0, 3);
+    Move(0, 3);
 }
 
 
 
-straight_c::straight_c() 
+Straight::Straight() 
 {
     color_id = 3;
 
@@ -98,7 +99,7 @@ straight_c::straight_c()
     // . . . .
     cells[0] = {
         //
-        position_s(1, 0), position_s(1, 1), position_s(1, 2), position_s(1, 3)
+        Position(1, 0), Position(1, 1), Position(1, 2), Position(1, 3)
         //
         //
     };
@@ -108,10 +109,10 @@ straight_c::straight_c()
     // . . # .
     // . . # .
     cells[1] = {
-                                        position_s(0, 2),
-                                        position_s(1, 2),
-                                        position_s(2, 2),
-                                        position_s(3, 2)
+                                        Position(0, 2),
+                                        Position(1, 2),
+                                        Position(2, 2),
+                                        Position(3, 2)
     };
 
     // . . . .
@@ -121,7 +122,7 @@ straight_c::straight_c()
     cells[2] = {
         // 
         // 
-        position_s(2, 0), position_s(2, 1), position_s(2, 2), position_s(2, 3)
+        Position(2, 0), Position(2, 1), Position(2, 2), Position(2, 3)
         //
     };
 
@@ -131,15 +132,15 @@ straight_c::straight_c()
     //  . # . .
     //  . # . .
     cells[3] = {
-            position_s(0, 1),
-            position_s(1, 1),
-            position_s(2, 1),
-            position_s(3, 1)
+            Position(0, 1),
+            Position(1, 1),
+            Position(2, 1),
+            Position(3, 1)
     };
-    move(-1, 3);
+    Move(-1, 3);
 }
 
-square_c::square_c() {
+Square::Square() {
     color_id = 4;
 
     // All rotation are the same.
@@ -149,21 +150,21 @@ square_c::square_c() {
     cells[1] = 
     cells[2] = 
     cells[3] = {
-        position_s(0, 0), position_s(0, 1),
-        position_s(1, 0), position_s(1, 1)
+        Position(0, 0), Position(0, 1),
+        Position(1, 0), Position(1, 1)
     };
-    move(0, 4);
+    Move(0, 4);
 }
 
-tee_c::tee_c() {
+Tee::Tee() {
     color_id = 5;
 
     // . # .
     // # # #
     // . . .
     cells[0] = {
-                        position_s(0, 1),
-        position_s(1, 0), position_s(1, 1), position_s(1, 2),
+                        Position(0, 1),
+        Position(1, 0), Position(1, 1), Position(1, 2),
         //
     };
 
@@ -171,17 +172,17 @@ tee_c::tee_c() {
     // . # #
     // . # .
     cells[1] = {
-                        position_s(0, 1), 
-                        position_s(1, 1), position_s(1, 2),
-                        position_s(2, 1),
+                        Position(0, 1), 
+                        Position(1, 1), Position(1, 2),
+                        Position(2, 1),
     };
 
     //  # # #
     //  . # .
     //  . . .
     cells[2] = {
-        position_s(0, 0), position_s(0, 1), position_s(0, 2),
-                        position_s(1, 1)
+        Position(0, 0), Position(0, 1), Position(0, 2),
+                        Position(1, 1)
         //              
     };
 
@@ -189,24 +190,24 @@ tee_c::tee_c() {
     // # # .
     // . # .
     cells[3] = {
-                        position_s(0, 1),
-        position_s(1, 0), position_s(1, 1),
-                        position_s(2, 1)
+                        Position(0, 1),
+        Position(1, 0), Position(1, 1),
+                        Position(2, 1)
     };
-    move(0, 3);
+    Move(0, 3);
 }
 
 
 
-skews_c::skews_c() {
+SkewS::SkewS() {
     color_id = 6;
 
     // . # #
     // # # .
     // . . .
     cells[0] = {
-                        position_s(0, 1), position_s(0, 2),
-        position_s(1, 0), position_s(1, 1)
+                        Position(0, 1), Position(0, 2),
+        Position(1, 0), Position(1, 1)
         //
     };
 
@@ -214,9 +215,9 @@ skews_c::skews_c() {
     // . # #
     // . . #
     cells[1] = {
-                        position_s(0, 1),
-                        position_s(1, 1), position_s(1, 2),
-                                        position_s(2, 2)
+                        Position(0, 1),
+                        Position(1, 1), Position(1, 2),
+                                        Position(2, 2)
     };
 
     // . . .
@@ -224,30 +225,30 @@ skews_c::skews_c() {
     // # # .
     cells[2] = {
         //
-                        position_s(1, 1), position_s(1, 2),
-        position_s(2, 0), position_s(2, 1)
+                        Position(1, 1), Position(1, 2),
+        Position(2, 0), Position(2, 1)
     };
 
     // # . .
     // # # .
     // . # .
     cells[3] = {
-        position_s(0, 0),
-        position_s(1, 0), position_s(1, 1),
-                        position_s(2, 1)
+        Position(0, 0),
+        Position(1, 0), Position(1, 1),
+                        Position(2, 1)
     };
-    move(0, 3);
+    Move(0, 3);
 }
 
 
-skewz_c::skewz_c() {
+SkewZ::SkewZ() {
     color_id = 7;
     // # # .
     // . # #
     // . . .
     cells[0] = {
-        position_s(0, 0), position_s(0, 1),
-                        position_s(1, 1), position_s(1, 2)
+        Position(0, 0), Position(0, 1),
+                        Position(1, 1), Position(1, 2)
         //
     };
 
@@ -255,9 +256,9 @@ skewz_c::skewz_c() {
     // . # #
     // . # .
     cells[1] = {
-                                        position_s(0, 2),
-                        position_s(1, 1), position_s(1, 2),
-                        position_s(2, 1)
+                                        Position(0, 2),
+                        Position(1, 1), Position(1, 2),
+                        Position(2, 1)
     };
 
     // . . .
@@ -265,17 +266,17 @@ skewz_c::skewz_c() {
     // . # #
     cells[2] = {
         //
-        position_s(1, 0), position_s(1, 1),
-                        position_s(2, 1), position_s(2, 2)
+        Position(1, 0), Position(1, 1),
+                        Position(2, 1), Position(2, 2)
     };
 
     // . # .
     // # # .
     // # . .
     cells[3] = {
-                        position_s(0, 1),
-        position_s(1, 0), position_s(1, 1),
-        position_s(2, 0)
+                        Position(0, 1),
+        Position(1, 0), Position(1, 1),
+        Position(2, 0)
     };
-    move(0, 3);
+    Move(0, 3);
 }

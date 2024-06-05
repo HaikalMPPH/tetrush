@@ -1,6 +1,6 @@
 #include "position.hpp"
 
-position_s::position_s(int row, int col)
+Position::Position(int row, int col)
     : row {row}
     , col {col}
 {

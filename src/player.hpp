@@ -3,46 +3,44 @@
 
 #include <raylib.h>
 
-struct game_s;
+class Game;
 
-struct player_s {
-// = VARIABLES ===========================================================
-    float speed;
-    float vertical_speed;
-    float jump_height;
-    float player_size;
-    Rectangle player_rect;
-    float move_direction_x;
-    float player_gravity;
+class Player {
+public:
+  float speed;
+  float vertical_speed;
+  float jump_height;
+  float player_size;
+  Rectangle player_rect;
+  float move_direction_x;
+  float player_gravity;
 
-    bool is_grounded;
-    bool can_move;
+  bool is_grounded;
 
-    // The same height as the lowest grid 
-    float ground_y;
+  const Game& game;
 
-    const game_s& game_ref;
+public:
+  Player(const Game& game);
 
+  void Update();
+  void Render();
 
-// = METHODS =============================================================
-    player_s(const game_s& game);
+  void HandleInput();
 
-    void update();
-    void render();
+  void MoveToDirection();
+  void HandleGravity();
+  void HandleWallCollision();
+  void Jump();
 
-    void handle_input();
+  void HandleRectCollision(const Rectangle& rect);
+  void HandleLandedRectCollision();
+  void HandleCurrentRectCollision();
 
-    void move_to_direction();
-    void handle_gravity();
-    void handle_wall_collision();
-    void jump();
-
-    void handle_rect_collision(const Rectangle& rect);
-    void handle_landed_rect_collision();
-    void handle_current_rect_collision();
-
-    // Check if player is safe or not and only called in the Game::lock_block() method
-    void handle_death();
+  // handle_death:
+  // 1. key k is pressed
+  // 2. danger x is calculated. That is, the min x position of current_block/projection and
+  //    it's max x position. This is handled in the update
+  void HandleDeath();
 };
 
 #endif // PLAYER_HPP

@@ -7,38 +7,32 @@
 #include <raylib.h>
 #include "position.hpp"
 
-    // Rotation clockwise
-enum BlockRotation {
-    up = 0,
-    right,
-    down,
-    left
-};
-
-
 class Block {
 public:
-    int color_id; // It's used for color. Might change this later.
-    int rotation_state;
-    std::map<int, std::vector<Position>> cells;
-    int cell_size;
+    Block();
+    void draw();
+    void move(int row, int col);
+
+    void rotate();
+    // For undoing if the block is out of bound when rotating.
+    void undoRotate();
+
+    std::vector<Position> getCellPosition();
+
+public:
+    int colorId; // It's used for color. Might change this later.
+
+protected:
+    int mRotationState;
+    std::map<int, std::vector<Position>> mCells;
+    int mCellSize;
 
     // for moving the block
-    int row_offset;
-    int column_offset;
+    int mRowOffset;
+    int mColumnOffset;
 
     // Determine the color of the tetromino.
-    std::vector<Color> color;
-public:
-    Block();
-    void Draw();
-    void Move(int row, int col);
-
-    void Rotate();
-    // For undoing if the block is out of bound when rotating.
-    void UndoRotate();
-
-    std::vector<Position> GetCellPositioin();
+    std::vector<Color> mColor;
 };
 
 #endif // BLOCK_HPP

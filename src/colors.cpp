@@ -1,14 +1,14 @@
 #include "colors.hpp"
 
 std::vector<Color> 
-color::GetColor() {
+color::getColor() {
     return {
         color::kEmpty, 
         color::kRed,
         color::kOrange, 
         color::kYellow, 
         color::kGreen, 
-        color::kblue, 
+        color::kBlue, 
         color::kCyan, 
         color::kPurple,
         color::kProjectionGrey

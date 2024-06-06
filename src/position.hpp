@@ -2,7 +2,8 @@
 #define POSITION_HPP
 
 
-struct Position {
+class Position {
+public:
     int row;
     int col;
 

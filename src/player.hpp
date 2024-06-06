@@ -7,19 +7,6 @@ class Game;
 
 class Player {
 public:
-  float speed;
-  float vertical_speed;
-  float jump_height;
-  float player_size;
-  Rectangle player_rect;
-  float move_direction_x;
-  float player_gravity;
-
-  bool is_grounded;
-
-  const Game& game;
-
-public:
   Player(const Game& game);
 
   void Update();
@@ -41,6 +28,19 @@ public:
   // 2. danger x is calculated. That is, the min x position of current_block/projection and
   //    it's max x position. This is handled in the update
   void HandleDeath();
+
+private:
+  float mSpeed;
+  float mVerticalSpeed;
+  float mJumpHeight;
+  float mPlayerSize;
+  Rectangle mPlayerRect;
+  float mMoveDirection;
+  float mPlayerGravity;
+
+  bool mIsGrounded;
+
+  const Game& mrGame;
 };
 
 #endif // PLAYER_HPP

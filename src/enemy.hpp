@@ -1,7 +1,17 @@
 #ifndef ENEMY_HPP
 #define ENEMY_HPP
 
-class enemy {
+class Enemy {
+public:
+  Enemy();
+  void MoveToDirection();
+
+private:
+  float mMoveDirection;
+
+public:
+
+private:
 };
 
 #endif // ENEMY_HPP

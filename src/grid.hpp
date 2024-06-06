@@ -9,10 +9,8 @@ class Game;
 
 class Grid {
 public:
-    int grid_cell[config::kNumOfRows][config::kNumOfCols]; // row, column or y. x
-    int num_of_row;
-    int num_of_col;
-    int cell_size;
+    int gridCell[config::kNumOfRows][config::kNumOfCols]; // row, column or y. x
+    int cellSize;
     std::vector<Color> colors;
 
 public:
@@ -21,24 +19,24 @@ public:
 
     Grid(Game& t_game);
 
-    void Debug();
-    void Draw();
-    bool IsCellOutside(int row, int col);
-    bool IsGridEmpty(int row, int col);
+    void debug();
+    void draw();
+    bool isCellOutside(int row, int col);
+    bool isGridEmpty(int row, int col);
 
-    void UpdateGridColor(int row, int col, int color_id);
+    void updateGridColor(int row, int col, int colorId);
 
     // Check if a row is full a cleared it up.
-    bool IsRowFull(int row);
-    void ClearRow(int row);
+    bool isRowFull(int row);
+    void clearRow(int row);
 
     // move a row down n times
-    void MoveRowDown(int row, int n_times);
+    void moveRowDown(int row, int nTimes);
 
-    void MoveGridRowDown(int row, int n_times);
+    void moveGridRowDown(int row, int nTimes);
 
     // The int returned from the method will be calculated for the score.
-    int ClearFullRow();
+    int clearFullRow();
 };
 
 

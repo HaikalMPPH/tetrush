@@ -11,26 +11,26 @@
 
 Game::Game() 
   : grid {Grid(*this)}
-  , ground_y {config::kCellSize * config::kNumOfRows + config::kGridOffsetY}
+  , groundY {config::kCellSize * config::kNumOfRows + config::kGridOffsetY}
   , blocks {
       El(), Jay(), Straight(), 
       Square(), Tee(), SkewS(), 
       SkewZ()
     }
-  , current_block {GetRandomBlock()}
-  , next_block {GetRandomBlock()}
-  , block_projection {current_block}
-  , last_update_time {0.0}
+  , currentBlock {getRandomBlock()}
+  , nextBlock {getRandomBlock()}
+  , blockProjection {currentBlock}
+  , lastUpdateTime {0.0}
   , player {*this}
 {
-  CreateCurrentBlockRect();
-  UpdateProjection();
+  createCurrentBlockRect();
+  updateProjection();
 }
 
 Block
-Game::GetRandomBlock() {
+Game::getRandomBlock() {
   if (blocks.empty()) {
-    blocks = CreateTetrominos();
+    blocks = createTetrominos();
   }
 
   // spawn random tetraminos from the list of tetrominos in game_s::blocks vector.
@@ -44,41 +44,41 @@ Game::GetRandomBlock() {
 }
 
 std::vector<Block>
-Game::CreateTetrominos() {
+Game::createTetrominos() {
   return {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()};
 }
 
 void 
-Game::Render() {
-  grid.Draw();
-  current_block.Draw();
-  block_projection.Draw();
+Game::render() {
+  grid.draw();
+  currentBlock.draw();
+  blockProjection.draw();
   player.Render();
   //debug_render_rect();
 }
 
 void
-Game::Update() {
+Game::update() {
   player.Update();
-  HandleInput();
+  handleInput();
 
-  if (EventTriggered(0.5)) {
-    BlockMoveDown(current_block);
-    UpdateCurrentBlockRect();
+  if (eventTriggered(0.5)) {
+    blockMoveDown(currentBlock);
+    updateCurrentBlockRect();
   }
 
-  UpdateCurrentBlockRect();
-  UpdateProjection();
+  updateCurrentBlockRect();
+  updateProjection();
 
 }
 
 bool
-Game::EventTriggered(double tick_interval) {
+Game::eventTriggered(double tick_interval) {
   double current_time = GetTime();
 
   // if the time passed the tick_interval
-  if (current_time - last_update_time >= tick_interval) {
-    last_update_time = current_time;
+  if (current_time - lastUpdateTime >= tick_interval) {
+    lastUpdateTime = current_time;
     return true;
   }
 
@@ -86,22 +86,22 @@ Game::EventTriggered(double tick_interval) {
 }
 
 void
-Game::HandleInput() {
+Game::handleInput() {
   int key = GetKeyPressed();
 
   switch (key) {
     case KEY_J:
-      BlockMoveLeft(current_block);
+      blockMoveLeft(currentBlock);
       break;
     case KEY_L:
-      BlockMoveRight(current_block);
+      blockMoveRight(currentBlock);
       break;
     case KEY_K:
-      CurrentBlockInstantMoveDownAndCheckDeath();
-      LockBlock();
+      currentBlockInstantMoveDownAndCheckDeath();
+      lockBlock();
       break;
     case KEY_I:
-      RotateBlock(current_block);
+      rotateBlock(currentBlock);
       break;
   }
 
@@ -111,52 +111,52 @@ Game::HandleInput() {
 
 
 void
-Game::BlockMoveLeft(Block& block) {
-  block.Move(0, -1);
+Game::blockMoveLeft(Block& block) {
+  block.move(0, -1);
 
   // if block out of bound to the left, Move the block 1 cell to the right.
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.Move(0, 1);
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.move(0, 1);
   }
 }
 void
-Game::BlockMoveRight(Block& block) {
-  block.Move(0, 1);
+Game::blockMoveRight(Block& block) {
+  block.move(0, 1);
 
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.Move(0, -1);
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.move(0, -1);
   }
 }
 void
-Game::BlockMoveDown(Block& block) {
-  block.Move(1, 0);
+Game::blockMoveDown(Block& block) {
+  block.move(1, 0);
 
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.Move(-1, 0);
-    LockBlock();
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.move(-1, 0);
+    lockBlock();
   }
 }
 void
-Game::BlockInstantMoveDown(Block& block) {
+Game::blockInstantMoveDown(Block& block) {
   while(true) {
-    block.Move(1, 0);
+    block.move(1, 0);
 
-    if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-      block.Move(-1, 0);
+    if (isBlockOutside(block) || isGridOccupied(block) == false) {
+      block.move(-1, 0);
       break;
     }
   }
 }
 void
-Game::CurrentBlockInstantMoveDownAndCheckDeath() {
+Game::currentBlockInstantMoveDownAndCheckDeath() {
   while(true) {
-    current_block.Move(1, 0);
+    currentBlock.move(1, 0);
 
-    UpdateCurrentBlockRect();
+    updateCurrentBlockRect();
     player.HandleDeath();
 
-    if (IsBlockOutside(current_block) || IsGridOccupied(current_block) == false) {
-      current_block.Move(-1, 0);
+    if (isBlockOutside(currentBlock) || isGridOccupied(currentBlock) == false) {
+      currentBlock.move(-1, 0);
       break;
     }
   }
@@ -165,20 +165,20 @@ Game::CurrentBlockInstantMoveDownAndCheckDeath() {
 
 
 void
-Game::RotateBlock(Block& block) {
-  block.Rotate();
+Game::rotateBlock(Block& block) {
+  block.rotate();
 
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.UndoRotate();
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.undoRotate();
   }
 }
 
 bool
-Game::IsGridOccupied(Block& block) {
-  std::vector<Position> current_checked_cell = block.GetCellPositioin();
+Game::isGridOccupied(Block& block) {
+  std::vector<Position> current_checked_cell = block.getCellPosition();
 
   for (Position tile : current_checked_cell) {
-    if (grid.IsGridEmpty(tile.row, tile.col) == false) {
+    if (grid.isGridEmpty(tile.row, tile.col) == false) {
       return false;
     }
   }
@@ -187,41 +187,41 @@ Game::IsGridOccupied(Block& block) {
 }
 
 void
-Game::LockBlock() {
-  std::vector<Position> current_checked_cell = current_block.GetCellPositioin();
+Game::lockBlock() {
+  std::vector<Position> current_checked_cell = currentBlock.getCellPosition();
 
   // Set the grid where the current block located to match the current block
   // color.
   // Also spawn Rectangle for the player to collide.
-  UpdateGridColor(current_checked_cell);
-  UpdateLandedBlockRect(current_checked_cell);
+  updateGridColor(current_checked_cell);
+  updateLandedBlockRect(current_checked_cell);
 
   // TODO: handle player/enemy deaths here
   //
 
   // Update the block
-  current_block = next_block;
+  currentBlock = nextBlock;
 
-  UpdateCurrentBlockRect();
+  updateCurrentBlockRect();
 
   // Instantly Move block projection to the ground when created.
-  UpdateProjection();
+  updateProjection();
 
   // prepare for the next block.
-  next_block = GetRandomBlock();
+  nextBlock = getRandomBlock();
 
-  grid.ClearFullRow();
+  grid.clearFullRow();
 }
 void
-Game::UpdateGridColor(std::vector<Position> cell) {
+Game::updateGridColor(std::vector<Position> cell) {
   for (Position pos : cell) {
-    grid.UpdateGridColor(pos.row, pos.col, current_block.color_id);
+    grid.updateGridColor(pos.row, pos.col, currentBlock.colorId);
   }
 }
 void
-Game::UpdateLandedBlockRect(std::vector<Position> cell) {
+Game::updateLandedBlockRect(std::vector<Position> cell) {
   for (Position pos : cell) {
-    landed_block_rect.push_back({
+    landedBlockRect.push_back({
       (float)pos.col * config::kCellSize + config::kGridOffsetX, 
       (float)pos.row * config::kCellSize + config::kGridOffsetY, 
       config::kCellSize, 
@@ -232,10 +232,10 @@ Game::UpdateLandedBlockRect(std::vector<Position> cell) {
 
 
 void
-Game::CreateCurrentBlockRect() {
-  const std::vector<Position>& curr_block_pos = current_block.GetCellPositioin();
+Game::createCurrentBlockRect() {
+  const std::vector<Position>& curr_block_pos = currentBlock.getCellPosition();
   for (Position pos : curr_block_pos) {
-    current_block_rect.push_back(Rectangle {
+    currentBlockRect.push_back(Rectangle {
       (float)pos.col * config::kCellSize + config::kGridOffsetX,
       (float)pos.row * config::kCellSize + config::kGridOffsetY,
       config::kCellSize,
@@ -244,41 +244,41 @@ Game::CreateCurrentBlockRect() {
   }
 }
 void
-Game::ClearCurrentBlockRect() {
-  current_block_rect.clear();
+Game::clearCurrentBlockRect() {
+  currentBlockRect.clear();
 }
 void
-Game::UpdateCurrentBlockRect() {
-  ClearCurrentBlockRect();
-  CreateCurrentBlockRect();
-}
-
-void
-Game::UpdateProjection() {
-  block_projection = current_block;
-  block_projection.color_id = 8;
-  BlockInstantMoveDown(block_projection);
+Game::updateCurrentBlockRect() {
+  clearCurrentBlockRect();
+  createCurrentBlockRect();
 }
 
 void
-Game::DebugRenderRect() {
+Game::updateProjection() {
+  blockProjection = currentBlock;
+  blockProjection.colorId = 8;
+  blockInstantMoveDown(blockProjection);
+}
+
+void
+Game::debugRenderRect() {
   // DEBUG: 
   // Render landed_block_rect
-  for (Rectangle rect : landed_block_rect) {
+  for (Rectangle rect : landedBlockRect) {
     DrawRectangleRec(rect, PINK);
   }
   // Render current_block_rect
-  for (Rectangle rect : current_block_rect) {
+  for (Rectangle rect : currentBlockRect) {
     DrawRectangleRec(rect, SKYBLUE);
   }
 }
 
 bool
-Game::IsBlockOutside(Block& block) {
-  std::vector<Position> current_checked_cell = block.GetCellPositioin();
+Game::isBlockOutside(Block& block) {
+  std::vector<Position> current_checked_cell = block.getCellPosition();
 
   for (Position cell_pos : current_checked_cell) {
-    if (grid.IsCellOutside(cell_pos.row, cell_pos.col)) {
+    if (grid.isCellOutside(cell_pos.row, cell_pos.col)) {
       return true;
     }
   }

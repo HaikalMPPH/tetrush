@@ -72,6 +72,7 @@ OBJECTS :=
 
 GENERATED += $(OBJDIR)/block.o
 GENERATED += $(OBJDIR)/colors.o
+GENERATED += $(OBJDIR)/enemy.o
 GENERATED += $(OBJDIR)/game.o
 GENERATED += $(OBJDIR)/grid.o
 GENERATED += $(OBJDIR)/main.o
@@ -80,6 +81,7 @@ GENERATED += $(OBJDIR)/position.o
 GENERATED += $(OBJDIR)/tetromino.o
 OBJECTS += $(OBJDIR)/block.o
 OBJECTS += $(OBJDIR)/colors.o
+OBJECTS += $(OBJDIR)/enemy.o
 OBJECTS += $(OBJDIR)/game.o
 OBJECTS += $(OBJDIR)/grid.o
 OBJECTS += $(OBJDIR)/main.o
@@ -153,6 +155,9 @@ $(OBJDIR)/block.o: src/block.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/colors.o: src/colors.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/enemy.o: src/enemy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/game.o: src/game.cpp

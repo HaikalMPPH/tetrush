@@ -17,8 +17,8 @@ int main() {
     BeginDrawing();
 
         ClearBackground(DARKGRAY);
-        game.render();
-        game.update();
+        game.Render();
+        game.Update();
 
     EndDrawing();
     }

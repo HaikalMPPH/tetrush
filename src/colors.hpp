@@ -10,11 +10,11 @@ namespace color {
   constexpr Color kOrange = ORANGE;
   constexpr Color kYellow = YELLOW;
   constexpr Color kGreen = GREEN;
-  constexpr Color kBlue = BLUE;
+  constexpr Color kBlue = LIME;
   constexpr Color kCyan = SKYBLUE;
   constexpr Color kPurple = PURPLE;
   constexpr Color kProjectionGrey = Color {200, 200, 200, 125};
 
-  std::vector<Color> getColor();
+  std::vector<Color> GetColor();
 };
 #endif // COLORS_HPP

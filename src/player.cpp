@@ -9,20 +9,20 @@
 
 
 Player::Player(const Game& game)
-  : mSpeed {200.f}
-  , mVerticalSpeed {0.f}
-  , mJumpHeight {-300.f}
-  , mPlayerSize {config::kCellSize / 2.f}
-  , mPlayerRect {config::kWinW/2.f, 
+  : speed_ {200.f}
+  , vertical_speed_ {0.f}
+  , jump_height_ {-300.f}
+  , player_size_ {config::kCellSize / 2.f}
+  , player_rect_ {config::kWinW/2.f, 
                  config::kWinH/2.f, 
-                 mPlayerSize, 
-                 mPlayerSize}
-  , mMoveDirection {0.f}
-  , mPlayerGravity {20.f}
-  , mIsGrounded {false}
+                 player_size_, 
+                 player_size_}
+  , move_direction_ {0.f}
+  , player_gravity_ {config::kGameGravity}
+  , is_grounded_ {false}
 
   // Note: hardcoded num of rows. be careful when changing it in grid.cpp
-  , mrGame {game}
+  , game_ref_ {game}
 {}
 
 void
@@ -38,16 +38,16 @@ Player::Update() {
 
 void
 Player::Render() {
-    DrawRectangleRec(mPlayerRect, RED);
+    DrawRectangleRec(player_rect_, BLUE);
 }
 
 void 
 Player::HandleInput() {
   if (IsKeyDown(KEY_A)) {
-    mMoveDirection = -1;
+    move_direction_ = -1;
   }
   if (IsKeyDown(KEY_D)) {
-    mMoveDirection = 1;
+    move_direction_ = 1;
   }
   if (IsKeyPressed(KEY_SPACE)) {
     Jump();
@@ -56,53 +56,53 @@ Player::HandleInput() {
 
 void
 Player::MoveToDirection() {
-  mPlayerRect.x += mMoveDirection * mSpeed * GetFrameTime();
+  player_rect_.x += move_direction_ * speed_ * GetFrameTime();
 
   // reset to default after moving.
-  mMoveDirection = 0.f;
+  move_direction_ = 0.f;
 }
 
 void
 Player::HandleGravity() {
-  mVerticalSpeed += mPlayerGravity;
-  mPlayerRect.y += mVerticalSpeed * GetFrameTime();
+  vertical_speed_ += player_gravity_;
+  player_rect_.y += vertical_speed_ * GetFrameTime();
 
-  if (mPlayerRect.y + mPlayerSize >= mrGame.groundY) {
-    mIsGrounded = true;
-    mVerticalSpeed = 0.f;
-    mPlayerGravity = 0.f;
-    mPlayerRect.y = mrGame.groundY - mPlayerSize;
+  if (player_rect_.y + player_size_ >= game_ref_.ground_y) {
+    is_grounded_ = true;
+    vertical_speed_ = 0.f;
+    player_gravity_ = 0.f;
+    player_rect_.y = game_ref_.ground_y - player_size_;
 
   }
 
   // return gravity to normal.
   else {
-    mPlayerGravity = 10.f;
+    player_gravity_ = config::kGameGravity;
   }
 }
 
 void
 Player::HandleWallCollision() {
-  const float left_wall_x = config::kGridOffsetX;
-  const float right_wall_x = left_wall_x + config::kCellSize * config::kNumOfCols;
+  const float leftWallX = config::kGridOffsetX;
+  const float rightWallX = leftWallX + config::kCellSize * config::kNumOfCols;
 
   // Collision with left wall.
-  if (mPlayerRect.x <= left_wall_x) {
-      mPlayerRect.x = left_wall_x;
+  if (player_rect_.x <= leftWallX) {
+    player_rect_.x = leftWallX;
   }
 
   // Collision with right wall.
-  else if (mPlayerRect.x + mPlayerSize >= right_wall_x) {
-      mPlayerRect.x = right_wall_x - mPlayerSize;
+  else if (player_rect_.x + player_size_ >= rightWallX) {
+    player_rect_.x = rightWallX - player_size_;
   }
 }
 
 void
 Player::Jump() {
-    if (mIsGrounded) {
-        mVerticalSpeed = mJumpHeight;
-        mIsGrounded = false;
-    }
+  if (is_grounded_) {
+    vertical_speed_ = jump_height_;
+    is_grounded_ = false;
+  }
 }
 
 
@@ -110,8 +110,8 @@ void
 Player::HandleRectCollision(const Rectangle& rect) {
   // player & rect center point
   const Vector2 player_center {
-    mPlayerRect.x + mPlayerSize / 2.f,
-    mPlayerRect.y + mPlayerSize / 2.f,
+    player_rect_.x + player_size_ / 2.f,
+    player_rect_.y + player_size_ / 2.f,
   };
   const Vector2 rect_center {
     rect.x + config::kCellSize / 2.f,
@@ -123,8 +123,8 @@ Player::HandleRectCollision(const Rectangle& rect) {
 
   // half widths & heights
   const Vector2 player_halves {
-    mPlayerSize / 2.f,
-    mPlayerSize / 2.f,
+    player_size_ / 2.f,
+    player_size_ / 2.f,
   };
   const Vector2 rect_halves {
     config::kCellSize / 2.f,
@@ -137,31 +137,31 @@ Player::HandleRectCollision(const Rectangle& rect) {
 
   // collide from the sides.
   if (dist_x < dist_y) {
-    mPlayerRect.x += dist_x * (center_delta.x / fabsf(center_delta.x));
+    player_rect_.x += dist_x * (center_delta.x / fabsf(center_delta.x));
   }
   // collide from top or bottom
   else {
-    mPlayerRect.y += dist_y * (center_delta.y / fabsf(center_delta.y));
-    mVerticalSpeed = 0.f;
+    player_rect_.y += dist_y * (center_delta.y / fabsf(center_delta.y));
+    vertical_speed_ = 0.f;
 
     // if player is above the rect it's counted as grounded.
     if (player_center.y < rect_center.y) {
-      mIsGrounded = true;
+      is_grounded_ = true;
     }
   }
 }
 void
 Player::HandleLandedRectCollision() {
-  for (Rectangle rect : mrGame.landedBlockRect) {
-    if (CheckCollisionRecs(mPlayerRect, rect)) {
+  for (Rectangle rect : game_ref_.landed_block_rect) {
+    if (CheckCollisionRecs(player_rect_, rect)) {
       HandleRectCollision(rect);
     }
   }
 }
 void
 Player::HandleCurrentRectCollision() {
-  for (Rectangle rect : mrGame.currentBlockRect) {
-    if (CheckCollisionRecs(mPlayerRect, rect)) {
+  for (Rectangle rect : game_ref_.current_block_rect) {
+    if (CheckCollisionRecs(player_rect_, rect)) {
       HandleRectCollision(rect);
     }
   }
@@ -169,8 +169,8 @@ Player::HandleCurrentRectCollision() {
 
 void
 Player::HandleDeath() {
-  for (Rectangle rect : mrGame.currentBlockRect) {
-    if (CheckCollisionRecs(mPlayerRect, rect)) {
+  for (Rectangle rect : game_ref_.current_block_rect) {
+    if (CheckCollisionRecs(player_rect_, rect)) {
       std::cout << "Game Over" << std::endl;
     }
   }

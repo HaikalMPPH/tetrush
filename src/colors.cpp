@@ -1,7 +1,7 @@
 #include "colors.hpp"
 
 std::vector<Color> 
-color::getColor() {
+color::GetColor() {
     return {
         color::kEmpty, 
         color::kRed,

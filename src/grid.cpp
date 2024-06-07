@@ -6,32 +6,32 @@
 #include "config.hpp"
 #include "game.hpp"
 
-Grid::Grid(::Game& t_game) 
-    : gridCell {}
-    , cellSize {config::kCellSize}
-    , colors {color::getColor()}
-    , game {t_game}
+Grid::Grid(::Game& game) 
+    : grid_cell {}
+    , cell_size {config::kCellSize}
+    , colors {color::GetColor()}
+    , game_ref_ {game}
 {}
 
 void
-Grid::debug() {
+Grid::Debug() {
     for (int y = 0; y < config::kNumOfRows; y++) {
         for (int x = 0; x < config::kNumOfCols ; x++) {
-            std::cout << gridCell[y][x] << " ";
+            std::cout << grid_cell[y][x] << " ";
         }
         std::cout << std::endl;
     }
 }
 
-void Grid::draw() {
+void Grid::Draw() {
     for (int row = 0; row < config::kNumOfRows; row++) {
         for (int col = 0; col < config::kNumOfCols; col++) {
-            int cell_val = gridCell[row][col];
+            int cell_val = grid_cell[row][col];
             DrawRectangle(
-                col * cellSize + config::kGridOffsetX,
-                row * cellSize + config::kGridOffsetY,
-                cellSize,
-                cellSize,
+                col * cell_size + config::kGridOffsetX,
+                row * cell_size + config::kGridOffsetY,
+                cell_size,
+                cell_size,
                 colors[cell_val]
             );
         }
@@ -39,24 +39,24 @@ void Grid::draw() {
 }
 
 bool
-Grid::isCellOutside(int row, int col) {
+Grid::IsCellOutside(int row, int col) {
     return !(row >= 0 && row < config::kNumOfRows && col >= 0 && col < config::kNumOfCols);
 }
 
 bool
-Grid::isGridEmpty(int row, int col) {
-    return (gridCell[row][col] == 0);
+Grid::IsGridEmpty(int row, int col) {
+    return (grid_cell[row][col] == 0);
 }
 
 void 
-Grid::updateGridColor(int row, int col, int colorId) {
-    gridCell[row][col] = colorId;
+Grid::UpdateGridColor(int row, int col, int colorId) {
+    grid_cell[row][col] = colorId;
 }
 
 bool
-Grid::isRowFull(int row) {
+Grid::IsRowFull(int row) {
     for (int col = 0; col < config::kNumOfCols; col++) {
-        if (gridCell[row][col] == 0) {
+        if (grid_cell[row][col] == 0) {
             return false;
         }
     }
@@ -65,53 +65,52 @@ Grid::isRowFull(int row) {
 }
 
 void
-Grid::clearRow(int row) {
+Grid::ClearRow(int row) {
     // erase block
     for (int col = 0; col < config::kNumOfCols; col++) {
-        gridCell[row][col] = 0;
+        grid_cell[row][col] = 0;
 
         // erase block collider
-        for (int i = 0; i < game.landedBlockRect.size(); i++) {
-            if (game.landedBlockRect[i].y == row * config::kCellSize + config::kGridOffsetY) {
-                game.landedBlockRect.erase(game.landedBlockRect.begin() + i);
+        for (int i = 0; i < game_ref_.landed_block_rect.size(); i++) {
+            if (game_ref_.landed_block_rect[i].y == row * config::kCellSize + config::kGridOffsetY) {
+                game_ref_.landed_block_rect.erase(game_ref_.landed_block_rect.begin() + i);
             }
         }
     }
 }
 
 void
-Grid::moveRowDown(int row, int n_times) {
+Grid::MoveRowDown(int row, int nTimes) {
     for (int col = 0; col < config::kNumOfCols; col++) {
-        gridCell[row + n_times][col] = gridCell[row][col];
-        gridCell[row][col] = 0;
+        grid_cell[row + nTimes][col] = grid_cell[row][col];
+        grid_cell[row][col] = 0;
     }
 
 }
 
 void
-Grid::moveGridRowDown(int row, int n_times) {
+Grid::MoveGridRowDown(int row, int nTimes) {
     // Move down the corresponding rect with the same height n times
-    for (int i = 0; i < game.landedBlockRect.size(); i++) {
-        if (game.landedBlockRect[i].y == row * config::kCellSize + config::kGridOffsetY) {
-            // std::cout << "MOVED!" << std::endl;
-            game.landedBlockRect[i].y += config::kCellSize * n_times;
+    for (int i = 0; i < game_ref_.landed_block_rect.size(); i++) {
+        if (game_ref_.landed_block_rect[i].y == row * config::kCellSize + config::kGridOffsetY) {
+            game_ref_.landed_block_rect[i].y += config::kCellSize * nTimes;
         }
     }
 }
 
 int
-Grid::clearFullRow() {
+Grid::ClearFullRow() {
     int completed = 0;
 
     // start from the bottom row.
     for (int row = config::kNumOfRows - 1; row >= 0; row--) {
-        if (isRowFull(row)) {
-            clearRow(row);
+        if (IsRowFull(row)) {
+            ClearRow(row);
             completed++;
         }
         else if (completed > 0) {
-            moveRowDown(row, completed);
-            moveGridRowDown(row, completed);
+            MoveRowDown(row, completed);
+            MoveGridRowDown(row, completed);
         }
     }
 

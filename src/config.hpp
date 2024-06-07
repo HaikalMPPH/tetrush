@@ -11,6 +11,8 @@ namespace config {
 
     constexpr float kGridOffsetX = kWinW / 6.f;
     constexpr float kGridOffsetY = 10.f;
+
+    constexpr float kGameGravity = 10.f;
 };
 
 #endif

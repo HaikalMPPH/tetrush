@@ -30,17 +30,17 @@ public:
   void HandleDeath();
 
 private:
-  float mSpeed;
-  float mVerticalSpeed;
-  float mJumpHeight;
-  float mPlayerSize;
-  Rectangle mPlayerRect;
-  float mMoveDirection;
-  float mPlayerGravity;
+  float speed_;
+  float vertical_speed_;
+  float jump_height_;
+  float player_size_;
+  Rectangle player_rect_;
+  float move_direction_;
+  float player_gravity_;
 
-  bool mIsGrounded;
+  bool is_grounded_;
 
-  const Game& mrGame;
+  const Game& game_ref_;
 };
 
 #endif // PLAYER_HPP

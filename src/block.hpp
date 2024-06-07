@@ -10,29 +10,32 @@
 class Block {
 public:
     Block();
-    void draw();
-    void move(int row, int col);
 
-    void rotate();
-    // For undoing if the block is out of bound when rotating.
-    void undoRotate();
-
-    std::vector<Position> getCellPosition();
+    int GetColorId();
+    void SetColorId(int colorId);
 
 public:
-    int colorId; // It's used for color. Might change this later.
+    void Draw();
+    void Move(int row, int col);
+
+    void Rotate();
+    // For undoing if the block is out of bound when rotating.
+    void UndoRotate();
+
+    std::vector<Position> GetCellPosition();
 
 protected:
-    int mRotationState;
-    std::map<int, std::vector<Position>> mCells;
-    int mCellSize;
+    int color_id_; // It's used for color. Might change this later.
+    int rotation_state_;
+    std::map<int, std::vector<Position>> cells_;
+    int cellsize_;
 
     // for moving the block
-    int mRowOffset;
-    int mColumnOffset;
+    int row_offset_;
+    int column_offset_;
 
     // Determine the color of the tetromino.
-    std::vector<Color> mColor;
+    std::vector<Color> color_;
 };
 
 #endif // BLOCK_HPP

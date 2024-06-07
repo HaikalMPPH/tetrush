@@ -1,7 +1,7 @@
 #include <raylib.h>
 #include <vector>
 #include <cstdlib>
-//#include <iostream>
+#include <iostream>
 
 #include "game.hpp"
 #include "block.hpp"
@@ -56,7 +56,7 @@ Game::Render() {
   current_block.Draw();
   block_projection.Draw();
   player.Render();
-  for (Enemy enemy : enemies) {
+  for (Enemy& enemy : enemies) {
     enemy.Render();
   }
 
@@ -66,6 +66,12 @@ Game::Render() {
 void
 Game::Update() {
   player.Update();
+
+  for (Enemy& enemy : enemies) {
+    enemy.Update();
+    std::cout << "enemy updated" << std::endl;
+  }
+
   HandleInput();
 
   if (EventTriggered(0.5)) {
@@ -73,7 +79,7 @@ Game::Update() {
     UpdateCurrentBlockRect();
   }
 
-  //UpdateCurrentBlockRect();
+  UpdateCurrentBlockRect();
   UpdateProjection();
   player.HandleDeath();
 }
@@ -214,9 +220,6 @@ Game::LockBlock() {
   // Also spawn Rectangle for the player to collide.
   UpdateGridColor(currentCheckedCell);
   UpdateLandedBlockRect(currentCheckedCell);
-
-  // TODO: handle player/enemy deaths here
-  //
 
   // Update the block
   current_block = next_block;

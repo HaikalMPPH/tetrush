@@ -8,6 +8,9 @@ class Game;
 class Player {
 public:
   Player(const Game& game);
+  Rectangle player_rect() const;
+
+public:
 
   void Update();
   void Render();

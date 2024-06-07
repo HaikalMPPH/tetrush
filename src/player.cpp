@@ -24,6 +24,10 @@ Player::Player(const Game& game)
   // Note: hardcoded num of rows. be careful when changing it in grid.cpp
   , game_ref_ {game}
 {}
+Rectangle
+Player::player_rect() const {
+  return player_rect_;
+}
 
 void
 Player::Update() {
@@ -170,7 +174,7 @@ Player::HandleCurrentRectCollision() {
 void
 Player::HandleDeath() {
   for (Rectangle rect : game_ref_.current_block_rect) {
-    if (CheckCollisionRecs(player_rect_, rect)) {
+    if (CheckCollisionRecs(player_rect_, rect) && is_grounded_) {
       std::cout << "Game Over" << std::endl;
     }
   }

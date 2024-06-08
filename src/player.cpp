@@ -19,9 +19,8 @@ Player::Player(const Game& game)
                  player_size_}
   , move_direction_ {0.f}
   , player_gravity_ {config::kGameGravity}
+  , is_alive_ {true}
   , is_grounded_ {false}
-
-  // Note: hardcoded num of rows. be careful when changing it in grid.cpp
   , game_ref_ {game}
 {}
 Rectangle
@@ -156,7 +155,7 @@ Player::HandleRectCollision(const Rectangle& rect) {
 }
 void
 Player::HandleLandedRectCollision() {
-  for (Rectangle rect : game_ref_.landed_block_rect) {
+  for (const Rectangle& rect : game_ref_.landed_block_rect) {
     if (CheckCollisionRecs(player_rect_, rect)) {
       HandleRectCollision(rect);
     }
@@ -164,7 +163,7 @@ Player::HandleLandedRectCollision() {
 }
 void
 Player::HandleCurrentRectCollision() {
-  for (Rectangle rect : game_ref_.current_block_rect) {
+  for (const Rectangle& rect : game_ref_.current_block_rect) {
     if (CheckCollisionRecs(player_rect_, rect)) {
       HandleRectCollision(rect);
     }
@@ -173,9 +172,10 @@ Player::HandleCurrentRectCollision() {
 
 void
 Player::HandleDeath() {
-  for (Rectangle rect : game_ref_.current_block_rect) {
-    if (CheckCollisionRecs(player_rect_, rect) && is_grounded_) {
+  for (const Rectangle& rect : game_ref_.current_block_rect) {
+    if (CheckCollisionRecs(player_rect_, rect)) {
       std::cout << "Game Over" << std::endl;
+      is_alive_ = false;
     }
   }
 }

@@ -36,13 +36,13 @@ Game::PickRandomBlock() {
   }
 
   // spawn random tetraminos from the list of tetrominos in game_s::blocks vector.
-  const int randIndex = rand() % blocks.size();
-  Block randBlock = blocks[randIndex];
+  const int rand_index = rand() % blocks.size();
+  Block rand_block = blocks[rand_index];
   
   // remove block from the block vector after randomly picked.
-  blocks.erase(blocks.begin() + randIndex); // pointer arithmatics.
+  blocks.erase(blocks.begin() + rand_index); // pointer arithmatics.
   
-  return randBlock;
+  return rand_block;
 }
 
 std::vector<Block>
@@ -59,8 +59,6 @@ Game::Render() {
   for (Enemy& enemy : enemies) {
     enemy.Render();
   }
-
-  DebugRenderRect();
 }
 
 void
@@ -69,7 +67,6 @@ Game::Update() {
 
   for (Enemy& enemy : enemies) {
     enemy.Update();
-    std::cout << "enemy updated" << std::endl;
   }
 
   HandleInput();
@@ -81,7 +78,11 @@ Game::Update() {
 
   UpdateCurrentBlockRect();
   UpdateProjection();
+
   player.HandleDeath();
+  for (Enemy& enemy : enemies) {
+    enemy.HandleDeath();
+  }
 }
 
 bool
@@ -165,8 +166,12 @@ Game::CurrentBlockInstantMoveDownAndCheckDeath() {
     current_block.Move(1, 0);
 
     UpdateCurrentBlockRect();
+
     if (!IsBlockOutside(current_block)) {
       player.HandleDeath();
+      for (Enemy& enemy : enemies) {
+        enemy.HandleDeath();
+      }
     }
 
     if (IsBlockOutside(current_block) || IsGridOccupied(current_block) == false) {
@@ -189,9 +194,9 @@ Game::RotateBlock(Block& block) {
 
 bool
 Game::IsGridOccupied(Block& block) {
-  std::vector<Position> currentCheckedCell = block.GetCellPosition();
+  std::vector<Position> current_checked_cell = block.GetCellPosition();
 
-  for (Position tile : currentCheckedCell) {
+  for (Position tile : current_checked_cell) {
     if (grid.IsGridEmpty(tile.row, tile.col) == false) {
       return false;
     }
@@ -201,10 +206,10 @@ Game::IsGridOccupied(Block& block) {
 }
 bool
 Game::IsBlockOutside(Block& block) {
-  std::vector<Position> currentCheckedCell = block.GetCellPosition();
+  std::vector<Position> current_checked_cell = block.GetCellPosition();
 
-  for (Position cellPos : currentCheckedCell) {
-    if (grid.IsCellOutside(cellPos.row, cellPos.col)) {
+  for (Position cell_pos : current_checked_cell) {
+    if (grid.IsCellOutside(cell_pos.row, cell_pos.col)) {
       return true;
     }
   }
@@ -213,13 +218,13 @@ Game::IsBlockOutside(Block& block) {
 }
 void
 Game::LockBlock() {
-  std::vector<Position> currentCheckedCell = current_block.GetCellPosition();
+  std::vector<Position> current_checked_cell = current_block.GetCellPosition();
 
   // Set the grid where the current block located to match the current block
   // color.
   // Also spawn Rectangle for the player to collide.
-  UpdateGridColor(currentCheckedCell);
-  UpdateLandedBlockRect(currentCheckedCell);
+  UpdateGridColor(current_checked_cell);
+  UpdateLandedBlockRect(current_checked_cell);
 
   // Update the block
   current_block = next_block;

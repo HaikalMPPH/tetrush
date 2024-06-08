@@ -55,8 +55,6 @@ public:
   // DEBUG: render tetromino collider.
   void DebugRenderRect();
 
-
-
 public:
   Grid grid;
   const float ground_y;

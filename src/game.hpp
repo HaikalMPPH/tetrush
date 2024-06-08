@@ -18,6 +18,8 @@ public:
   Block PickRandomBlock();
 
   std::vector<Block> CreateTetrominos();
+  Enemy CreateEnemy();
+  void AppendEnemy();
 
   void Render();
   void Update();
@@ -49,6 +51,7 @@ public:
   void ClearCurrentBlockRect();
   void UpdateCurrentBlockRect();   // empty and recreate current_block_rect
 
+
   //
   void UpdateProjection();
 
@@ -56,27 +59,29 @@ public:
   void DebugRenderRect();
 
 public:
-  Grid grid;
-  const float ground_y;
+  Grid _grid;
+  const float _groundY;
 
   // list of the available tetraminos.
-  std::vector<Block> blocks;
-  Block current_block;
-  Block next_block;
+  std::vector<Block> _blocks;
+  Block _currentBlock;
+  Block _nextBlock;
 
   // Tetramino projection.
-  Block block_projection;
+  Block _blockProjection;
 
-  double last_update_time;
+  double _lastUpdateTime;
+  const float _enemySpawnCooldown;
+  float _currentEnemySpawnCooldown;
 
   // Game entities
-  Player player;
-  std::vector<Enemy> enemies;
+  Player _player;
+  std::vector<Enemy> _enemies;
 
   // Vector of rect that the position is matched with the color grid.
   // The rect is used for the player collision
-  std::vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
-  std::vector<Rectangle> current_block_rect;    // collider of the current falling block.
+  std::vector<Rectangle> _landedblockRect;     // collider of a block that are on the ground.
+  std::vector<Rectangle> _currentBlockRect;    // collider of the current falling block.
 };
 
 #endif // GAME_HPP

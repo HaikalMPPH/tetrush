@@ -25,17 +25,17 @@ public:
     std::vector<Position> GetCellPosition();
 
 protected:
-    int color_id_; // It's used for color. Might change this later.
-    int rotation_state_;
-    std::map<int, std::vector<Position>> cells_;
-    int cellsize_;
+    int _colorId; // It's used for color. Might change this later.
+    int _rotationState;
+    std::map<int, std::vector<Position>> _cells;
+    int _cellSize;
 
     // for moving the block
-    int row_offset_;
-    int column_offset_;
+    int _rowOffset;
+    int _columnOffset;
 
     // Determine the color of the tetromino.
-    std::vector<Color> color_;
+    std::vector<Color> _color;
 };
 
 #endif // BLOCK_HPP

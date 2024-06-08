@@ -7,32 +7,32 @@
 #include "game.hpp"
 
 Grid::Grid(::Game& game) 
-    : grid_cell {}
-    , cell_size {config::kCellSize}
-    , colors {color::GetColor()}
-    , game_ref_ {game}
+    : _gridCell {}
+    , _cellSize {Config::CellSize}
+    , _colors {Colors::GetColor()}
+    , _gameRef {game}
 {}
 
 void
 Grid::Debug() {
-    for (int y = 0; y < config::kNumOfRows; y++) {
-        for (int x = 0; x < config::kNumOfCols ; x++) {
-            std::cout << grid_cell[y][x] << " ";
+    for (int y = 0; y < Config::NumOfRows; y++) {
+        for (int x = 0; x < Config::NumOfCols ; x++) {
+            std::cout << _gridCell[y][x] << " ";
         }
         std::cout << std::endl;
     }
 }
 
 void Grid::Draw() {
-    for (int row = 0; row < config::kNumOfRows; row++) {
-        for (int col = 0; col < config::kNumOfCols; col++) {
-            int cell_val = grid_cell[row][col];
+    for (int row = 0; row < Config::NumOfRows; row++) {
+        for (int col = 0; col < Config::NumOfCols; col++) {
+            int cell_val = _gridCell[row][col];
             DrawRectangle(
-                col * cell_size + config::kGridOffsetX,
-                row * cell_size + config::kGridOffsetY,
-                cell_size,
-                cell_size,
-                colors[cell_val]
+                col * _cellSize + Config::GridOffsetX,
+                row * _cellSize + Config::GridOffsetY,
+                _cellSize,
+                _cellSize,
+                _colors[cell_val]
             );
         }
     }
@@ -40,23 +40,23 @@ void Grid::Draw() {
 
 bool
 Grid::IsCellOutside(int row, int col) {
-    return !(row >= 0 && row < config::kNumOfRows && col >= 0 && col < config::kNumOfCols);
+    return !(row >= 0 && row < Config::NumOfRows && col >= 0 && col < Config::NumOfCols);
 }
 
 bool
 Grid::IsGridEmpty(int row, int col) {
-    return (grid_cell[row][col] == 0);
+    return (_gridCell[row][col] == 0);
 }
 
 void 
 Grid::UpdateGridColor(int row, int col, int colorId) {
-    grid_cell[row][col] = colorId;
+    _gridCell[row][col] = colorId;
 }
 
 bool
 Grid::IsRowFull(int row) {
-    for (int col = 0; col < config::kNumOfCols; col++) {
-        if (grid_cell[row][col] == 0) {
+    for (int col = 0; col < Config::NumOfCols; col++) {
+        if (_gridCell[row][col] == 0) {
             return false;
         }
     }
@@ -67,13 +67,13 @@ Grid::IsRowFull(int row) {
 void
 Grid::ClearRow(int row) {
     // erase block
-    for (int col = 0; col < config::kNumOfCols; col++) {
-        grid_cell[row][col] = 0;
+    for (int col = 0; col < Config::NumOfCols; col++) {
+        _gridCell[row][col] = 0;
 
         // erase block collider
-        for (int i = 0; i < game_ref_.landed_block_rect.size(); i++) {
-            if (game_ref_.landed_block_rect[i].y == row * config::kCellSize + config::kGridOffsetY) {
-                game_ref_.landed_block_rect.erase(game_ref_.landed_block_rect.begin() + i);
+        for (int i = 0; i < _gameRef._landedblockRect.size(); i++) {
+            if (_gameRef._landedblockRect[i].y == row * Config::CellSize + Config::GridOffsetY) {
+                _gameRef._landedblockRect.erase(_gameRef._landedblockRect.begin() + i);
             }
         }
     }
@@ -81,9 +81,9 @@ Grid::ClearRow(int row) {
 
 void
 Grid::MoveRowDown(int row, int nTimes) {
-    for (int col = 0; col < config::kNumOfCols; col++) {
-        grid_cell[row + nTimes][col] = grid_cell[row][col];
-        grid_cell[row][col] = 0;
+    for (int col = 0; col < Config::NumOfCols; col++) {
+        _gridCell[row + nTimes][col] = _gridCell[row][col];
+        _gridCell[row][col] = 0;
     }
 
 }
@@ -91,9 +91,9 @@ Grid::MoveRowDown(int row, int nTimes) {
 void
 Grid::MoveGridRowDown(int row, int nTimes) {
     // Move down the corresponding rect with the same height n times
-    for (int i = 0; i < game_ref_.landed_block_rect.size(); i++) {
-        if (game_ref_.landed_block_rect[i].y == row * config::kCellSize + config::kGridOffsetY) {
-            game_ref_.landed_block_rect[i].y += config::kCellSize * nTimes;
+    for (int i = 0; i < _gameRef._landedblockRect.size(); i++) {
+        if (_gameRef._landedblockRect[i].y == row * Config::CellSize + Config::GridOffsetY) {
+            _gameRef._landedblockRect[i].y += Config::CellSize * nTimes;
         }
     }
 }
@@ -103,7 +103,7 @@ Grid::ClearFullRow() {
     int completed = 0;
 
     // start from the bottom row.
-    for (int row = config::kNumOfRows - 1; row >= 0; row--) {
+    for (int row = Config::NumOfRows - 1; row >= 0; row--) {
         if (IsRowFull(row)) {
             ClearRow(row);
             completed++;

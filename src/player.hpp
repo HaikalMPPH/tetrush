@@ -6,12 +6,11 @@
 class Game;
 
 class Player {
-public:
+public: // ctor, dtor, get, set
   Player(const Game& game);
   Rectangle player_rect() const;
 
 public:
-
   void Update();
   void Render();
 
@@ -29,18 +28,18 @@ public:
   void HandleDeath();
 
 private:
-  float speed_;
-  float vertical_speed_;
-  const float jump_height_;
-  const float player_size_;
-  Rectangle player_rect_;
-  float move_direction_;
-  float player_gravity_;
+  float _speed;
+  float _verticalSpeed;
+  const float _jumpHeight;
+  const float _playerSize;
+  Rectangle _playerRect;
+  float _moveDirection;
+  float _playerGravity;
 
-  bool is_alive_;
-  bool is_grounded_;
+  bool _isAlive;
+  bool _isGrounded;
 
-  const Game& game_ref_;
+  const Game& _gameRef;
 };
 
 #endif // PLAYER_HPP

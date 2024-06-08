@@ -7,7 +7,7 @@ class Game;
 
 class Enemy {
 public:
-  Enemy(const Game& rGame);
+  Enemy(const Game& rGame, int xPos);
 
   void Render();
   void Update();
@@ -17,8 +17,8 @@ public:
 private:
   void MoveToPlayer();
   void HandleGravity();
-  void HandleWallCollision(); // TODO
-  void Jump();                // TODO
+  void HandleWallCollision();
+  void Jump();               
 
   void HandleRectCollision(const Rectangle& rect);
   void HandleLandedRectCollision();
@@ -26,22 +26,21 @@ private:
 
 
 private:
-  const Game& game_ref_;
-  float move_direction_;
-  float enemy_size_;
-  Rectangle enemy_rect_;
-  float enemy_gravity_;
-  const float jump_height_;
-  float speed_;
-  float vertical_speed_;
+  const Game& _gameRef;
+  float _moveDirection;
+  float _enemySize;
+  Rectangle _enemyRect;
+  float _enemyGravity;
+  const float _jumpHeight;
+  float _speed;
+  float _verticalSpeed;
 
   // Enemy only allowed to jump once every cooldown.
-  bool is_jumpable_;
-  const float kJumpCooldown;
-  float current_jump_cooldown_;
+  const float _JumpCooldown;
+  float _currentJumpCooldown;
 
-  bool is_alive_;
-  bool is_grounded_;
+  bool _isAlive;
+  bool _isGrounded;
 };
 
 #endif // ENEMY_HPP

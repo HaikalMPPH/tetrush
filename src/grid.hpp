@@ -31,13 +31,13 @@ public:
     int ClearFullRow();
 
 public:
-    int grid_cell[config::kNumOfRows][config::kNumOfCols]; // row, column or y. x
-    int cell_size;
-    std::vector<Color> colors;
+    int _gridCell[Config::NumOfRows][Config::NumOfCols]; // row, column or y. x
+    int _cellSize;
+    std::vector<Color> _colors;
 
 private:
     // Game instance reference to manage the rect collider
-    Game& game_ref_;
+    Game& _gameRef;
 };
 
 

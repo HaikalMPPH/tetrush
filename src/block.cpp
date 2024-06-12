@@ -6,73 +6,73 @@
 #include "config.hpp"
 
 Block::Block() 
-    : _colorId {0}
-    , _rotationState {0}
-    , _cells {}
-    , _cellSize {Config::CellSize} // match the grid cell_size
-    , _rowOffset {0}
-    , _columnOffset {0}
-    , _color {Colors::GetColor()}
+    : color_id_ {0}
+    , rotation_state_ {0}
+    , cells_ {}
+    , cell_size_ {Config::kCellSize} // match the grid cell_size
+    , row_offset_ {0}
+    , column_offset_ {0}
+    , color_ {Colors::getColor()}
 {}
 int
-Block::GetColorId() {
-  return _colorId;
+Block::color_id() {
+  return color_id_;
 }
 void
-Block::SetColorId(int colorId) {
-    _colorId = colorId;
+Block::color_id(int colorId) {
+    color_id_ = colorId;
 }
 
 
 void
-Block::Draw() {
+Block::draw() {
     // Const reference to make things cleaner
-    for (Position colorPos : GetCellPosition()) {
+    for (Position colorPos : getCellPosition()) {
         DrawRectangle(
-            colorPos.col * _cellSize + Config::GridOffsetX, // following the grid offset. Change this later.
-            colorPos.row * _cellSize + 10,
-            _cellSize,
-            _cellSize,
-            _color [GetColorId()]
+            colorPos.col * cell_size_ + Config::kGridOffsetX, // following the grid offset. Change this later.
+            colorPos.row * cell_size_ + 10,
+            cell_size_,
+            cell_size_,
+            color_ [color_id()]
         );
     }
 }
 
 
 void
-Block::Move(int row, int col) {
-    _rowOffset += row;
-    _columnOffset += col;
+Block::move(int row, int col) {
+    row_offset_ += row;
+    column_offset_ += col;
 }
 
 void
-Block::Rotate() {
-    _rotationState++;
+Block::rotate() {
+    rotation_state_++;
 
-    if (_rotationState >= _cells.size()) {
-        _rotationState = 0;
+    if (rotation_state_ >= cells_.size()) {
+        rotation_state_ = 0;
     }
 }
 
 void 
-Block::UndoRotate() {
-    _rotationState--;
-    if (_rotationState < 0) {
-        _rotationState = _cells.size() - 1;
+Block::undoRotate() {
+    rotation_state_--;
+    if (rotation_state_ < 0) {
+        rotation_state_ = cells_.size() - 1;
     }
 }
 
 std::vector<Position>
-Block::GetCellPosition() {
-    std::vector<Position> currentPos = _cells[_rotationState];
+Block::getCellPosition() {
+    std::vector<Position> currentPos = cells_[rotation_state_];
 
     // note to self: moved_pos is always initialize to empty whenever this method is called. So
     // no, it won't continously adding position to the vector.
     std::vector<Position> movedPos {};
 
     for (Position blockCell : currentPos) {
-        Position newPos = Position(blockCell.row + _rowOffset,
-                                   blockCell.col + _columnOffset);
+        Position newPos = Position(blockCell.row + row_offset_,
+                                   blockCell.col + column_offset_);
         movedPos.push_back(newPos);
     }
 

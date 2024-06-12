@@ -3,43 +3,35 @@
 
 #include <raylib.h>
 
+#include "Components.hpp"
+
+
 class Game;
 
 class Player {
+private:
+  RectCollider collider_;
+  RectRender renderer_;
+  TransformComponent transform_;
+
+  bool is_alive_;
+
+  const Game* game_;
+
 public: // ctor, dtor, get, set
-  Player(const Game& game);
-  Rectangle player_rect() const;
+  Player(const Game* game);
+  Rectangle rect();
 
 public:
-  void Update();
-  void Render();
+  void update();
+  void render();
 
-  void HandleInput();
+  void handleInput();
 
-  void MoveToDirection();
-  void HandleGravity();
-  void HandleWallCollision();
-  void Jump();
-
-  void HandleRectCollision(const Rectangle& rect);
-  void HandleLandedRectCollision();
-  void HandleCurrentRectCollision();
-
-  void HandleDeath();
+  void handleDeath();
 
 private:
-  float _speed;
-  float _verticalSpeed;
-  const float _jumpHeight;
-  const float _playerSize;
-  Rectangle _playerRect;
-  float _moveDirection;
-  float _playerGravity;
 
-  bool _isAlive;
-  bool _isGrounded;
-
-  const Game& _gameRef;
 };
 
 #endif // PLAYER_HPP

@@ -6,159 +6,92 @@
 #include "game.hpp"
 #include "config.hpp"
 
-Enemy::Enemy(const Game& game, int xPos) 
-  : _gameRef (game)
-  , _moveDirection (0.f)
-  , _enemySize (Config::CellSize / 2.f)
-  , _enemyRect ({
+Enemy::Enemy(Game* game, int xPos) 
+  : game_ {game}
+  , collider_ (Rectangle {
       (float)xPos, 
-      -10.f,
-      _enemySize,
-      _enemySize,
+      0.f, 
+      Config::kCellSize / 2.f, 
+      Config::kCellSize / 2.f
     })
-  , _enemyGravity (Config::GameGravity)
-  , _jumpHeight (-250.f)
-  , _speed (75.f)
-  , _verticalSpeed (0.f)
-  , _JumpCooldown (1.f)
-  , _currentJumpCooldown (_JumpCooldown)
-  , _isAlive (true)
-  , _isGrounded (false)
-{}
+  , renderer_ (collider_.collider())
+  , transform_ (collider_.collider(), 75.f)
+  , jump_cooldown (1.f)
+  , current_jump_cooldonw_ (jump_cooldown)
+  , is_alive_ {true}
+  , marked_for_delete_ (false)
+{
+  collider_
+    .addDownCollisionCallback([this](){
+      this->transform_.is_grounded(true);
+      this->transform_.vertical_speed(0.f);
+    });
+}
+Enemy::~Enemy() {
+  std::cout << "Enemy destroyed" << std::endl;
+}
 
 void
-Enemy::Render() {
-  DrawRectangleRec(_enemyRect, RED);
+Enemy::render() {
+  //DrawRectangleRec(*collider_.collider(), RED);
+  renderer_.render(RED);
 }
 
 void 
-Enemy::Update() {
-  HandleGravity();
-  MoveToPlayer();
-
-  HandleLandedRectCollision();
-  HandleCurrentRectCollision();
+Enemy::update() {
+  transform_.handleGravity();
+  collider_.handleCollsion(&Config::kRightWallRect);
+  collider_.handleCollsion(&Config::kLeftWallRect);
+  collider_.batchHandleCollision(&game_->current_block_rect);
+  collider_.batchHandleCollision(&game_->landed_block_rect);
+  moveToPlayer();
 
   // NOTE: Moved Jump() here to allow the enemy to jump on top of tetrominos.
-  Jump();
+  jump();
 }
 
 void
-Enemy::MoveToPlayer() {
-  const float enemy_x = _gameRef._player.player_rect().x;
-  if ( enemy_x < _enemyRect.x) {
-    _moveDirection = -1.f;
+Enemy::moveToPlayer() {
+  const float player_x = game_->player.rect().x;
+  if ( player_x < collider_.collider()->x) {
+    transform_.moveToDirection(-1.f);
   }
   else {
-    _moveDirection = 1.f;
-  }
-
-  _enemyRect.x += _moveDirection * _speed * GetFrameTime();
-}
-
-void
-Enemy::HandleGravity() {
-  _verticalSpeed += _enemyGravity;
-  _enemyRect.y += _verticalSpeed * GetFrameTime();
-
-  if (
-    _enemyRect.y + _enemySize >= _gameRef._groundY
-    && _isAlive
-  ) {
-    _isGrounded = true;
-    _verticalSpeed = 0.f;
-    _enemyGravity = 0.f;
-    _enemyRect.y = _gameRef._groundY - _enemySize;
-
-  }
-
-  // return gravity to normal.
-  else {
-    _enemyGravity = Config::GameGravity;
+    transform_.moveToDirection(1.f);
   }
 }
+
 void 
-Enemy::Jump() {
+Enemy::jump() {
   if (
-      _isGrounded
-      && _isAlive
-      && _currentJumpCooldown <= 0
+      transform_.is_grounded()
+      && is_alive_
+      && current_jump_cooldonw_ <= 0
   ) {
-    _verticalSpeed = _jumpHeight;
-    _isGrounded = false;
-    _currentJumpCooldown = _JumpCooldown;
+    transform_.jump(-250.f);
+    current_jump_cooldonw_ = jump_cooldown;
   }
 
-  _currentJumpCooldown -= GetFrameTime();
+  current_jump_cooldonw_ -= GetFrameTime();
 }
 
-void
-Enemy::HandleRectCollision(const Rectangle& rect) {
-  const Vector2 enemy_center {
-    _enemyRect.x + _enemySize / 2.f,
-    _enemyRect.y + _enemySize / 2.f,
-  };
-  const Vector2 rect_center {
-    rect.x + Config::CellSize / 2.f,
-    rect.y + Config::CellSize / 2.f,
-  };
 
-  const Vector2 center_delta = Vector2Subtract(enemy_center, rect_center);
-
-  const Vector2 enemy_halves {
-    _enemySize / 2.f,
-    _enemySize / 2.f,
-  };
-  const Vector2 rect_halves {
-    Config::CellSize / 2.f,
-    Config::CellSize / 2.f,
-  };
-
-  const float dist_x = enemy_halves.x + rect_halves.x - fabsf(center_delta.x);
-  const float dist_y = enemy_halves.y + rect_halves.y - fabsf(center_delta.y);
-
-  if (dist_x < dist_y) {
-    _enemyRect.x += dist_x * (center_delta.x / fabsf(center_delta.x));
-  }
-  else {
-    _enemyRect.y += dist_y * (center_delta.y / fabsf(center_delta.y));
-    _verticalSpeed = 0.f;
-
-    if (enemy_center.y < rect_center.y) {
-      _isGrounded = true;
-    }
-  }
-}
-void
-Enemy::HandleLandedRectCollision() {
-  if (!_isAlive) {
-    return;
+// return ints for the score
+int
+Enemy::handleDeath() {
+  // Preventing from enemy checking collision after death
+  if (!is_alive_) {
+    return 0;
   }
 
-  for (const Rectangle& rect : _gameRef._landedblockRect) {
-    if (CheckCollisionRecs(_enemyRect, rect)) {
-      HandleRectCollision(rect);
-    }
-  }
-}
-void
-Enemy::HandleCurrentRectCollision() {
-  if (!_isAlive) {
-    return;
-  }
-
-  for (const Rectangle& rect : _gameRef._currentBlockRect) {
-    if (CheckCollisionRecs(_enemyRect, rect)) {
-      HandleRectCollision(rect);
-    }
-  }
-}
-void
-Enemy::HandleDeath() {
-  for (const Rectangle& rect : _gameRef._currentBlockRect) {
-    if (CheckCollisionRecs(_enemyRect, rect)) {
+  for (const Rectangle& rect : game_->current_block_rect) {
+    if (CheckCollisionRecs(*collider_.collider(), rect)) {
       std::cout << "enemy killed" << std::endl;
-      _isAlive = false;
+      is_alive_ = false;
+
+      return 1;
     }
   }
+
+  return 0;
 }

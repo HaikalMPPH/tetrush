@@ -4,11 +4,11 @@
 
 El::El() 
 {
-    _colorId = 1;
+    color_id_ = 1;
     //  . . #
     //  # # #
     //  . . .
-    _cells[0] = {
+    cells_[0] = {
                                         Position(0, 2),
         Position(1, 0), Position(1, 1), Position(1, 2),
         //              
@@ -17,7 +17,7 @@ El::El()
     // . # .
     // . # .
     // . # #
-    _cells[1] = {
+    cells_[1] = {
                         Position(0, 1),
                         Position(1, 1),
                         Position(2, 1), Position(2, 2)
@@ -26,7 +26,7 @@ El::El()
     // . . .
     // # # #
     // # . .
-    _cells[2] = {
+    cells_[2] = {
         //              
         Position(1, 0), Position(1, 1), Position(1, 2),
         Position(2, 0),
@@ -35,24 +35,24 @@ El::El()
     // # # .
     // . # .
     // . # .
-    _cells[3] = {
+    cells_[3] = {
         Position(0, 0), Position(0, 1),
                         Position(1, 1),
                         Position(2, 1)
     };
 
-    Move(0, 3);
+    move(0, 3);
 }
 
 
 
 Jay::Jay()
 {
-    _colorId = 2;
+    color_id_ = 2;
     //  # . .
     //  # # #
     //  . . .
-    _cells[0] = {
+    cells_[0] = {
         Position(0, 0),
         Position(1, 0), Position(1, 1), Position(1, 2),
         //              
@@ -61,7 +61,7 @@ Jay::Jay()
     // . # #
     // . # .
     // . # .
-    _cells[1] = {
+    cells_[1] = {
                         Position(0, 1), Position(0, 2),
                         Position(1, 1),
                         Position(2, 1),
@@ -70,7 +70,7 @@ Jay::Jay()
     // . . .
     // # # #
     // . . #
-    _cells[2] = {
+    cells_[2] = {
         //              
         Position(1, 0), Position(1, 1), Position(1, 2),
                                         Position(2, 2),
@@ -79,25 +79,25 @@ Jay::Jay()
     // . # .
     // . # .
     // # # .
-    _cells[3] = {
+    cells_[3] = {
                         Position(0, 1),
                         Position(1, 1),
         Position(2, 0), Position(2, 1)
     };
-    Move(0, 3);
+    move(0, 3);
 }
 
 
 
 Straight::Straight() 
 {
-    _colorId = 3;
+    color_id_ = 3;
 
     // . . . .
     // # # # #
     // . . . .
     // . . . .
-    _cells[0] = {
+    cells_[0] = {
         //
         Position(1, 0), Position(1, 1), Position(1, 2), Position(1, 3)
         //
@@ -108,7 +108,7 @@ Straight::Straight()
     // . . # .
     // . . # .
     // . . # .
-    _cells[1] = {
+    cells_[1] = {
                                         Position(0, 2),
                                         Position(1, 2),
                                         Position(2, 2),
@@ -119,7 +119,7 @@ Straight::Straight()
     // . . . .
     // # # # #
     // . . . .
-    _cells[2] = {
+    cells_[2] = {
         // 
         // 
         Position(2, 0), Position(2, 1), Position(2, 2), Position(2, 3)
@@ -131,38 +131,38 @@ Straight::Straight()
     //  . # . .
     //  . # . .
     //  . # . .
-    _cells[3] = {
+    cells_[3] = {
             Position(0, 1),
             Position(1, 1),
             Position(2, 1),
             Position(3, 1)
     };
-    Move(-1, 3);
+    move(-1, 3);
 }
 
 Square::Square() {
-    _colorId = 4;
+    color_id_ = 4;
 
     // All rotation are the same.
     // # #
     // # #
-    _cells[0] = 
-    _cells[1] = 
-    _cells[2] = 
-    _cells[3] = {
+    cells_[0] = 
+    cells_[1] = 
+    cells_[2] = 
+    cells_[3] = {
         Position(0, 0), Position(0, 1),
         Position(1, 0), Position(1, 1)
     };
-    Move(0, 4);
+    move(0, 4);
 }
 
 Tee::Tee() {
-    _colorId = 5;
+    color_id_ = 5;
 
     // . # .
     // # # #
     // . . .
-    _cells[0] = {
+    cells_[0] = {
                         Position(0, 1),
         Position(1, 0), Position(1, 1), Position(1, 2),
         //
@@ -171,7 +171,7 @@ Tee::Tee() {
     // . # .
     // . # #
     // . # .
-    _cells[1] = {
+    cells_[1] = {
                         Position(0, 1), 
                         Position(1, 1), Position(1, 2),
                         Position(2, 1),
@@ -180,7 +180,7 @@ Tee::Tee() {
     //  # # #
     //  . # .
     //  . . .
-    _cells[2] = {
+    cells_[2] = {
         Position(0, 0), Position(0, 1), Position(0, 2),
                         Position(1, 1)
         //              
@@ -189,23 +189,23 @@ Tee::Tee() {
     // . # .
     // # # .
     // . # .
-    _cells[3] = {
+    cells_[3] = {
                         Position(0, 1),
         Position(1, 0), Position(1, 1),
                         Position(2, 1)
     };
-    Move(0, 3);
+    move(0, 3);
 }
 
 
 
 SkewS::SkewS() {
-    _colorId = 6;
+    color_id_ = 6;
 
     // . # #
     // # # .
     // . . .
-    _cells[0] = {
+    cells_[0] = {
                         Position(0, 1), Position(0, 2),
         Position(1, 0), Position(1, 1)
         //
@@ -214,7 +214,7 @@ SkewS::SkewS() {
     // . # .
     // . # #
     // . . #
-    _cells[1] = {
+    cells_[1] = {
                         Position(0, 1),
                         Position(1, 1), Position(1, 2),
                                         Position(2, 2)
@@ -223,7 +223,7 @@ SkewS::SkewS() {
     // . . .
     // . # #
     // # # .
-    _cells[2] = {
+    cells_[2] = {
         //
                         Position(1, 1), Position(1, 2),
         Position(2, 0), Position(2, 1)
@@ -232,21 +232,21 @@ SkewS::SkewS() {
     // # . .
     // # # .
     // . # .
-    _cells[3] = {
+    cells_[3] = {
         Position(0, 0),
         Position(1, 0), Position(1, 1),
                         Position(2, 1)
     };
-    Move(0, 3);
+    move(0, 3);
 }
 
 
 SkewZ::SkewZ() {
-    _colorId = 7;
+    color_id_ = 7;
     // # # .
     // . # #
     // . . .
-    _cells[0] = {
+    cells_[0] = {
         Position(0, 0), Position(0, 1),
                         Position(1, 1), Position(1, 2)
         //
@@ -255,7 +255,7 @@ SkewZ::SkewZ() {
     // . . #
     // . # #
     // . # .
-    _cells[1] = {
+    cells_[1] = {
                                         Position(0, 2),
                         Position(1, 1), Position(1, 2),
                         Position(2, 1)
@@ -264,7 +264,7 @@ SkewZ::SkewZ() {
     // . . .
     // # # .
     // . # #
-    _cells[2] = {
+    cells_[2] = {
         //
         Position(1, 0), Position(1, 1),
                         Position(2, 1), Position(2, 2)
@@ -273,10 +273,10 @@ SkewZ::SkewZ() {
     // . # .
     // # # .
     // # . .
-    _cells[3] = {
+    cells_[3] = {
                         Position(0, 1),
         Position(1, 0), Position(1, 1),
         Position(2, 0)
     };
-    Move(0, 3);
+    move(0, 3);
 }

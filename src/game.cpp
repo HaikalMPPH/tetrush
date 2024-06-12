@@ -9,107 +9,138 @@
 #include "enemy.hpp"
 #include "position.hpp"
 #include "tetromino.hpp"
+#include "colors.hpp"
 
 Game::Game() 
-  : _grid {*this}
-  , _groundY {Config::CellSize * Config::NumOfRows + Config::GridOffsetY}
-  , _blocks {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()}
-  , _currentBlock {PickRandomBlock()}
-  , _nextBlock {PickRandomBlock()}
-  , _blockProjection {_currentBlock}
-  , _lastUpdateTime {0.0}
-  , _enemySpawnCooldown {10.f}
-  , _currentEnemySpawnCooldown {0.f}
-  , _player {*this}
-  , _enemies {}
-  , _landedblockRect {}
-  , _currentBlockRect {}
+  : grid {*this}
+  , score {0}
+  , ground_y {Config::kCellSize * Config::kNumOfRows + Config::kGridOffsetY}
+  , block {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()}
+  , current_block {pickRandomBlock()}
+  , next_block {pickRandomBlock()}
+  , block_projection {current_block}
+  , last_update_time {0.0}
+  , enemy_spawn_cooldown {10.f}
+  , current_enemy_spawn_cooldown {0.f}
+  , player {this}
+  , enemies {}
+  , landed_block_rect {}
+  , current_block_rect {}
 {
-  CreateCurrentBlockRect();
-  UpdateProjection();
+  createCurrentBlockRect();
+  updateProjection();
+}
+Game::~Game() {
+  for (Enemy* enemy : enemies) {
+    delete enemy;
+  }
 }
 
 Block
-Game::PickRandomBlock() {
-  if (_blocks.empty()) {
-    _blocks = CreateTetrominos();
+Game::pickRandomBlock() {
+  if (block.empty()) {
+    block = createTetrominos();
   }
 
   // spawn random tetraminos from the list of tetrominos in game_s::blocks vector.
-  const int rand_index = rand() % _blocks.size();
-  Block rand_block = _blocks[rand_index];
+  const int rand_index = rand() % block.size();
+  Block rand_block = block[rand_index];
   
   // remove block from the block vector after randomly picked.
-  _blocks.erase(_blocks.begin() + rand_index); // pointer arithmatics.
+  block.erase(block.begin() + rand_index); // pointer arithmatics.
   
   return rand_block;
 }
 
-std::vector<Block>
-Game::CreateTetrominos() {
+Vector<Block>
+Game::createTetrominos() {
   return {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()};
 }
 
-Enemy
-Game::CreateEnemy() {
-  const int maxX = Config::NumOfCols * Config::CellSize;
-  const int randX = (rand() % maxX) + Config::GridOffsetX;
+Enemy*
+Game::createEnemy() {
+  const int maxX = Config::kNumOfCols * Config::kCellSize;
+  const int randX = (rand() % maxX) + Config::kGridOffsetX;
 
-  return Enemy(*this, randX);
+  // DEBUG:
+  std::cout << "Enemy spawned!" << std::endl; 
+
+  return new Enemy(this, randX);
 }
 void
-Game::AppendEnemy() {
-  if (_currentEnemySpawnCooldown >= _enemySpawnCooldown) {
-    _enemies.push_back(CreateEnemy());
-    _currentEnemySpawnCooldown = 0.f;
+Game::appendEnemy() {
+  if (current_enemy_spawn_cooldown >= enemy_spawn_cooldown) {
+    enemies.push_back(createEnemy());
+    current_enemy_spawn_cooldown = 0.f;
   }
 
-  _currentEnemySpawnCooldown += GetFrameTime();
+  current_enemy_spawn_cooldown += GetFrameTime();
 }
 
 void 
-Game::Render() {
-  _grid.Draw();
-  _currentBlock.Draw();
-  _blockProjection.Draw();
-  _player.Render();
-  for (Enemy& enemy : _enemies) {
-    enemy.Render();
+Game::render() {
+  grid.draw();
+
+  // Score
+  DrawText(
+    std::to_string(score).c_str(), 
+    Config::kWinW / 2, Config::kWinH / 2, 
+    75, 
+    Colors::kProjectionGrey
+  );
+  
+  current_block.draw();
+  block_projection.draw();
+  player.render();
+  for (Enemy* enemy : enemies) {
+    enemy->render();
   }
+
+  //DebugRenderRect();
+
+  // DEBUG
+  //DrawRectangleRec(Config::kLeftWallRect, BLUE);
+  //DrawRectangleRec(Config::kRightWallRect, BLUE);
 }
 
 void
-Game::Update() {
-  _player.Update();
-  AppendEnemy();
+Game::update() {
+  player.update();
+  appendEnemy();
 
-  for (Enemy& enemy : _enemies) {
-    enemy.Update();
+  for (Enemy* enemy : enemies) {
+    enemy->update();
   }
 
-  HandleInput();
+  handleInput();
 
-  if (EventTriggered(0.5)) {
-    BlockMoveDown(_currentBlock);
-    UpdateCurrentBlockRect();
+  if (eventTriggered(0.5)) {
+    blockMoveDown(current_block);
+    updateCurrentBlockRect();
+
+    if (!isBlockOutside(current_block)) {
+      player.handleDeath();
+      for (Enemy* enemy : enemies) {
+        score += enemy->handleDeath();
+      }
+    }
+
+    // DEBUG:
+    std::cout << score << std::endl;
   }
 
-  UpdateCurrentBlockRect();
-  UpdateProjection();
+  updateCurrentBlockRect();
+  updateProjection();
 
-  _player.HandleDeath();
-  for (Enemy& enemy : _enemies) {
-    enemy.HandleDeath();
-  }
 }
 
 bool
-Game::EventTriggered(double tickInterval) {
+Game::eventTriggered(double tickInterval) {
   double currentTime = GetTime();
 
   // if the time passed the tick_interval
-  if (currentTime - _lastUpdateTime >= tickInterval) {
-    _lastUpdateTime = currentTime;
+  if (currentTime - last_update_time >= tickInterval) {
+    last_update_time = currentTime;
     return true;
   }
 
@@ -117,83 +148,83 @@ Game::EventTriggered(double tickInterval) {
 }
 
 void
-Game::HandleInput() {
+Game::handleInput() {
   int key = GetKeyPressed();
 
   switch (key) {
     case KEY_J:
-      BlockMoveLeft(_currentBlock);
+      blockMoveLeft(current_block);
       break;
     case KEY_L:
-      BlockMoveRight(_currentBlock);
+      blockMoveRight(current_block);
       break;
     case KEY_K:
-      CurrentBlockInstantMoveDownAndCheckDeath();
-      LockBlock();
+      currentBlockInstantMoveDownAndCheckDeath();
+      lockBlock();
       break;
     case KEY_I:
-      RotateBlock(_currentBlock);
+      rotateBlock(current_block);
       break;
   }
 
-  _player.HandleInput();
+  player.handleInput();
 }
 
 
 
 void
-Game::BlockMoveLeft(Block& block) {
-  block.Move(0, -1);
+Game::blockMoveLeft(Block& block) {
+  block.move(0, -1);
 
   // if block out of bound to the left, Move the block 1 cell to the right.
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.Move(0, 1);
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.move(0, 1);
   }
 }
 void
-Game::BlockMoveRight(Block& block) {
-  block.Move(0, 1);
+Game::blockMoveRight(Block& block) {
+  block.move(0, 1);
 
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.Move(0, -1);
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.move(0, -1);
   }
 }
 void
-Game::BlockMoveDown(Block& block) {
-  block.Move(1, 0);
+Game::blockMoveDown(Block& block) {
+  block.move(1, 0);
 
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.Move(-1, 0);
-    LockBlock();
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.move(-1, 0);
+    lockBlock();
   }
 }
 void
-Game::BlockInstantMoveDown(Block& block) {
+Game::blockInstateMoveDown(Block& block) {
   while(true) {
-    block.Move(1, 0);
+    block.move(1, 0);
 
-    if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-      block.Move(-1, 0);
+    if (isBlockOutside(block) || isGridOccupied(block) == false) {
+      block.move(-1, 0);
       break;
     }
   }
 }
 void
-Game::CurrentBlockInstantMoveDownAndCheckDeath() {
+Game::currentBlockInstantMoveDownAndCheckDeath() {
   while(true) {
-    _currentBlock.Move(1, 0);
+    current_block.move(1, 0);
 
-    UpdateCurrentBlockRect();
+    updateCurrentBlockRect();
 
-    if (!IsBlockOutside(_currentBlock)) {
-      _player.HandleDeath();
-      for (Enemy& enemy : _enemies) {
-        enemy.HandleDeath();
+    if (!isBlockOutside(current_block)) {
+      player.handleDeath();
+      for (Enemy* enemy : enemies) {
+        score += enemy->handleDeath();
       }
     }
 
-    if (IsBlockOutside(_currentBlock) || IsGridOccupied(_currentBlock) == false) {
-      _currentBlock.Move(-1, 0);
+    if (isBlockOutside(current_block) || isGridOccupied(current_block) == false) {
+      current_block.move(-1, 0);
       break;
     }
   }
@@ -202,20 +233,20 @@ Game::CurrentBlockInstantMoveDownAndCheckDeath() {
 
 
 void
-Game::RotateBlock(Block& block) {
-  block.Rotate();
+Game::rotateBlock(Block& block) {
+  block.rotate();
 
-  if (IsBlockOutside(block) || IsGridOccupied(block) == false) {
-    block.UndoRotate();
+  if (isBlockOutside(block) || isGridOccupied(block) == false) {
+    block.undoRotate();
   }
 }
 
 bool
-Game::IsGridOccupied(Block& block) {
-  std::vector<Position> current_checked_cell = block.GetCellPosition();
+Game::isGridOccupied(Block& block) {
+  Vector<Position> current_checked_cell = block.getCellPosition();
 
   for (Position tile : current_checked_cell) {
-    if (_grid.IsGridEmpty(tile.row, tile.col) == false) {
+    if (grid.isGridEmpty(tile.row, tile.col) == false) {
       return false;
     }
   }
@@ -223,11 +254,11 @@ Game::IsGridOccupied(Block& block) {
   return true;
 }
 bool
-Game::IsBlockOutside(Block& block) {
-  std::vector<Position> current_checked_cell = block.GetCellPosition();
+Game::isBlockOutside(Block& block) {
+  Vector<Position> current_checked_cell = block.getCellPosition();
 
   for (Position cell_pos : current_checked_cell) {
-    if (_grid.IsCellOutside(cell_pos.row, cell_pos.col)) {
+    if (grid.isCellOutside(cell_pos.row, cell_pos.col)) {
       return true;
     }
   }
@@ -235,85 +266,85 @@ Game::IsBlockOutside(Block& block) {
   return false;
 }
 void
-Game::LockBlock() {
-  std::vector<Position> current_checked_cell = _currentBlock.GetCellPosition();
+Game::lockBlock() {
+  Vector<Position> current_checked_cell = current_block.getCellPosition();
 
   // Set the grid where the current block located to match the current block
   // color.
   // Also spawn Rectangle for the player to collide.
-  UpdateGridColor(current_checked_cell);
-  UpdateLandedBlockRect(current_checked_cell);
+  updateGridColor(current_checked_cell);
+  updateLandedBlockRect(current_checked_cell);
 
   // Update the block
-  _currentBlock = _nextBlock;
+  current_block = next_block;
 
-  UpdateCurrentBlockRect();
+  updateCurrentBlockRect();
 
   // Instantly Move block projection to the ground when created.
-  UpdateProjection();
+  updateProjection();
 
   // prepare for the next block.
-  _nextBlock = PickRandomBlock();
+  next_block = pickRandomBlock();
 
-  _grid.ClearFullRow();
+  score += grid.clearFullRow() * Config::kNumOfCols;
 }
 void
-Game::UpdateGridColor(std::vector<Position> cell) {
+Game::updateGridColor(Vector<Position> cell) {
   for (Position pos : cell) {
-    _grid.UpdateGridColor(pos.row, pos.col, _currentBlock.GetColorId());
+    grid.updateGridColor(pos.row, pos.col, current_block.color_id());
   }
 }
 void
-Game::UpdateLandedBlockRect(std::vector<Position> cell) {
+Game::updateLandedBlockRect(Vector<Position> cell) {
   for (Position pos : cell) {
-    _landedblockRect.push_back({
-      (float)pos.col * Config::CellSize + Config::GridOffsetX, 
-      (float)pos.row * Config::CellSize + Config::GridOffsetY, 
-      Config::CellSize, 
-      Config::CellSize
+    landed_block_rect.push_back({
+      (float)pos.col * Config::kCellSize + Config::kGridOffsetX, 
+      (float)pos.row * Config::kCellSize + Config::kGridOffsetY, 
+      Config::kCellSize, 
+      Config::kCellSize
     });
   }
 }
 
 
 void
-Game::CreateCurrentBlockRect() {
-  const std::vector<Position>& curr_block_pos = _currentBlock.GetCellPosition();
+Game::createCurrentBlockRect() {
+  const Vector<Position>& curr_block_pos = current_block.getCellPosition();
   for (Position pos : curr_block_pos) {
-    _currentBlockRect.push_back(Rectangle {
-      (float)pos.col * Config::CellSize + Config::GridOffsetX,
-      (float)pos.row * Config::CellSize + Config::GridOffsetY,
-      Config::CellSize,
-      Config::CellSize,
+    current_block_rect.push_back(Rectangle {
+      (float)pos.col * Config::kCellSize + Config::kGridOffsetX,
+      (float)pos.row * Config::kCellSize + Config::kGridOffsetY,
+      Config::kCellSize,
+      Config::kCellSize,
     });
   }
 }
 void
-Game::ClearCurrentBlockRect() {
-  _currentBlockRect.clear();
+Game::clearCurrentBlockRect() {
+  current_block_rect.clear();
 }
 void
-Game::UpdateCurrentBlockRect() {
-  ClearCurrentBlockRect();
-  CreateCurrentBlockRect();
-}
-
-void
-Game::UpdateProjection() {
-  _blockProjection = _currentBlock;
-  _blockProjection.SetColorId(8);
-  BlockInstantMoveDown(_blockProjection);
+Game::updateCurrentBlockRect() {
+  clearCurrentBlockRect();
+  createCurrentBlockRect();
 }
 
 void
-Game::DebugRenderRect() {
+Game::updateProjection() {
+  block_projection = current_block;
+  block_projection.color_id(8);
+  blockInstateMoveDown(block_projection);
+}
+
+void
+Game::debugRenderRect() {
   // DEBUG: 
   // Render landed_block_rect
-  for (Rectangle rect : _landedblockRect) {
+  for (Rectangle rect : landed_block_rect) {
     DrawRectangleRec(rect, PINK);
   }
   // Render current_block_rect
-  for (Rectangle rect : _currentBlockRect) {
+  for (Rectangle rect : current_block_rect) {
     DrawRectangleRec(rect, SKYBLUE);
   }
 }

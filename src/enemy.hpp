@@ -3,44 +3,38 @@
 
 #include <raylib.h>
 
+#include "Components.hpp"
+
 class Game;
 
 class Enemy {
 public:
-  Enemy(const Game& rGame, int xPos);
+  Enemy(Game* game, int xPos);
+  ~Enemy();
 
-  void Render();
-  void Update();
+  void render();
+  void update();
 
-  void HandleDeath();
+  // The int will be used as a score.
+  int handleDeath();
 
 private:
-  void MoveToPlayer();
-  void HandleGravity();
-  void HandleWallCollision();
-  void Jump();               
-
-  void HandleRectCollision(const Rectangle& rect);
-  void HandleLandedRectCollision();
-  void HandleCurrentRectCollision();
+  void moveToPlayer();
+  void jump();               
 
 
 private:
-  const Game& _gameRef;
-  float _moveDirection;
-  float _enemySize;
-  Rectangle _enemyRect;
-  float _enemyGravity;
-  const float _jumpHeight;
-  float _speed;
-  float _verticalSpeed;
+  Game* game_;
+  RectCollider collider_;
+  RectRender renderer_;
+  TransformComponent transform_;
 
   // Enemy only allowed to jump once every cooldown.
-  const float _JumpCooldown;
-  float _currentJumpCooldown;
+  const float jump_cooldown;
+  float current_jump_cooldonw_;
 
-  bool _isAlive;
-  bool _isGrounded;
+  bool is_alive_;
+  bool marked_for_delete_;
 };
 
 #endif // ENEMY_HPP

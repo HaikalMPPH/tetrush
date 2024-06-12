@@ -70,21 +70,25 @@ endif
 GENERATED :=
 OBJECTS :=
 
+GENERATED += $(OBJDIR)/Components.o
 GENERATED += $(OBJDIR)/block.o
 GENERATED += $(OBJDIR)/colors.o
 GENERATED += $(OBJDIR)/enemy.o
 GENERATED += $(OBJDIR)/game.o
 GENERATED += $(OBJDIR)/grid.o
 GENERATED += $(OBJDIR)/main.o
+GENERATED += $(OBJDIR)/moveable_entity.o
 GENERATED += $(OBJDIR)/player.o
 GENERATED += $(OBJDIR)/position.o
 GENERATED += $(OBJDIR)/tetromino.o
+OBJECTS += $(OBJDIR)/Components.o
 OBJECTS += $(OBJDIR)/block.o
 OBJECTS += $(OBJDIR)/colors.o
 OBJECTS += $(OBJDIR)/enemy.o
 OBJECTS += $(OBJDIR)/game.o
 OBJECTS += $(OBJDIR)/grid.o
 OBJECTS += $(OBJDIR)/main.o
+OBJECTS += $(OBJDIR)/moveable_entity.o
 OBJECTS += $(OBJDIR)/player.o
 OBJECTS += $(OBJDIR)/position.o
 OBJECTS += $(OBJDIR)/tetromino.o
@@ -151,6 +155,9 @@ endif
 # File Rules
 # #############################################
 
+$(OBJDIR)/Components.o: src/Components.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/block.o: src/block.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -167,6 +174,9 @@ $(OBJDIR)/grid.o: src/grid.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: src/main.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/moveable_entity.o: src/moveable_entity.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/player.o: src/player.cpp

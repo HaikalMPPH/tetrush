@@ -1,6 +1,6 @@
 #include <raylib.h>
 
-#include "game.hpp"
+#include "game/game.hpp"
 #include <cstdlib>
 #include <ctime>
 

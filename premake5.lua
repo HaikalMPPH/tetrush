@@ -9,8 +9,8 @@ project "platformer-proto"
     warnings "High"
     targetdir "bin/%{cfg.buildcfg}"
     files {
-        "src/*.cpp",
-        "src/*.hpp"
+        "src/*.cpp", "src/*/*.cpp", "src/*/*/*.cpp",
+        "src/*.hpp", "src/*/*.hpp", "src/*/*/*.hpp"
     }
     filter "configurations:Debug"
         defines { "DEBUG" }

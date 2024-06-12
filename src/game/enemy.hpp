@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 
-#include "Components.hpp"
+#include "../engine/components/Components.hpp"
 
 class Game;
 

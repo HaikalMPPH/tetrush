@@ -1,5 +1,5 @@
 #include "Components.hpp"
-#include "config.hpp"
+#include "../../game/config.hpp"
 
 #include <cmath>
 #include <iostream>

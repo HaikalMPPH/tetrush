@@ -2,7 +2,7 @@
 #define COMPONENTS_HPP
 
 #include <raylib.h>
-#include "typedefs.hpp"
+#include "../utils/typedefs.hpp"
 
 // ==================== TransformComponent  ========================================
 class TransformComponent {
@@ -55,7 +55,7 @@ public:
   RectCollider* addDownCollisionCallback(ColliderCallback callback);
   RectCollider* addUpCollisionCallback(ColliderCallback callback);
 };
-// ======================================================================================
+// ================================================================================
 
 
 // ==================== Rect Render  ===============================================
@@ -77,13 +77,20 @@ public:
 // =================================================================================
 
 // ==================== Event Publisher & Event Subscriber =========================
+// TODO
+class EventSubscriber {
+public:
+  EventSubscriber();
+public:
+  void onNotify();
+};
+
 class EventPublisher {
+private:
+  Vector<EventSubscriber> subscribers;
 public:
   EventPublisher();
 };
 
-class EventSubscriber {
-  EventSubscriber();
-};
 // ================================================================================
 #endif // COMPONENTS_HPP

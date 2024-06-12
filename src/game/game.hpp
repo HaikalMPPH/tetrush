@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 
-#include "typedefs.hpp"
+#include "../engine/utils/typedefs.hpp"
 #include "enemy.hpp"
 #include "position.hpp"
 #include "grid.hpp"

@@ -1,4 +1,3 @@
-#include <cmath>
 #include <iostream>
 #include <raylib.h>
 #include <raymath.h>
@@ -22,8 +21,8 @@ Player::Player(const Game* game)
 {
   collider_
     .addDownCollisionCallback([this](){
-      this->transform_.is_grounded(true);
-      this->transform_.vertical_speed(0.f);
+      transform_.is_grounded(true);
+      transform_.vertical_speed(0.f);
     });
 }
 Rectangle
@@ -32,7 +31,6 @@ Player::rect() {
 }
 void
 Player::update() {
-  // NOTE: Collision are handled after controls or the player won't jump.
   transform_.handleGravity();
   collider_.handleCollsion(&Config::kLeftWallRect);
   collider_.handleCollsion(&Config::kRightWallRect);

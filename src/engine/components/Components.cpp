@@ -188,3 +188,48 @@ RectRender::render(Color color) {
   );
 }
 // =================================================================================
+
+
+// ==================== Event Subscriber ==========================================
+EventSubscriber::EventSubscriber()
+  : notify_fn_ {}
+{}
+
+EventSubscriber*
+EventSubscriber::addNotifyCallback(const char* key, NotifyCallback fn) {
+  notify_fn_[key] = fn;
+  return this;
+}
+
+void
+EventSubscriber::onNotify(const char* key) {
+  notify_fn_[key]();
+}
+// ================================================================================
+
+// ==================== Event Publisher ===========================================
+EventPublisher::EventPublisher()
+  : subscribers_ {}
+{}
+
+EventPublisher*
+EventPublisher::addSubscriber(EventSubscriber* sub) {
+  subscribers_.push_back(sub);
+  return this;
+}
+
+EventPublisher*
+EventPublisher::addToAllSubscriberNotifyCallback(const char* key, NotifyCallback fn) {
+  for (EventSubscriber* subs : subscribers_) {
+    subs->addNotifyCallback(key, fn);
+  }
+  return this;
+}
+
+void
+EventPublisher::notifySubscriber(const char* key) {
+  for (EventSubscriber* subs : subscribers_) {
+    subs->onNotify(key);
+  }
+}
+// ================================================================================

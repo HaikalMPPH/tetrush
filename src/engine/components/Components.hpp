@@ -2,6 +2,8 @@
 #define COMPONENTS_HPP
 
 #include <raylib.h>
+#include <functional>
+#include <unordered_map>
 #include "../utils/typedefs.hpp"
 
 // ==================== TransformComponent  ========================================
@@ -33,7 +35,7 @@ public: // methods
 // ==================== Rect Collider  =========================================
 class RectCollider {
 public:
-  using ColliderCallback = VoidFn;
+  using ColliderCallback = std::function<void()>;
 
 private:
   Rectangle collider_;
@@ -74,22 +76,38 @@ public:
 
 
 // ==================== Input Handler  =============================================
+// TODO
 // =================================================================================
 
 // ==================== Event Publisher & Event Subscriber =========================
 // TODO
 class EventSubscriber {
 public:
-  EventSubscriber();
-public:
-  void onNotify();
-};
+  using NotifyCallback = std::function<void()>;
 
+private:
+  std::unordered_map<const char*, NotifyCallback> notify_fn_;
+
+public:
+  EventSubscriber();
+
+public:
+  EventSubscriber* addNotifyCallback(const char* key, NotifyCallback fn);
+  void onNotify(const char* key);
+};
+// ================================================================================
 class EventPublisher {
 private:
-  Vector<EventSubscriber> subscribers;
+  using NotifyCallback = EventSubscriber::NotifyCallback;
+  Vector<EventSubscriber*> subscribers_;
+
 public:
   EventPublisher();
+
+public:
+  EventPublisher* addSubscriber(EventSubscriber* sub);
+  EventPublisher* addToAllSubscriberNotifyCallback(const char* key, NotifyCallback fn);
+  void notifySubscriber(const char* key);
 };
 
 // ================================================================================

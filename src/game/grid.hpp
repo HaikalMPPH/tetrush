@@ -1,9 +1,9 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
-#include "config.hpp"
 #include <raylib.h>
-#include <vector>
+#include "config.hpp"
+#include "../engine/utils/typedefs.hpp"
 
 class Game;
 
@@ -33,7 +33,7 @@ public:
 public:
     int grid_cell[Config::kNumOfRows][Config::kNumOfCols]; // row, column or y. x
     int cell_size;
-    std::vector<Color> colors;
+    Vector<Color> colors;
 
 private:
     // Game instance reference to manage the rect collider

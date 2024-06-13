@@ -10,7 +10,7 @@ int main() {
 
     Game game;
 
-    InitWindow(1024, 720, "Tetrush");
+    InitWindow(config::kWinW, config::kWinH, "Tetrush");
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {

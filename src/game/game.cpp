@@ -1,6 +1,6 @@
+#include <algorithm>
 #include <raylib.h>
 #include <vector>
-#include <cstdlib>
 #include <iostream>
 
 #include "game.hpp"
@@ -14,7 +14,7 @@
 Game::Game() 
   : grid {*this}
   , score {0}
-  , ground_y {Config::kCellSize * Config::kNumOfRows + Config::kGridOffsetY}
+  , is_game_over {false}
   , block {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()}
   , current_block {pickRandomBlock()}
   , next_block {pickRandomBlock()}
@@ -34,13 +34,28 @@ Game::Game()
 
   subscriber_
     .addNotifyCallback("OnEnemyDeath", [this](){
-      score += 1;
+      score += 2;
+
+      for (Enemy* enemy : enemies) {
+        if (enemy->marked_for_delete) {
+          game_event_publisher_.removeSubscriber(enemy->subscriber());
+          enemies.erase(
+            std::remove(
+                enemies.begin(),
+                enemies.end(),
+                enemy
+            ),
+            enemies.end()
+          );
+          delete enemy;
+        }
+      }
     })
     ->addNotifyCallback("OnPlayerDeath", [this](){
-        // TODO
-        std::cout << "Player Killed!" << std::endl;
+      handleGameOver();
     });
 
+  // NOTE: enemy subscriber are assigned on the spawner function.
   game_event_publisher_
     .addSubscriber(player.subscriber());
 }
@@ -73,8 +88,8 @@ Game::createTetrominos() {
 
 Enemy*
 Game::createEnemy() {
-  const int maxX = Config::kNumOfCols * Config::kCellSize;
-  const int randX = (rand() % maxX) + Config::kGridOffsetX;
+  const int maxX = config::kNumOfCols * config::kCellSize;
+  const int randX = (rand() % maxX) + config::kGridOffsetX;
 
   // DEBUG:
   std::cout << "Enemy spawned!" << std::endl; 
@@ -101,55 +116,55 @@ Game::render() {
   // Score
   DrawText(
     std::to_string(score).c_str(), 
-    Config::kWinW / 2, Config::kWinH / 2, 
+    config::kWinW / 2, config::kWinH / 2, 
     75, 
     Colors::kProjectionGrey
   );
-  
-  current_block.draw();
-  block_projection.draw();
-  player.render();
-  for (Enemy* enemy : enemies) {
-    enemy->render();
+    
+
+  if (!is_game_over) {
+    current_block.draw();
+    block_projection.draw();
+    for (Enemy* enemy : enemies) {
+      enemy->render();
+    }
+  }
+  else {
+    DrawText(
+      "GAME OVER", 
+      config::kWinW * 3 / 8 , config::kWinH / 2 - 75, 
+      75, 
+      Colors::kProjectionGrey
+    );
   }
 
-  //DebugRenderRect();
+  player.render();
+
+  //debugRenderRect();
 
   // DEBUG
-  //DrawRectangleRec(Config::kLeftWallRect, BLUE);
-  //DrawRectangleRec(Config::kRightWallRect, BLUE);
-  //DrawRectangleRec(Config::kGroundRect, BLUE);
+  //DrawRectangleRec(config::kLeftWallRect, BLUE);
+  //DrawRectangleRec(config::kRightWallRect, BLUE);
+  //DrawRectangleRec(config::kGroundRect, BLUE);
 }
 
 void
 Game::update() {
   player.update();
-  appendEnemy();
-
-  for (Enemy* enemy : enemies) {
-    enemy->update();
-  }
-
   handleInput();
 
-  if (eventTriggered(0.5)) {
-    blockMoveDown(current_block);
-    updateCurrentBlockRect();
+  if (!is_game_over) {
+    appendEnemy();
 
-    if (!isBlockOutside(current_block)) {
-      //player.handleDeath();
-      //for (Enemy* enemy : enemies) {
-        //score += enemy->handleDeath();
-      //}
+    for (Enemy* enemy : enemies) {
+      enemy->update();
     }
 
-    // DEBUG:
-    std::cout << score << std::endl;
+    if (eventTriggered(0.5)) {
+      blockMoveDown(current_block);
+      updateCurrentBlockRect();
+    }
   }
-
-  updateCurrentBlockRect();
-  updateProjection();
-
 }
 
 bool
@@ -172,9 +187,13 @@ Game::handleInput() {
   switch (key) {
     case KEY_J:
       blockMoveLeft(current_block);
+      updateCurrentBlockRect();
+      updateProjection();
       break;
     case KEY_L:
       blockMoveRight(current_block);
+      updateCurrentBlockRect();
+      updateProjection();
       break;
     case KEY_K:
       currentBlockInstantMoveDownAndCheckDeath();
@@ -182,10 +201,12 @@ Game::handleInput() {
       break;
     case KEY_I:
       rotateBlock(current_block);
+      updateCurrentBlockRect();
+      updateProjection();
       break;
   }
 
-  player.handleInput();
+  //player.handleInput();
 }
 
 
@@ -193,6 +214,10 @@ Game::handleInput() {
 void
 Game::blockMoveLeft(Block& block) {
   block.move(0, -1);
+
+  if (!isBlockOutside(current_block)) {
+    game_event_publisher_.notifySubscriber("OnBlockMove");
+  }
 
   // if block out of bound to the left, Move the block 1 cell to the right.
   if (isBlockOutside(block) || isGridOccupied(block) == false) {
@@ -203,6 +228,10 @@ void
 Game::blockMoveRight(Block& block) {
   block.move(0, 1);
 
+  if (!isBlockOutside(current_block)) {
+    game_event_publisher_.notifySubscriber("OnBlockMove");
+  }
+
   if (isBlockOutside(block) || isGridOccupied(block) == false) {
     block.move(0, -1);
   }
@@ -211,7 +240,9 @@ void
 Game::blockMoveDown(Block& block) {
   block.move(1, 0);
 
-  game_event_publisher_.notifySubscriber("OnBlockMoveDown");
+  if (!isBlockOutside(current_block)) {
+    game_event_publisher_.notifySubscriber("OnBlockMove");
+  }
 
   if (isBlockOutside(block) || isGridOccupied(block) == false) {
     block.move(-1, 0);
@@ -234,19 +265,16 @@ Game::currentBlockInstantMoveDownAndCheckDeath() {
   while(true) {
     current_block.move(1, 0);
 
-    updateCurrentBlockRect();
-
-    if (!isBlockOutside(current_block)) {
-      game_event_publisher_.notifySubscriber("OnBlockMoveDown");
-      //player.handleDeath();
-      //for (Enemy* enemy : enemies) {
-      //  score += enemy->handleDeath();
-      //}
-    }
 
     if (isBlockOutside(current_block) || isGridOccupied(current_block) == false) {
       current_block.move(-1, 0);
       break;
+    }
+
+    updateCurrentBlockRect();
+
+    if (!isBlockOutside(current_block)) {
+      game_event_publisher_.notifySubscriber("OnBlockMove");
     }
   }
 }
@@ -256,6 +284,10 @@ Game::currentBlockInstantMoveDownAndCheckDeath() {
 void
 Game::rotateBlock(Block& block) {
   block.rotate();
+
+  if (!isBlockOutside(current_block)) {
+    game_event_publisher_.notifySubscriber("OnBlockMove");
+  }
 
   if (isBlockOutside(block) || isGridOccupied(block) == false) {
     block.undoRotate();
@@ -296,8 +328,9 @@ Game::lockBlock() {
   // Set the grid where the current block located to match the current block
   // color.
   // Also spawn Rectangle for the player to collide.
-  updateGridColor(current_checked_cell);
-  updateLandedBlockRect(current_checked_cell);
+  checkIfStackFull(&current_checked_cell);
+  updateGridColor(&current_checked_cell);
+  updateLandedBlockRect(&current_checked_cell);
 
   // Update the block
   current_block = next_block;
@@ -310,36 +343,46 @@ Game::lockBlock() {
   // prepare for the next block.
   next_block = pickRandomBlock();
 
-  score += grid.clearFullRow() * Config::kNumOfCols;
+  score += (int)(grid.clearFullRow() * config::kNumOfCols / 2.f);
 }
 void
-Game::updateGridColor(Vector<Position> cell) {
-  for (Position pos : cell) {
+Game::updateGridColor(Vector<Position>* cell) {
+  for (Position pos : *cell) {
     grid.updateGridColor(pos.row, pos.col, current_block.color_id());
   }
 }
 void
-Game::updateLandedBlockRect(Vector<Position> cell) {
-  for (Position pos : cell) {
+Game::updateLandedBlockRect(Vector<Position>* cell) {
+  for (Position pos : *cell) {
     landed_block_rect.push_back({
-      (float)pos.col * Config::kCellSize + Config::kGridOffsetX, 
-      (float)pos.row * Config::kCellSize + Config::kGridOffsetY, 
-      Config::kCellSize, 
-      Config::kCellSize
+      (float)pos.col * config::kCellSize + config::kGridOffsetX, 
+      (float)pos.row * config::kCellSize + config::kGridOffsetY, 
+      config::kCellSize, 
+      config::kCellSize
     });
   }
 }
-
+void
+Game::checkIfStackFull(Vector<Position>* cell) {
+  for (Position pos : *cell) {
+    if (pos.row <= 0) {
+      std::cout << "Stack is full" << std::endl;
+      game_event_publisher_.notifySubscriber("OnStackFull");
+      handleGameOver();
+      return;
+    }
+  }
+}
 
 void
 Game::createCurrentBlockRect() {
   const Vector<Position>& curr_block_pos = current_block.getCellPosition();
   for (Position pos : curr_block_pos) {
     current_block_rect.push_back(Rectangle {
-      (float)pos.col * Config::kCellSize + Config::kGridOffsetX,
-      (float)pos.row * Config::kCellSize + Config::kGridOffsetY,
-      Config::kCellSize,
-      Config::kCellSize,
+      (float)pos.col * config::kCellSize + config::kGridOffsetX,
+      (float)pos.row * config::kCellSize + config::kGridOffsetY,
+      config::kCellSize,
+      config::kCellSize,
     });
   }
 }
@@ -373,3 +416,9 @@ Game::debugRenderRect() {
   }
 }
 
+void
+Game::handleGameOver() {
+  current_block.color_id(0); // temporary fix to make the current block invisible.
+  is_game_over = true;
+  grid.resetColor();
+}

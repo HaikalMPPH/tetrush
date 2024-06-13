@@ -9,10 +9,10 @@
 
 Player::Player(Game* game)
   : collider_ {Rectangle {
-      Config::kWinW/2.f, 
-      Config::kWinH/2.f, 
-      Config::kCellSize / 2.f, 
-      Config::kCellSize / 2.f
+      config::kWinW/2.f, 
+      config::kWinH/2.f, 
+      config::kCellSize / 2.f, 
+      config::kCellSize / 2.f
     }}
   , renderer_ {collider_.collider()}
   , transform_ {collider_.collider(), 200.f}
@@ -29,12 +29,16 @@ Player::Player(Game* game)
 
   subscriber_
     .addNotifyCallback("OnBlockLock", [this](){
-        std::cout << "Player: On Block Lock" << std::endl;
-        handleDeath();
+      std::cout << "Player: On Block Lock" << std::endl;
+      handleDeath();
     })
-    ->addNotifyCallback("OnBlockMoveDown", [this](){
-        std::cout << "Player: On Block Move Down" << std::endl;
-        handleDeath();
+    ->addNotifyCallback("OnBlockMove", [this](){
+      //std::cout << "Player: On Block Move Down" << std::endl;
+      handleDeath();
+    })
+    ->addNotifyCallback("OnStackFull", [this](){
+      transform_.jump(-300.f);
+      is_alive_ = false;
     });
 
   player_event_publisher_.addSubscriber(&game->subscriber_);
@@ -50,12 +54,13 @@ Player::subscriber() {
 void
 Player::update() {
   transform_.handleGravity();
-  collider_.handleCollsion(&Config::kLeftWallRect);
-  collider_.handleCollsion(&Config::kRightWallRect);
+  collider_.handleCollision(&config::kLeftWallRect);
+  collider_.handleCollision(&config::kRightWallRect);
   if (is_alive_) {
     collider_.batchHandleCollision(&game_->current_block_rect);
     collider_.batchHandleCollision(&game_->landed_block_rect);
-    collider_.handleCollsion(&Config::kGroundRect);
+    collider_.handleCollision(&config::kGroundRect);
+    handleInput();
   }
 }
 

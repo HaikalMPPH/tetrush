@@ -21,7 +21,7 @@ public:
   Rectangle* collider();
 
 public:
-  void handleCollsion(const Rectangle* rect);
+  void handleCollision(const Rectangle* rect);
   void batchHandleCollision(const Vector<Rectangle>* rect);
 
   RectCollider* addRightCollisionCallback(ColliderCallback callback);

@@ -7,12 +7,13 @@
 #include "config.hpp"
 
 Enemy::Enemy(Game* game, int xPos) 
-  : game_ {game}
+  : marked_for_delete (false)
+  , game_ {game}
   , collider_ (Rectangle {
       (float)xPos, 
       0.f, 
-      Config::kCellSize / 2.f, 
-      Config::kCellSize / 2.f
+      config::kCellSize / 2.f, 
+      config::kCellSize / 2.f
     })
   , renderer_ (collider_.collider())
   , transform_ (collider_.collider(), 75.f)
@@ -20,7 +21,6 @@ Enemy::Enemy(Game* game, int xPos)
   , jump_cooldown (1.f)
   , current_jump_cooldonw_ (jump_cooldown)
   , is_alive_ {true}
-  , marked_for_delete_ (false)
 {
   collider_
     .addDownCollisionCallback([this](){
@@ -30,11 +30,11 @@ Enemy::Enemy(Game* game, int xPos)
 
   subscriber_
     .addNotifyCallback("OnBlockLock", [this](){
-        std::cout << "Enemy: On Block Lock" << std::endl;
+        //std::cout << "Enemy: On Block Lock" << std::endl;
         handleDeath();
     })
-    ->addNotifyCallback("OnBlockMoveDown", [this](){
-        std::cout << "Enemy: On Block Move Down" << std::endl;
+    ->addNotifyCallback("OnBlockMove", [this](){
+        //std::cout << "Enemy: On Block Move Down" << std::endl;
         handleDeath();
     });
 
@@ -57,17 +57,21 @@ Enemy::render() {
 void 
 Enemy::update() {
   transform_.handleGravity();
-  collider_.handleCollsion(&Config::kRightWallRect);
-  collider_.handleCollsion(&Config::kLeftWallRect);
+  collider_.handleCollision(&config::kRightWallRect);
+  collider_.handleCollision(&config::kLeftWallRect);
   if (is_alive_) {
+    moveToPlayer();
+
     collider_.batchHandleCollision(&game_->current_block_rect);
     collider_.batchHandleCollision(&game_->landed_block_rect);
-    collider_.handleCollsion(&Config::kGroundRect);
+    collider_.handleCollision(&config::kGroundRect);
+    // NOTE: Moved Jump() here to allow the enemy to jump on top of tetrominos.
+    jump();
   }
-  moveToPlayer();
 
-  // NOTE: Moved Jump() here to allow the enemy to jump on top of tetrominos.
-  jump();
+  if (transform_.rect()->y > config::kWinH) {
+    marked_for_delete = true;
+  }
 }
 
 void

@@ -41,7 +41,6 @@ El::El()
                         Position(2, 1)
     };
 
-    move(0, 3);
 }
 
 
@@ -84,7 +83,6 @@ Jay::Jay()
                         Position(1, 1),
         Position(2, 0), Position(2, 1)
     };
-    move(0, 3);
 }
 
 
@@ -153,7 +151,6 @@ Square::Square() {
         Position(0, 0), Position(0, 1),
         Position(1, 0), Position(1, 1)
     };
-    move(0, 4);
 }
 
 Tee::Tee() {
@@ -194,7 +191,6 @@ Tee::Tee() {
         Position(1, 0), Position(1, 1),
                         Position(2, 1)
     };
-    move(0, 3);
 }
 
 
@@ -237,7 +233,6 @@ SkewS::SkewS() {
         Position(1, 0), Position(1, 1),
                         Position(2, 1)
     };
-    move(0, 3);
 }
 
 

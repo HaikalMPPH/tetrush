@@ -6,8 +6,8 @@ TransformComponent::TransformComponent(Rectangle* rect, float speed)
   : rect_ {rect}
   , speed_ {speed}
   , vertical_speed_ {0.f}
-  , gravity_ {Config::kGameGravity}
-  , is_grounded_ {true}
+  , gravity_ {config::kGameGravity}
+  , is_grounded_ {false}
 {}
 
 Rectangle*
@@ -50,19 +50,4 @@ void
 TransformComponent::handleGravity() {
   vertical_speed_ += gravity_; 
   rect_->y += vertical_speed_ * GetFrameTime();
-
-  //if (
-  //  rect_->y + rect_->height >= Config::kGrondY
-  //) {
-  //  is_grounded_ = true;
-  //  vertical_speed_ = 0.f;
-  //  gravity_ = 0.f;
-  //  rect_->y = Config::kGrondY - rect_->height;
-
-  //}
-
-  //// return gravity to normal.
-  //else {
-  //  gravity_ = Config::kGameGravity;
-  //}
 }

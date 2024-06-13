@@ -9,9 +9,9 @@ Block::Block()
     : color_id_ {0}
     , rotation_state_ {0}
     , cells_ {}
-    , cell_size_ {Config::kCellSize} // match the grid cell_size
+    , cell_size_ {config::kCellSize} // match the grid cell_size
     , row_offset_ {0}
-    , column_offset_ {0}
+    , column_offset_ {config::kNumOfCols / 2}
     , color_ {Colors::getColor()}
 {}
 int
@@ -29,7 +29,7 @@ Block::draw() {
     // Const reference to make things cleaner
     for (Position colorPos : getCellPosition()) {
         DrawRectangle(
-            colorPos.col * cell_size_ + Config::kGridOffsetX, // following the grid offset. Change this later.
+            colorPos.col * cell_size_ + config::kGridOffsetX, // following the grid offset. Change this later.
             colorPos.row * cell_size_ + 10,
             cell_size_,
             cell_size_,

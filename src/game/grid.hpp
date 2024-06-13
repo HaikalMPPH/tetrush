@@ -30,8 +30,10 @@ public:
     // The int returned from the method will be calculated for the score.
     int clearFullRow();
 
+    void resetColor();
+
 public:
-    int grid_cell[Config::kNumOfRows][Config::kNumOfCols]; // row, column or y. x
+    int grid_cell[config::kNumOfRows][config::kNumOfCols]; // row, column or y. x
     int cell_size;
     Vector<Color> colors;
 

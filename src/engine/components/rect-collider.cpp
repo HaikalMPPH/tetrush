@@ -16,7 +16,7 @@ RectCollider::collider() {
 }
 
 void
-RectCollider::handleCollsion(const Rectangle* rect) {
+RectCollider::handleCollision(const Rectangle* rect) {
   if (CheckCollisionRecs(collider_, *rect)) {
     // player & rect center point
     const Vector2 collider_center {
@@ -74,7 +74,7 @@ RectCollider::handleCollsion(const Rectangle* rect) {
 void
 RectCollider::batchHandleCollision(const Vector<Rectangle>* rects) {
   for (Rectangle rect : *rects) {
-   handleCollsion(&rect);
+   handleCollision(&rect);
   }
 }
 

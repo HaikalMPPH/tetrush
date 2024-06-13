@@ -45,8 +45,9 @@ public:
   // Called when the block reaches the ground.
   // Also processed if player/enemy is "squashable"
   void lockBlock();
-  void updateGridColor(Vector<Position> cell);
-  void updateLandedBlockRect(Vector<Position> cell);
+  void updateGridColor(Vector<Position>* cell);
+  void updateLandedBlockRect(Vector<Position>* cell);
+  void checkIfStackFull(Vector<Position>* cell);
 
   void createCurrentBlockRect();
   void clearCurrentBlockRect();
@@ -58,11 +59,13 @@ public:
 
   // DEBUG: render tetromino collider.
   void debugRenderRect();
+  
+  void handleGameOver();
 
 public:
   Grid grid;
   int score;
-  const float ground_y;
+  bool is_game_over;
 
   // list of the available tetraminos.
   Vector<Block> block;

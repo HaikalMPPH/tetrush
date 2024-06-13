@@ -27,6 +27,8 @@ private:
   void moveToPlayer();
   void jump();               
 
+public:
+  bool marked_for_delete;
 
 private:
   Game* game_;
@@ -41,7 +43,6 @@ private:
   float current_jump_cooldonw_;
 
   bool is_alive_;
-  bool marked_for_delete_;
 };
 
 #endif // ENEMY_HPP

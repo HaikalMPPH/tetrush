@@ -3,8 +3,10 @@
 
 #include <raylib.h>
 
-#include "../engine/components/Components.hpp"
-
+#include "../engine/components/rect-collider.hpp"
+#include "../engine/components/rect-renderer.hpp"
+#include "../engine/components/transform-component.hpp"
+#include "../engine/components/subscriber-publisher.hpp"
 
 class Game;
 
@@ -13,14 +15,17 @@ private:
   RectCollider collider_;
   RectRender renderer_;
   TransformComponent transform_;
+  EventSubscriber subscriber_;
+  EventPublisher player_event_publisher_;
 
   bool is_alive_;
 
-  const Game* game_;
+  Game* game_;
 
 public: // ctor, dtor, get, set
-  Player(const Game* game);
+  Player(Game* game);
   Rectangle rect();
+  EventSubscriber* subscriber();
 
 public:
   void update();

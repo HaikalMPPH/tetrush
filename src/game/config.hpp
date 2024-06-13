@@ -29,6 +29,12 @@ namespace Config {
       kGridOffsetX,
       kWinH //- kGrondY
     };
+    constexpr Rectangle kGroundRect {
+      kGridOffsetX, 
+      kGrondY,
+      kNumOfRows * kCellSize,
+      kWinH - kNumOfRows * kCellSize + kGridOffsetY //- kGrondY
+    };
 };
 
 #endif

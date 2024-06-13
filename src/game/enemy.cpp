@@ -16,6 +16,7 @@ Enemy::Enemy(Game* game, int xPos)
     })
   , renderer_ (collider_.collider())
   , transform_ (collider_.collider(), 75.f)
+  , subscriber_ {}
   , jump_cooldown (1.f)
   , current_jump_cooldonw_ (jump_cooldown)
   , is_alive_ {true}
@@ -26,9 +27,25 @@ Enemy::Enemy(Game* game, int xPos)
       this->transform_.is_grounded(true);
       this->transform_.vertical_speed(0.f);
     });
+
+  subscriber_
+    .addNotifyCallback("OnBlockLock", [this](){
+        std::cout << "Enemy: On Block Lock" << std::endl;
+        handleDeath();
+    })
+    ->addNotifyCallback("OnBlockMoveDown", [this](){
+        std::cout << "Enemy: On Block Move Down" << std::endl;
+        handleDeath();
+    });
+
+  enemy_event_publisher_.addSubscriber(&game->subscriber_);
 }
 Enemy::~Enemy() {
   std::cout << "Enemy destroyed" << std::endl;
+}
+EventSubscriber*
+Enemy::subscriber() {
+  return &subscriber_;
 }
 
 void
@@ -42,8 +59,11 @@ Enemy::update() {
   transform_.handleGravity();
   collider_.handleCollsion(&Config::kRightWallRect);
   collider_.handleCollsion(&Config::kLeftWallRect);
-  collider_.batchHandleCollision(&game_->current_block_rect);
-  collider_.batchHandleCollision(&game_->landed_block_rect);
+  if (is_alive_) {
+    collider_.batchHandleCollision(&game_->current_block_rect);
+    collider_.batchHandleCollision(&game_->landed_block_rect);
+    collider_.handleCollsion(&Config::kGroundRect);
+  }
   moveToPlayer();
 
   // NOTE: Moved Jump() here to allow the enemy to jump on top of tetrominos.
@@ -77,21 +97,21 @@ Enemy::jump() {
 
 
 // return ints for the score
-int
+void
 Enemy::handleDeath() {
   // Preventing from enemy checking collision after death
   if (!is_alive_) {
-    return 0;
+    return;
   }
 
   for (const Rectangle& rect : game_->current_block_rect) {
     if (CheckCollisionRecs(*collider_.collider(), rect)) {
       std::cout << "enemy killed" << std::endl;
       is_alive_ = false;
+      transform_.jump(-250.f);
+      enemy_event_publisher_.notifySubscriber("OnEnemyDeath");
 
-      return 1;
+      return;
     }
   }
-
-  return 0;
 }

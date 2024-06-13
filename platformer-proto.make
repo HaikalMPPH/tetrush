@@ -70,26 +70,34 @@ endif
 GENERATED :=
 OBJECTS :=
 
-GENERATED += $(OBJDIR)/Components.o
 GENERATED += $(OBJDIR)/block.o
 GENERATED += $(OBJDIR)/colors.o
 GENERATED += $(OBJDIR)/enemy.o
 GENERATED += $(OBJDIR)/game.o
 GENERATED += $(OBJDIR)/grid.o
+GENERATED += $(OBJDIR)/input-handler.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/player.o
 GENERATED += $(OBJDIR)/position.o
+GENERATED += $(OBJDIR)/rect-collider.o
+GENERATED += $(OBJDIR)/rect-renderer.o
+GENERATED += $(OBJDIR)/subscriber-publisher.o
 GENERATED += $(OBJDIR)/tetromino.o
-OBJECTS += $(OBJDIR)/Components.o
+GENERATED += $(OBJDIR)/transform-component.o
 OBJECTS += $(OBJDIR)/block.o
 OBJECTS += $(OBJDIR)/colors.o
 OBJECTS += $(OBJDIR)/enemy.o
 OBJECTS += $(OBJDIR)/game.o
 OBJECTS += $(OBJDIR)/grid.o
+OBJECTS += $(OBJDIR)/input-handler.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/player.o
 OBJECTS += $(OBJDIR)/position.o
+OBJECTS += $(OBJDIR)/rect-collider.o
+OBJECTS += $(OBJDIR)/rect-renderer.o
+OBJECTS += $(OBJDIR)/subscriber-publisher.o
 OBJECTS += $(OBJDIR)/tetromino.o
+OBJECTS += $(OBJDIR)/transform-component.o
 
 # Rules
 # #############################################
@@ -153,7 +161,19 @@ endif
 # File Rules
 # #############################################
 
-$(OBJDIR)/Components.o: src/engine/components/Components.cpp
+$(OBJDIR)/input-handler.o: src/engine/components/input-handler.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/rect-collider.o: src/engine/components/rect-collider.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/rect-renderer.o: src/engine/components/rect-renderer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/subscriber-publisher.o: src/engine/components/subscriber-publisher.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/transform-component.o: src/engine/components/transform-component.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/block.o: src/game/block.cpp

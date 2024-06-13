@@ -3,7 +3,10 @@
 
 #include <raylib.h>
 
-#include "../engine/components/Components.hpp"
+#include "../engine/components/rect-collider.hpp"
+#include "../engine/components/rect-renderer.hpp"
+#include "../engine/components/transform-component.hpp"
+#include "../engine/components/subscriber-publisher.hpp"
 
 class Game;
 
@@ -12,11 +15,13 @@ public:
   Enemy(Game* game, int xPos);
   ~Enemy();
 
+  EventSubscriber* subscriber();
+
+public:
   void render();
   void update();
-
   // The int will be used as a score.
-  int handleDeath();
+  void handleDeath();
 
 private:
   void moveToPlayer();
@@ -28,6 +33,8 @@ private:
   RectCollider collider_;
   RectRender renderer_;
   TransformComponent transform_;
+  EventSubscriber subscriber_;
+  EventPublisher enemy_event_publisher_;
 
   // Enemy only allowed to jump once every cooldown.
   const float jump_cooldown;

@@ -86,6 +86,8 @@ public:
   // The rect is used for the player collision
   Vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
   Vector<Rectangle> current_block_rect;    // collider of the current falling block.
+  EventPublisher game_event_publisher_;
+  EventSubscriber subscriber_;
 };
 
 #endif // GAME_HPP

@@ -26,9 +26,23 @@ Game::Game()
   , enemies {}
   , landed_block_rect {}
   , current_block_rect {}
+  , game_event_publisher_ {}
+  , subscriber_ {}
 {
   createCurrentBlockRect();
   updateProjection();
+
+  subscriber_
+    .addNotifyCallback("OnEnemyDeath", [this](){
+      score += 1;
+    })
+    ->addNotifyCallback("OnPlayerDeath", [this](){
+        // TODO
+        std::cout << "Player Killed!" << std::endl;
+    });
+
+  game_event_publisher_
+    .addSubscriber(player.subscriber());
 }
 Game::~Game() {
   for (Enemy* enemy : enemies) {
@@ -65,7 +79,10 @@ Game::createEnemy() {
   // DEBUG:
   std::cout << "Enemy spawned!" << std::endl; 
 
-  return new Enemy(this, randX);
+  Enemy* new_enemy = new Enemy(this, randX);
+  game_event_publisher_.addSubscriber(new_enemy->subscriber());
+
+  return new_enemy;
 }
 void
 Game::appendEnemy() {
@@ -101,6 +118,7 @@ Game::render() {
   // DEBUG
   //DrawRectangleRec(Config::kLeftWallRect, BLUE);
   //DrawRectangleRec(Config::kRightWallRect, BLUE);
+  //DrawRectangleRec(Config::kGroundRect, BLUE);
 }
 
 void
@@ -119,10 +137,10 @@ Game::update() {
     updateCurrentBlockRect();
 
     if (!isBlockOutside(current_block)) {
-      player.handleDeath();
-      for (Enemy* enemy : enemies) {
-        score += enemy->handleDeath();
-      }
+      //player.handleDeath();
+      //for (Enemy* enemy : enemies) {
+        //score += enemy->handleDeath();
+      //}
     }
 
     // DEBUG:
@@ -193,6 +211,8 @@ void
 Game::blockMoveDown(Block& block) {
   block.move(1, 0);
 
+  game_event_publisher_.notifySubscriber("OnBlockMoveDown");
+
   if (isBlockOutside(block) || isGridOccupied(block) == false) {
     block.move(-1, 0);
     lockBlock();
@@ -217,10 +237,11 @@ Game::currentBlockInstantMoveDownAndCheckDeath() {
     updateCurrentBlockRect();
 
     if (!isBlockOutside(current_block)) {
-      player.handleDeath();
-      for (Enemy* enemy : enemies) {
-        score += enemy->handleDeath();
-      }
+      game_event_publisher_.notifySubscriber("OnBlockMoveDown");
+      //player.handleDeath();
+      //for (Enemy* enemy : enemies) {
+      //  score += enemy->handleDeath();
+      //}
     }
 
     if (isBlockOutside(current_block) || isGridOccupied(current_block) == false) {
@@ -267,6 +288,9 @@ Game::isBlockOutside(Block& block) {
 }
 void
 Game::lockBlock() {
+  // DEBUG
+  game_event_publisher_.notifySubscriber("OnBlockLock");
+
   Vector<Position> current_checked_cell = current_block.getCellPosition();
 
   // Set the grid where the current block located to match the current block

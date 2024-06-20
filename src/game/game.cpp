@@ -15,6 +15,7 @@ Game::Game()
   : grid {*this}
   , score {0}
   , is_game_over {false}
+  , is_game_started {false}
   , block {El(), Jay(), Straight(), Square(), Tee(), SkewS(), SkewZ()}
   , current_block {pickRandomBlock()}
   , next_block {pickRandomBlock()}
@@ -113,23 +114,37 @@ void
 Game::render() {
   grid.draw();
 
-  // Score
-  DrawText(
-    std::to_string(score).c_str(), 
-    config::kWinW / 2, config::kWinH / 2, 
-    75, 
-    Colors::kProjectionGrey
-  );
+
+  //
+  if (!is_game_started) {
+    DrawText(
+      "Press SPACE to Start", 
+      config::kWinW / 4 , config::kWinH / 2 + 75, 
+      75, 
+      Colors::kProjectionGrey
+    );
+
+  }
+  
+  // score
+  //if (is_game_started) {
+    DrawText(
+      std::to_string(score).c_str(), 
+      config::kWinW / 2, config::kWinH / 2, 
+      75, 
+      Colors::kProjectionGrey
+    );
+  //}
     
 
-  if (!is_game_over) {
+  if (!is_game_over && is_game_started) {
     current_block.draw();
     block_projection.draw();
     for (Enemy* enemy : enemies) {
       enemy->render();
     }
   }
-  else {
+  else if (is_game_over && !is_game_started) {
     DrawText(
       "GAME OVER", 
       config::kWinW * 3 / 8 , config::kWinH / 2 - 75, 
@@ -204,6 +219,10 @@ Game::handleInput() {
       updateCurrentBlockRect();
       updateProjection();
       break;
+    case KEY_SPACE:
+      if (is_game_started == false) {
+        onGameRestart();
+      }
   }
 
   //player.handleInput();
@@ -420,5 +439,29 @@ void
 Game::handleGameOver() {
   current_block.color_id(0); // temporary fix to make the current block invisible.
   is_game_over = true;
+  is_game_started = false;
   grid.resetColor();
+}
+
+void
+Game::onGameRestart() {
+  score = 0;
+
+  current_block = next_block;
+  next_block = pickRandomBlock();
+  createCurrentBlockRect();
+  updateProjection();
+
+  for (Enemy* enemy : enemies) {
+    delete enemy;
+  }
+  enemies.clear();
+
+  is_game_over = false;
+  is_game_started = true;
+
+  current_block_rect.clear();
+  landed_block_rect.clear();
+
+  game_event_publisher_.notifySubscriber("OnGameRestart");
 }

@@ -9,8 +9,9 @@
 
 Player::Player(Game* game)
   : collider_ {Rectangle {
-      config::kWinW/2.f, 
-      config::kWinH/2.f, 
+      //config::kWinW/2.f, 
+      //config::kWinH/2.f, 
+      -10, -10,
       config::kCellSize / 2.f, 
       config::kCellSize / 2.f
     }}
@@ -39,13 +40,22 @@ Player::Player(Game* game)
     ->addNotifyCallback("OnStackFull", [this](){
       transform_.jump(-300.f);
       is_alive_ = false;
+    })
+    ->addNotifyCallback("OnEnemyTouched", [this](){
+      death();
+    })
+    ->addNotifyCallback("OnGameRestart", [this](){
+      collider_.collider()->x = config::kWinW/2.f;
+      collider_.collider()->y = config::kWinH/2.f;
+      transform_.vertical_speed(0.f);
+      is_alive_ = true;
     });
 
   player_event_publisher_.addSubscriber(&game->subscriber_);
 }
-Rectangle
+Rectangle*
 Player::rect() {
-  return *collider_.collider();
+  return collider_.collider();
 }
 EventSubscriber*
 Player::subscriber() {
@@ -82,17 +92,22 @@ Player::handleInput() {
   }
 }
 
+void
+Player::death() {
+  is_alive_ = false;
+
+  // add little jump when death
+  transform_.jump(-300.f);
+
+  player_event_publisher_.notifySubscriber("OnPlayerDeath");
+}
+
 // TODO: Rework this.
 void
 Player::handleDeath() {
   for (const Rectangle& rect : game_->current_block_rect) {
     if (CheckCollisionRecs(*collider_.collider(), rect)) {
-      is_alive_ = false;
-
-      // add little jump when death
-      transform_.jump(-300.f);
-
-      player_event_publisher_.notifySubscriber("OnPlayerDeath");
+      death();
     }
   }
 }

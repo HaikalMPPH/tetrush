@@ -24,7 +24,7 @@ private:
 
 public: // ctor, dtor, get, set
   Player(Game* game);
-  Rectangle rect();
+  Rectangle* rect();
   EventSubscriber* subscriber();
 
 public:
@@ -32,7 +32,7 @@ public:
   void render();
 
   void handleInput();
-
+  void death();
   void handleDeath();
 
 private:

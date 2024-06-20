@@ -12,6 +12,37 @@
 
 class Game {
 public:
+  Grid grid;
+  int score;
+  bool is_game_over;
+  bool is_game_started;
+
+  // list of the available tetraminos.
+  Vector<Block> block;
+  Block current_block;
+  Block next_block;
+
+  // Tetramino projection.
+  Block block_projection;
+
+  double last_update_time;
+  const float enemy_spawn_cooldown;
+  float current_enemy_spawn_cooldown;
+
+  // Game entities
+  Player player;
+
+  // Enemy are created on the fly
+  Vector<Enemy*> enemies;
+
+  // Vector of rect that the position is matched with the color grid.
+  // The rect is used for the player collision
+  Vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
+  Vector<Rectangle> current_block_rect;    // collider of the current falling block.
+  EventPublisher game_event_publisher_;
+  EventSubscriber subscriber_;
+
+public:
   Game();
   ~Game();
 
@@ -62,35 +93,7 @@ public:
   
   void handleGameOver();
 
-public:
-  Grid grid;
-  int score;
-  bool is_game_over;
-
-  // list of the available tetraminos.
-  Vector<Block> block;
-  Block current_block;
-  Block next_block;
-
-  // Tetramino projection.
-  Block block_projection;
-
-  double last_update_time;
-  const float enemy_spawn_cooldown;
-  float current_enemy_spawn_cooldown;
-
-  // Game entities
-  Player player;
-
-  // Enemy are created on the fly
-  Vector<Enemy*> enemies;
-
-  // Vector of rect that the position is matched with the color grid.
-  // The rect is used for the player collision
-  Vector<Rectangle> landed_block_rect;     // collider of a block that are on the ground.
-  Vector<Rectangle> current_block_rect;    // collider of the current falling block.
-  EventPublisher game_event_publisher_;
-  EventSubscriber subscriber_;
+  void onGameRestart();
 };
 
 #endif // GAME_HPP

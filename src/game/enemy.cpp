@@ -38,7 +38,9 @@ Enemy::Enemy(Game* game, int xPos)
         handleDeath();
     });
 
-  enemy_event_publisher_.addSubscriber(&game->subscriber_);
+  enemy_event_publisher_
+    .addSubscriber(&game_->subscriber_)
+    ->addSubscriber(game_->player.subscriber());
 }
 Enemy::~Enemy() {
   std::cout << "Enemy destroyed" << std::endl;
@@ -76,8 +78,13 @@ Enemy::update() {
 
 void
 Enemy::moveToPlayer() {
-  const float player_x = game_->player.rect().x;
-  if ( player_x < collider_.collider()->x) {
+  const float player_x = game_->player.rect()->x;
+
+  if (CheckCollisionRecs(*game_->player.rect(), *collider_.collider())) {
+    enemy_event_publisher_.notifySubscriber("OnEnemyTouched");
+  }
+
+  if (player_x < collider_.collider()->x) {
     transform_.moveToDirection(-1.f);
   }
   else {
@@ -99,6 +106,13 @@ Enemy::jump() {
   current_jump_cooldonw_ -= GetFrameTime();
 }
 
+void
+Enemy::death() {
+  std::cout << "enemy killed" << std::endl;
+  is_alive_ = false;
+  transform_.jump(-250.f);
+  enemy_event_publisher_.notifySubscriber("OnEnemyDeath");
+}
 
 // return ints for the score
 void
@@ -110,11 +124,7 @@ Enemy::handleDeath() {
 
   for (const Rectangle& rect : game_->current_block_rect) {
     if (CheckCollisionRecs(*collider_.collider(), rect)) {
-      std::cout << "enemy killed" << std::endl;
-      is_alive_ = false;
-      transform_.jump(-250.f);
-      enemy_event_publisher_.notifySubscriber("OnEnemyDeath");
-
+      death();
       return;
     }
   }

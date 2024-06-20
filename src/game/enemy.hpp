@@ -25,7 +25,8 @@ public:
 
 private:
   void moveToPlayer();
-  void jump();               
+  void jump();
+  void death();
 
 public:
   bool marked_for_delete;

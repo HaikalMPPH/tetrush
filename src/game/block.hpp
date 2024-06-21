@@ -1,10 +1,9 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
-#include <map>
-#include <vector>
-
 #include <raylib.h>
+
+#include "../engine/utils/typedefs.hpp"
 #include "position.hpp"
 
 class Block {
@@ -27,7 +26,7 @@ public:
 protected:
     int color_id_; // It's used for color. Might change this later.
     int rotation_state_;
-    std::map<int, std::vector<Position>> cells_;
+    Map<int, std::vector<Position>> cells_;
     int cell_size_;
 
     // for moving the block

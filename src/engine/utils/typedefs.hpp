@@ -1,13 +1,13 @@
 #ifndef TYPEDEFS_HPP
 #define TYPEDEFS_HPP
 
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 template <typename T>
 using Vector = std::vector<T>;
 
 template <typename T, typename U>
-using UnorderedMap = std::unordered_map<T, U>;
+using Map = std::map<T, U>;
 
 #endif

@@ -201,23 +201,31 @@ Game::handleInput() {
 
   switch (key) {
     case KEY_J:
-      blockMoveLeft(current_block);
-      updateCurrentBlockRect();
-      updateProjection();
+      if (is_game_started) {
+        blockMoveLeft(current_block);
+        updateCurrentBlockRect();
+        updateProjection();
+      }
       break;
     case KEY_L:
-      blockMoveRight(current_block);
-      updateCurrentBlockRect();
-      updateProjection();
+      if (is_game_started) {
+        blockMoveRight(current_block);
+        updateCurrentBlockRect();
+        updateProjection();
+      }
       break;
     case KEY_K:
-      currentBlockInstantMoveDownAndCheckDeath();
-      lockBlock();
+      if (is_game_started) {
+        currentBlockInstantMoveDownAndCheckDeath();
+        lockBlock();
+      }
       break;
     case KEY_I:
-      rotateBlock(current_block);
-      updateCurrentBlockRect();
-      updateProjection();
+      if (is_game_started) {
+        rotateBlock(current_block);
+        updateCurrentBlockRect();
+        updateProjection();
+      }
       break;
     case KEY_SPACE:
       if (is_game_started == false) {
@@ -453,6 +461,7 @@ Game::onGameRestart() {
   updateProjection();
 
   for (Enemy* enemy : enemies) {
+    game_event_publisher_.removeSubscriber(enemy->subscriber());
     delete enemy;
   }
   enemies.clear();

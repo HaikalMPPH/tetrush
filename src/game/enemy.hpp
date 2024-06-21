@@ -21,12 +21,12 @@ public:
   void render();
   void update();
   // The int will be used as a score.
-  void handleDeath();
 
 private:
   void moveToPlayer();
   void jump();
   void death();
+  void handleDeath();
 
 public:
   bool marked_for_delete;

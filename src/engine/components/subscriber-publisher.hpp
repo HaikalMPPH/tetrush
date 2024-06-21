@@ -9,7 +9,7 @@ public:
   using NotifyCallback = std::function<void()>;
 
 private:
-  UnorderedMap<const char*, NotifyCallback> notify_fn_;
+  Map<const char*, NotifyCallback> notify_fn_;
 
 public:
   EventSubscriber();

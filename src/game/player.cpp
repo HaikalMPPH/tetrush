@@ -54,7 +54,7 @@ Player::Player(Game* game)
   player_event_publisher_.addSubscriber(&game->subscriber_);
 }
 Rectangle*
-Player::rect() {
+Player::collider() {
   return collider_.collider();
 }
 EventSubscriber*

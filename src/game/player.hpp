@@ -24,7 +24,7 @@ private:
 
 public: // ctor, dtor, get, set
   Player(Game* game);
-  Rectangle* rect();
+  Rectangle* collider();
   EventSubscriber* subscriber();
 
 public:

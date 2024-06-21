@@ -78,9 +78,9 @@ Enemy::update() {
 
 void
 Enemy::moveToPlayer() {
-  const float player_x = game_->player.rect()->x;
+  const float player_x = game_->player.collider()->x;
 
-  if (CheckCollisionRecs(*game_->player.rect(), *collider_.collider())) {
+  if (CheckCollisionRecs(*game_->player.collider(), *collider_.collider())) {
     enemy_event_publisher_.notifySubscriber("OnEnemyTouched");
   }
 

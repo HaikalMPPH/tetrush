@@ -99,6 +99,7 @@ Enemy::jump() {
       && is_alive_
       && current_jump_cooldonw_ <= 0
   ) {
+    PlaySound(config::kEnemyJumpSound);
     transform_.jump(-250.f);
     current_jump_cooldonw_ = jump_cooldown;
   }

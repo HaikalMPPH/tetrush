@@ -21,6 +21,7 @@ Player::Player(Game* game)
   , player_event_publisher_ {}
   , is_alive_ {true}
   , game_ {game}
+  //, jump_sound_ {LoadSound("res/audio/jump.wav")}
 {
   collider_
     .addDownCollisionCallback([this](){
@@ -53,6 +54,10 @@ Player::Player(Game* game)
 
   player_event_publisher_.addSubscriber(&game->subscriber_);
 }
+Player::~Player() {
+  //UnloadSound(jump_sound_);
+}
+
 Rectangle*
 Player::collider() {
   return collider_.collider();
@@ -88,6 +93,9 @@ Player::handleInput() {
     transform_.moveToDirection(1);
   }
   if (IsKeyPressed(KEY_SPACE)) {
+    if (transform_.is_grounded()) {
+      PlaySound(config::kPlayerJumpSound);
+    }
     transform_.jump(-300.f);
   }
 }

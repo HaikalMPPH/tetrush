@@ -21,12 +21,12 @@ public:
     // For undoing if the block is out of bound when rotating.
     void undoRotate();
 
-    std::vector<Position> getCellPosition();
+    Vector<Position> getCellPosition();
 
 protected:
     int color_id_; // It's used for color. Might change this later.
     int rotation_state_;
-    Map<int, std::vector<Position>> cells_;
+    Map<int, Vector<Position>> cells_;
     int cell_size_;
 
     // for moving the block
@@ -34,7 +34,7 @@ protected:
     int column_offset_;
 
     // Determine the color of the tetromino.
-    std::vector<Color> color_;
+    Vector<Color> color_;
 };
 
 #endif // BLOCK_HPP

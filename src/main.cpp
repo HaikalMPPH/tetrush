@@ -3,15 +3,23 @@
 #include "game/game.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+#include "game/config.hpp"
 
 int main() {
     // Generate random seed.
     srand(time(nullptr));
 
-    Game game;
 
     InitWindow(config::kWinW, config::kWinH, "Tetrush");
     SetTargetFPS(60);
+
+    InitAudioDevice();
+    std::cout << GetWorkingDirectory() << std::endl;
+
+    Game game;
+
+    config::initAudioRes();
 
     while (!WindowShouldClose()) {
     BeginDrawing();
@@ -22,6 +30,10 @@ int main() {
 
     EndDrawing();
     }
+
+    config::deinitAudioRes();
+
+    CloseAudioDevice();
 
     CloseWindow();
     return 0;

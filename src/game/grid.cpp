@@ -114,6 +114,10 @@ Grid::clearFullRow() {
         }
     }
 
+    if (completed > 0) {
+      PlaySound(config::kRowCompletedSound);
+    }
+
     return completed; // used for score.
 }
 

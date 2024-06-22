@@ -35,6 +35,7 @@ Game::Game()
 
   subscriber_
     .addNotifyCallback("OnEnemyDeath", [this](){
+      PlaySound(config::kEnemyKilledSound);
       score += 2;
 
       for (Enemy* enemy : enemies) {
@@ -53,6 +54,7 @@ Game::Game()
       }
     })
     ->addNotifyCallback("OnPlayerDeath", [this](){
+      PlaySound(config::kGameOverSound);
       handleGameOver();
     });
 
@@ -371,6 +373,8 @@ Game::lockBlock() {
   next_block = pickRandomBlock();
 
   score += (int)(grid.clearFullRow() * config::kNumOfCols / 2.f);
+
+  PlaySound(config::kBlockLockSound);
 }
 void
 Game::updateGridColor(Vector<Position>* cell) {

@@ -42,6 +42,7 @@ namespace config {
     inline Sound kEnemyKilledSound;
     inline Sound kBlockLockSound;
     inline Sound kRowCompletedSound;
+    inline Music kGameMusic;
 
     inline void initAudioRes() {
       kPlayerJumpSound = LoadSound("res/audio/player-jump.wav");
@@ -50,6 +51,7 @@ namespace config {
       kEnemyKilledSound = LoadSound("res/audio/enemy-killed.wav");
       kBlockLockSound = LoadSound("res/audio/block-lock.wav");
       kRowCompletedSound = LoadSound("res/audio/row-completed.wav");
+      kGameMusic = LoadMusicStream("res/audio/music.mp3");
     };
     inline void deinitAudioRes() {
       UnloadSound(kPlayerJumpSound);
@@ -58,6 +60,7 @@ namespace config {
       UnloadSound(kEnemyKilledSound);
       UnloadSound(kBlockLockSound);
       UnloadSound(kRowCompletedSound);
+      UnloadMusicStream(kGameMusic);
     }
 };
 

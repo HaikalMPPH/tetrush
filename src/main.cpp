@@ -21,6 +21,8 @@ int main() {
 
     config::initAudioRes();
 
+    PlayMusicStream(config::kGameMusic);
+
     while (!WindowShouldClose()) {
     BeginDrawing();
 

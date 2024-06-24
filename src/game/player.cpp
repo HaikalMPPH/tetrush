@@ -39,8 +39,7 @@ Player::Player(Game* game)
       handleDeath();
     })
     ->addNotifyCallback("OnStackFull", [this](){
-      transform_.jump(-300.f);
-      is_alive_ = false;
+      death();
     })
     ->addNotifyCallback("OnEnemyTouched", [this](){
       death();
@@ -103,6 +102,7 @@ Player::handleInput() {
 void
 Player::death() {
   is_alive_ = false;
+  PlaySound(config::kGameOverSound);
 
   // add little jump when death
   transform_.jump(-300.f);

@@ -54,7 +54,6 @@ Game::Game()
       }
     })
     ->addNotifyCallback("OnPlayerDeath", [this](){
-      PlaySound(config::kGameOverSound);
       handleGameOver();
     });
 
@@ -171,6 +170,15 @@ Game::update() {
   handleInput();
 
   if (!is_game_over) {
+    UpdateMusicStream(config::kGameMusic);
+    // Restart music after done playing
+    if (
+      GetMusicTimePlayed(config::kGameMusic)/GetMusicTimeLength(config::kGameMusic) > 1.0f
+    ) {
+      StopMusicStream(config::kGameMusic);
+      PlayMusicStream(config::kGameMusic);
+    }
+
     appendEnemy();
 
     for (Enemy* enemy : enemies) {
@@ -231,11 +239,11 @@ Game::handleInput() {
       break;
     case KEY_SPACE:
       if (is_game_started == false) {
+        StopMusicStream(config::kGameMusic);
+        PlayMusicStream(config::kGameMusic);
         onGameRestart();
       }
   }
-
-  //player.handleInput();
 }
 
 
@@ -452,7 +460,13 @@ Game::handleGameOver() {
   current_block.color_id(0); // temporary fix to make the current block invisible.
   is_game_over = true;
   is_game_started = false;
+
+  // restart enemy spawn cooldown
+  current_enemy_spawn_cooldown = 0;
+
   grid.resetColor();
+
+  StopMusicStream(config::kGameMusic);
 }
 
 void

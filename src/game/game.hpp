@@ -10,37 +10,46 @@
 #include "block.hpp"
 #include "player.hpp"
 
+enum class screen_state {
+  main_game,
+  help_menu,
+};
+
 class game {
 public:
-  ::grid grid;
-  int score;
-  bool is_game_over;
-  bool is_game_started;
+  ::grid grid { *this };
+
+  ::screen_state screen_state_ { screen_state::main_game };
+  bool on_help_menu { false };
+
+  int score { 0 };
+  bool is_game_over { false };
+  bool is_game_started { false };
 
   // list of the available tetraminos.
-  vector<::block> block;
-  ::block current_block;
-  ::block next_block;
+  vector<::block> block { create_tetrominos() };
+  ::block current_block { pick_random_block() };
+  ::block next_block { pick_random_block() };
 
   // Tetramino projection.
-  ::block block_projection;
+  ::block block_projection { current_block };
 
-  double last_update_time;
-  const float enemy_spawn_cooldown;
-  float current_enemy_spawn_cooldown;
+  double last_update_time { 0.0 };
+  const float enemy_spawn_cooldown { 10.f };
+  float current_enemy_spawn_cooldown { 0.f };
 
   // Game entities
-  ::player player;
+  ::player player { this };
 
   // ::Enemy are created on the fly
-  vector<::enemy*> enemies;
+  vector<::enemy*> enemies {};
 
   // Vector of rect that the position is matched with the color grid.
   // The rect is used for the player collision
-  vector<::Rectangle> landed_block_rect;     // collider of a block that are on the ground.
-  vector<::Rectangle> current_block_rect;    // collider of the current falling block.
-  ::event_publisher game_event_publisher_;
-  ::event_subscriber subscriber_;
+  vector<::Rectangle> landed_block_rect {};     // collider of a block that are on the ground.
+  vector<::Rectangle> current_block_rect {};    // collider of the current falling block.
+  ::event_publisher game_event_publisher_ {};
+  ::event_subscriber subscriber_ {};
 
 public:
   game();

@@ -12,23 +12,22 @@
 #include "colors.hpp"
 
 game::game() 
-  : grid {*this}
-  , score {0}
-  , is_game_over {false}
-  , is_game_started {false}
-  , block {::el(), ::jay(), ::straight(), ::square(), ::tee(), ::skew_s(), ::skew_z()}
-  , current_block {pick_random_block()}
-  , next_block {pick_random_block()}
-  , block_projection {current_block}
-  , last_update_time {0.0}
-  , enemy_spawn_cooldown {10.f}
-  , current_enemy_spawn_cooldown {0.f}
-  , player {this}
-  , enemies {}
-  , landed_block_rect {}
-  , current_block_rect {}
-  , game_event_publisher_ {}
-  , subscriber_ {}
+  //: score {0}
+  //, is_game_over {false}
+  //, is_game_started {false}
+  //, block {::el(), ::jay(), ::straight(), ::square(), ::tee(), ::skew_s(), ::skew_z()}
+  //, current_block {pick_random_block()}
+  //, next_block {pick_random_block()}
+  //, block_projection {current_block}
+  //, last_update_time {0.0}
+  //, enemy_spawn_cooldown {10.f}
+  //, current_enemy_spawn_cooldown {0.f}
+  //, player {this}
+  //, enemies {}
+  //, landed_block_rect {}
+  //, current_block_rect {}
+  //, game_event_publisher_ {}
+  //, subscriber_ {}
 {
   create_current_block_rect();
   update_projection();
@@ -116,45 +115,53 @@ game::render() {
   grid.draw();
 
 
-  //
-  if (!is_game_started) {
-    DrawText(
-      "PRESS [SPACE] TO START", 
-      config::win_w / 4 , config::win_h / 2 + 75, 
-      60, 
-      colors::grey
-    );
+  if (screen_state_ == screen_state::main_game) {
+    if (!is_game_started) {
+      DrawText(
+        "PRESS [SPACE] TO START", 
+        config::win_w / 4 , config::win_h / 2 + 75, 
+        60, 
+        colors::grey
+      );
 
-  }
-  
-  // score
-  if (is_game_over || is_game_started) {
-    DrawText(
-      std::to_string(score).c_str(), 
-      config::win_w / 2, config::win_h / 2, 
-      75, 
-      colors::grey
-    );
-  }
-    
+      DrawText(
+        "PRESS [?] FOR HELP", 
+        config::grid_off_x + 10 , config::grid_off_y + 10, 
+        25, 
+        colors::grey
+      );
 
-  if (!is_game_over && is_game_started) {
-    current_block.draw();
-    block_projection.draw();
-    for (::enemy* enemy : enemies) {
-      enemy->render();
     }
-  }
-  else if (is_game_over && !is_game_started) {
-    DrawText(
-      "GAME OVER", 
-      config::win_w * 3 / 8 , config::win_h / 2 - 75, 
-      75, 
-      colors::grey
-    );
-  }
+    
+    // score
+    if (is_game_over || is_game_started) {
+      DrawText(
+        std::to_string(score).c_str(), 
+        config::win_w / 2, config::win_h / 2, 
+        75, 
+        colors::grey
+      );
+    }
+      
 
-  player.render();
+    if (!is_game_over && is_game_started) {
+      current_block.draw();
+      block_projection.draw();
+      for (::enemy* enemy : enemies) {
+        enemy->render();
+      }
+    }
+    else if (is_game_over && !is_game_started) {
+      DrawText(
+        "GAME OVER", 
+        config::win_w * 3 / 8 , config::win_h / 2 - 75, 
+        75, 
+        colors::grey
+      );
+    }
+
+    player.render();
+  }
 
   //debugRenderRect();
 
@@ -238,11 +245,15 @@ game::handle_input() {
       }
       break;
     case KEY_SPACE:
-      if (is_game_started == false) {
+      if (
+        is_game_started == false
+        && screen_state_ == screen_state::main_game
+      ) {
         StopMusicStream(config::game_music);
         PlayMusicStream(config::game_music);
         on_game_restart();
       }
+      break;
   }
 }
 

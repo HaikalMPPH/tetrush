@@ -3,14 +3,14 @@
 std::vector<Color> 
 colors::get_color() {
     return {
-        colors::kEmpty, 
-        colors::kRed,
-        colors::kOrange, 
-        colors::kYellow, 
-        colors::kGreen, 
-        colors::kBlue, 
-        colors::kCyan, 
-        colors::kPurple,
-        colors::kProjectionGrey
+        colors::empty, 
+        colors::red,
+        colors::orange, 
+        colors::yellow, 
+        colors::green, 
+        colors::blue, 
+        colors::magenta, 
+        colors::purple,
+        colors::grey
     }; 
 }

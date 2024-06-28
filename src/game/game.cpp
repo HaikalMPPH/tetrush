@@ -122,7 +122,7 @@ game::render() {
       "PRESS [SPACE] TO START", 
       config::win_w / 4 , config::win_h / 2 + 75, 
       60, 
-      colors::kProjectionGrey
+      colors::grey
     );
 
   }
@@ -133,7 +133,7 @@ game::render() {
       std::to_string(score).c_str(), 
       config::win_w / 2, config::win_h / 2, 
       75, 
-      colors::kProjectionGrey
+      colors::grey
     );
   }
     
@@ -150,7 +150,7 @@ game::render() {
       "GAME OVER", 
       config::win_w * 3 / 8 , config::win_h / 2 - 75, 
       75, 
-      colors::kProjectionGrey
+      colors::grey
     );
   }
 

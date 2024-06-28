@@ -7,13 +7,13 @@
 #include "game.hpp"
 
 
-Player::Player(Game* game)
-  : collider_ {Rectangle {
+player::player(::game* game)
+  : collider_ {::Rectangle {
       //config::kWinW/2.f, 
       //config::kWinH/2.f, 
       -10, -10,
-      config::kCellSize / 2.f, 
-      config::kCellSize / 2.f
+      config::cell_size / 2.f, 
+      config::cell_size / 2.f
     }}
   , renderer_ {collider_.collider()}
   , transform_ {collider_.collider(), 200.f}
@@ -24,96 +24,96 @@ Player::Player(Game* game)
   //, jump_sound_ {LoadSound("res/audio/jump.wav")}
 {
   collider_
-    .addDownCollisionCallback([this](){
+    .add_down_collision_callback([this](){
       transform_.is_grounded(true);
       transform_.vertical_speed(0.f);
     });
 
   subscriber_
-    .addNotifyCallback("OnBlockLock", [this](){
+    .add_notify_callback("OnBlockLock", [this](){
       std::cout << "Player: On Block Lock" << std::endl;
-      handleDeath();
+      handle_death();
     })
-    ->addNotifyCallback("OnBlockMove", [this](){
+    ->add_notify_callback("OnBlockMove", [this](){
       //std::cout << "Player: On Block Move Down" << std::endl;
-      handleDeath();
+      handle_death();
     })
-    ->addNotifyCallback("OnStackFull", [this](){
+    ->add_notify_callback("OnStackFull", [this](){
       death();
     })
-    ->addNotifyCallback("OnEnemyTouched", [this](){
+    ->add_notify_callback("OnEnemyTouched", [this](){
       death();
     })
-    ->addNotifyCallback("OnGameRestart", [this](){
-      collider_.collider()->x = config::kWinW/2.f;
-      collider_.collider()->y = config::kWinH/2.f;
+    ->add_notify_callback("OnGameRestart", [this](){
+      collider_.collider()->x = config::win_w/2.f;
+      collider_.collider()->y = config::win_h/2.f;
       transform_.vertical_speed(0.f);
       is_alive_ = true;
     });
 
-  player_event_publisher_.addSubscriber(&game->subscriber_);
+  player_event_publisher_.add_subscriber(&game->subscriber_);
 }
-Player::~Player() {
+player::~player() {
   //UnloadSound(jump_sound_);
 }
 
-Rectangle*
-Player::collider() {
+::Rectangle*
+player::collider() {
   return collider_.collider();
 }
-EventSubscriber*
-Player::subscriber() {
+::event_subscriber*
+player::subscriber() {
   return &subscriber_;
 }
 void
-Player::update() {
-  transform_.handleGravity();
-  collider_.handleCollision(&config::kLeftWallRect);
-  collider_.handleCollision(&config::kRightWallRect);
+player::update() {
+  transform_.handle_gravity();
+  collider_.handle_collision(&config::l_wall_rect);
+  collider_.handle_collision(&config::r_wall_rect);
   if (is_alive_) {
-    collider_.batchHandleCollision(&game_->current_block_rect);
-    collider_.batchHandleCollision(&game_->landed_block_rect);
-    collider_.handleCollision(&config::kGroundRect);
-    handleInput();
+    collider_.batch_handle_collision(&game_->current_block_rect);
+    collider_.batch_handle_collision(&game_->landed_block_rect);
+    collider_.handle_collision(&config::ground_rect);
+    handle_input();
   }
 }
 
 void
-Player::render() {
+player::render() {
     renderer_.render(BLUE);
 }
 
 void 
-Player::handleInput() {
+player::handle_input() {
   if (IsKeyDown(KEY_A)) {
-    transform_.moveToDirection(-1);
+    transform_.move_to_direction(-1);
   }
   if (IsKeyDown(KEY_D)) {
-    transform_.moveToDirection(1);
+    transform_.move_to_direction(1);
   }
   if (IsKeyPressed(KEY_SPACE)) {
     if (transform_.is_grounded()) {
-      PlaySound(config::kPlayerJumpSound);
+      PlaySound(config::player_jump_sound);
     }
     transform_.jump(-300.f);
   }
 }
 
 void
-Player::death() {
+player::death() {
   is_alive_ = false;
-  PlaySound(config::kGameOverSound);
+  PlaySound(config::game_over_sound);
 
   // add little jump when death
   transform_.jump(-300.f);
 
-  player_event_publisher_.notifySubscriber("OnPlayerDeath");
+  player_event_publisher_.notify_subscriber("OnPlayerDeath");
 }
 
 // TODO: Rework this.
 void
-Player::handleDeath() {
-  for (const Rectangle& rect : game_->current_block_rect) {
+player::handle_death() {
+  for (const ::Rectangle& rect : game_->current_block_rect) {
     if (CheckCollisionRecs(*collider_.collider(), rect)) {
       death();
     }

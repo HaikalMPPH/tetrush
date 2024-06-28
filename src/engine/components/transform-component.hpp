@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 
-class TransformComponent {
+class transform_component {
 private:
   Rectangle* rect_;
   float speed_;
@@ -12,7 +12,7 @@ private:
   bool is_grounded_;
 
 public: // ctor, get, set
-  TransformComponent(Rectangle* rect, float speed);
+  transform_component(Rectangle* rect, float speed);
   Rectangle* rect() const; // get
   float speed() const; // get
 
@@ -21,8 +21,8 @@ public: // ctor, get, set
   void vertical_speed(float vs); // set
 
 public: // methods
-  void moveToDirection(float dir_x);
-  void handleGravity();
+  void move_to_direction(float dir_x);
+  void handle_gravity();
   void jump(float y_impulse);
 };
 

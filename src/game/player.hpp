@@ -8,34 +8,34 @@
 #include "../engine/components/transform-component.hpp"
 #include "../engine/components/subscriber-publisher.hpp"
 
-class Game;
+class game;
 
-class Player {
+class player {
 private:
-  RectCollider collider_;
-  RectRender renderer_;
-  TransformComponent transform_;
-  EventSubscriber subscriber_;
-  EventPublisher player_event_publisher_;
+  ::rect_collider collider_;
+  ::rect_renderer renderer_;
+  ::transform_component transform_;
+  ::event_subscriber subscriber_;
+  ::event_publisher player_event_publisher_;
 
   bool is_alive_;
 
-  Game* game_;
+  ::game* game_;
 
 public: // ctor, dtor, get, set
-  Player(Game* game);
-  ~Player();
+  player(::game* game);
+  ~player();
 
-  Rectangle* collider();
-  EventSubscriber* subscriber();
+  ::Rectangle* collider();
+  ::event_subscriber* subscriber();
 
 public:
   void update();
   void render();
 
-  void handleInput();
+  void handle_input();
   void death();
-  void handleDeath();
+  void handle_death();
 
 private:
 

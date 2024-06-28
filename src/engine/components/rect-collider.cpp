@@ -2,21 +2,21 @@
 #include <raymath.h>
 #include "rect-collider.hpp"
 
-RectCollider::RectCollider(Rectangle collider)
+rect_collider::rect_collider(Rectangle collider)
   : collider_ {collider}
-  , _rightCollideFn {}
-  , _leftCollideFn {}
-  , _upCollideFn {}
-  , _downCollideFn {}
+  , right_coll_fn {}
+  , left_coll_fn {}
+  , up_coll_fn {}
+  , down_coll_fn {}
 {}
 
 Rectangle*
-RectCollider::collider() {
+rect_collider::collider() {
   return &collider_;
 }
 
 void
-RectCollider::handleCollision(const Rectangle* rect) {
+rect_collider::handle_collision(const Rectangle* rect) {
   if (CheckCollisionRecs(collider_, *rect)) {
     // player & rect center point
     const Vector2 collider_center {
@@ -50,20 +50,20 @@ RectCollider::handleCollision(const Rectangle* rect) {
       collider_.x += dist_x * (center_delta.x / fabsf(center_delta.x));
 
       if (collider_center.x < rect_center.x) {
-        (_rightCollideFn != nullptr) ? _rightCollideFn() : void();
+        (right_coll_fn != nullptr) ? right_coll_fn() : void();
         
       }
       else {
-        (_leftCollideFn != nullptr) ? _leftCollideFn() : void();
+        (left_coll_fn != nullptr) ? left_coll_fn() : void();
       }
     }
     // collide from top or bottom
     else {
       if (collider_center.y < rect_center.y) {
-        (_downCollideFn != nullptr) ? _downCollideFn() : void();
+        (down_coll_fn != nullptr) ? down_coll_fn() : void();
       }
       else {
-        (_upCollideFn != nullptr) ? _upCollideFn() : void();
+        (up_coll_fn != nullptr) ? up_coll_fn() : void();
       }
 
       collider_.y += dist_y * (center_delta.y / fabsf(center_delta.y));
@@ -72,29 +72,29 @@ RectCollider::handleCollision(const Rectangle* rect) {
 }
 
 void
-RectCollider::batchHandleCollision(const Vector<Rectangle>* rects) {
+rect_collider::batch_handle_collision(const vector<Rectangle>* rects) {
   for (Rectangle rect : *rects) {
-   handleCollision(&rect);
+   handle_collision(&rect);
   }
 }
 
-RectCollider*
-RectCollider::addLeftCollisionCallback(ColliderCallback callback) {
-  _leftCollideFn = callback;
+rect_collider*
+rect_collider::add_left_collision_callback(collider_callback callback) {
+  left_coll_fn = callback;
   return this;
 }
-RectCollider*
-RectCollider::addDownCollisionCallback(ColliderCallback callback) {
-  _downCollideFn = callback;
+rect_collider*
+rect_collider::add_down_collision_callback(collider_callback callback) {
+  down_coll_fn = callback;
   return this;
 }
-RectCollider*
-RectCollider::addUpCollisionCallback(ColliderCallback callback) {
-  _upCollideFn = callback;
+rect_collider*
+rect_collider::add_up_collision_callback(collider_callback callback) {
+  up_coll_fn = callback;
   return this;
 }
-RectCollider*
-RectCollider::addRightCollisionCallback(ColliderCallback callback) {
-  _rightCollideFn = callback;
+rect_collider*
+rect_collider::add_right_collision_callback(collider_callback callback) {
+  right_coll_fn = callback;
   return this;
 }

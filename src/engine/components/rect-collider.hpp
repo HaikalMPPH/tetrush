@@ -5,29 +5,29 @@
 #include "../utils/typedefs.hpp"
 #include <raylib.h>
 
-class RectCollider {
+class rect_collider {
 public:
-  using ColliderCallback = std::function<void()>;
+  using collider_callback = std::function<void()>;
 
 private:
   Rectangle collider_;
-  ColliderCallback _rightCollideFn;
-  ColliderCallback _leftCollideFn;
-  ColliderCallback _upCollideFn;
-  ColliderCallback _downCollideFn;
+  collider_callback right_coll_fn;
+  collider_callback left_coll_fn;
+  collider_callback up_coll_fn;
+  collider_callback down_coll_fn;
 
 public:
-  RectCollider(Rectangle collider);
+  rect_collider(Rectangle collider);
   Rectangle* collider();
 
 public:
-  void handleCollision(const Rectangle* rect);
-  void batchHandleCollision(const Vector<Rectangle>* rect);
+  void handle_collision(const Rectangle* rect);
+  void batch_handle_collision(const vector<Rectangle>* rect);
 
-  RectCollider* addRightCollisionCallback(ColliderCallback callback);
-  RectCollider* addLeftCollisionCallback(ColliderCallback callback);
-  RectCollider* addDownCollisionCallback(ColliderCallback callback);
-  RectCollider* addUpCollisionCallback(ColliderCallback callback);
+  rect_collider* add_right_collision_callback(collider_callback callback);
+  rect_collider* add_left_collision_callback(collider_callback callback);
+  rect_collider* add_down_collision_callback(collider_callback callback);
+  rect_collider* add_up_collision_callback(collider_callback callback);
 };
 
 #endif // RECT_COLLIDER_HPP

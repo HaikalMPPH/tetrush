@@ -1,18 +1,18 @@
 #include "subscriber-publisher.hpp"
 #include <algorithm>
 
-EventSubscriber::EventSubscriber()
+event_subscriber::event_subscriber()
   : notify_fn_ {}
 {}
 
-EventSubscriber*
-EventSubscriber::addNotifyCallback(const char* key, NotifyCallback fn) {
+event_subscriber*
+event_subscriber::add_notify_callback(const char* key, notify_callback fn) {
   notify_fn_[key] = fn;
   return this;
 }
 
 void
-EventSubscriber::onNotify(const char* key) {
+event_subscriber::on_notify(const char* key) {
   if (notify_fn_[key] != nullptr) {
     notify_fn_[key]();
   }
@@ -20,17 +20,17 @@ EventSubscriber::onNotify(const char* key) {
 
 // ================================================================================
 
-EventPublisher::EventPublisher()
+event_publisher::event_publisher()
   : subscribers_ {}
 {}
 
-EventPublisher*
-EventPublisher::addSubscriber(EventSubscriber* sub) {
+event_publisher*
+event_publisher::add_subscriber(event_subscriber* sub) {
   subscribers_.push_back(sub);
   return this;
 }
-EventPublisher* 
-EventPublisher::removeSubscriber(EventSubscriber* sub) {
+event_publisher* 
+event_publisher::remove_subscriber(event_subscriber* sub) {
   subscribers_.erase(
     std::remove(
       subscribers_.begin(), 
@@ -43,19 +43,19 @@ EventPublisher::removeSubscriber(EventSubscriber* sub) {
   return this;
 }
 
-EventPublisher*
-EventPublisher::addNotifyCallbackToAllSubscriber(const char* key, NotifyCallback fn) {
-  for (EventSubscriber* subs : subscribers_) {
-    subs->addNotifyCallback(key, fn);
+event_publisher*
+event_publisher::add_notify_callback_to_all_subscriber(const char* key, notify_callback fn) {
+  for (event_subscriber* subs : subscribers_) {
+    subs->add_notify_callback(key, fn);
   }
   return this;
 }
 
 void
-EventPublisher::notifySubscriber(const char* key) {
-  for (EventSubscriber* subs : subscribers_) {
+event_publisher::notify_subscriber(const char* key) {
+  for (event_subscriber* subs : subscribers_) {
     if (subs != nullptr) {
-      subs->onNotify(key);
+      subs->on_notify(key);
     }
   }
 }

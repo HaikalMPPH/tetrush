@@ -5,41 +5,41 @@
 #include "config.hpp"
 #include "../engine/utils/typedefs.hpp"
 
-class Game;
+class game;
 
-class Grid {
+class grid {
 public:
-    Grid(Game& t_game);
+    grid(::game& t_game);
 
     void debug();
     void draw();
-    bool isCellOutside(int row, int col);
-    bool isGridEmpty(int row, int col);
+    bool is_cell_outside(int row, int col);
+    bool is_grid_empty(int row, int col);
 
-    void updateGridColor(int row, int col, int colorId);
+    void update_grid_color(int row, int col, int colorId);
 
     // Check if a row is full a cleared it up.
-    bool isRowFull(int row);
-    void clearRow(int row);
+    bool is_row_full(int row);
+    void clear_row(int row);
 
     // move a row down n times
-    void moveRowDown(int row, int nTimes);
+    void move_row_down(int row, int nTimes);
 
-    void moveGridRowDown(int row, int nTimes);
+    void move_grid_row_down(int row, int nTimes);
 
     // The int returned from the method will be calculated for the score.
-    int clearFullRow();
+    int clear_full_row();
 
-    void resetColor();
+    void reset_color();
 
 public:
-    int grid_cell[config::kNumOfRows][config::kNumOfCols]; // row, column or y. x
+    int grid_cell[config::n_rows][config::n_cols]; // row, column or y. x
     int cell_size;
-    Vector<Color> colors;
+    vector<Color> colors;
 
 private:
-    // Game instance reference to manage the rect collider
-    Game& game;
+    // ::Game instance reference to manage the rect collider
+    ::game& game_ref;
 };
 
 

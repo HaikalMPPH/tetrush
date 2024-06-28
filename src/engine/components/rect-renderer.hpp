@@ -3,12 +3,12 @@
 
 #include <raylib.h>
 
-class RectRender {
+class rect_renderer {
 private:
   const Rectangle* rect_ref_;
 
 public:
-  RectRender(const Rectangle* rect);
+  rect_renderer(const Rectangle* rect);
 
 public:
   void render(Color color);

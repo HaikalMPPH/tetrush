@@ -5,9 +5,9 @@
 #include <vector>
 
 template <typename T>
-using Vector = std::vector<T>;
+using vector = std::vector<T>;
 
 template <typename T, typename U>
-using Map = std::map<T, U>;
+using map = std::map<T, U>;
 
 #endif

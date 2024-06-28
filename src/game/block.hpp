@@ -6,9 +6,9 @@
 #include "../engine/utils/typedefs.hpp"
 #include "position.hpp"
 
-class Block {
+class block {
 public:
-    Block();
+    block();
 
     int color_id();
     void color_id(int colorId);
@@ -19,14 +19,14 @@ public:
 
     void rotate();
     // For undoing if the block is out of bound when rotating.
-    void undoRotate();
+    void undo_rotate();
 
-    Vector<Position> getCellPosition();
+    vector<::position> get_cell_position();
 
 protected:
     int color_id_; // It's used for color. Might change this later.
     int rotation_state_;
-    Map<int, Vector<Position>> cells_;
+    map<int, vector<::position>> cells_;
     int cell_size_;
 
     // for moving the block
@@ -34,7 +34,7 @@ protected:
     int column_offset_;
 
     // Determine the color of the tetromino.
-    Vector<Color> color_;
+    vector<Color> color_;
 };
 
 #endif // BLOCK_HPP

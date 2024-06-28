@@ -4,7 +4,7 @@
 #include <vector>
 #include <raylib.h>
 
-namespace Colors {
+namespace colors {
   constexpr Color kEmpty = RAYWHITE;
   constexpr Color kRed = RED;
   constexpr Color kOrange = ORANGE;
@@ -15,6 +15,6 @@ namespace Colors {
   constexpr Color kPurple = PURPLE;
   constexpr Color kProjectionGrey = Color {200, 200, 200, 125};
 
-  std::vector<Color> getColor();
+  std::vector<Color> get_color();
 };
 #endif // COLORS_HPP

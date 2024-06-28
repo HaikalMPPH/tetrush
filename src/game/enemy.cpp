@@ -6,14 +6,14 @@
 #include "game.hpp"
 #include "config.hpp"
 
-Enemy::Enemy(Game* game, int xPos) 
+enemy::enemy(::game* game, int xPos) 
   : marked_for_delete (false)
   , game_ {game}
   , collider_ (Rectangle {
       (float)xPos, 
       0.f, 
-      config::kCellSize / 2.f, 
-      config::kCellSize / 2.f
+      config::cell_size / 2.f, 
+      config::cell_size / 2.f
     })
   , renderer_ (collider_.collider())
   , transform_ (collider_.collider(), 75.f)
@@ -23,83 +23,83 @@ Enemy::Enemy(Game* game, int xPos)
   , is_alive_ {true}
 {
   collider_
-    .addDownCollisionCallback([this](){
+    .add_down_collision_callback([this](){
       this->transform_.is_grounded(true);
       this->transform_.vertical_speed(0.f);
     });
 
   subscriber_
-    .addNotifyCallback("OnBlockLock", [this](){
+    .add_notify_callback("OnBlockLock", [this](){
         //std::cout << "Enemy: On Block Lock" << std::endl;
-        handleDeath();
+        handle_death();
     })
-    ->addNotifyCallback("OnBlockMove", [this](){
+    ->add_notify_callback("OnBlockMove", [this](){
         //std::cout << "Enemy: On Block Move Down" << std::endl;
-        handleDeath();
+        handle_death();
     });
 
   enemy_event_publisher_
-    .addSubscriber(&game_->subscriber_)
-    ->addSubscriber(game_->player.subscriber());
+    .add_subscriber(&game_->subscriber_)
+    ->add_subscriber(game_->player.subscriber());
 }
-Enemy::~Enemy() {
+enemy::~enemy() {
   std::cout << "Enemy destroyed" << std::endl;
 }
-EventSubscriber*
-Enemy::subscriber() {
+event_subscriber*
+enemy::subscriber() {
   return &subscriber_;
 }
 
 void
-Enemy::render() {
+enemy::render() {
   //DrawRectangleRec(*collider_.collider(), RED);
   renderer_.render(RED);
 }
 
 void 
-Enemy::update() {
-  transform_.handleGravity();
-  collider_.handleCollision(&config::kRightWallRect);
-  collider_.handleCollision(&config::kLeftWallRect);
+enemy::update() {
+  transform_.handle_gravity();
+  collider_.handle_collision(&config::r_wall_rect);
+  collider_.handle_collision(&config::l_wall_rect);
   if (is_alive_) {
-    moveToPlayer();
+    move_to_player();
 
-    collider_.batchHandleCollision(&game_->current_block_rect);
-    collider_.batchHandleCollision(&game_->landed_block_rect);
-    collider_.handleCollision(&config::kGroundRect);
+    collider_.batch_handle_collision(&game_->current_block_rect);
+    collider_.batch_handle_collision(&game_->landed_block_rect);
+    collider_.handle_collision(&config::ground_rect);
     // NOTE: Moved Jump() here to allow the enemy to jump on top of tetrominos.
     jump();
   }
 
-  if (transform_.rect()->y > config::kWinH) {
+  if (transform_.rect()->y > config::win_h) {
     marked_for_delete = true;
   }
 }
 
 void
-Enemy::moveToPlayer() {
+enemy::move_to_player() {
   const float player_x = game_->player.collider()->x;
 
   if (CheckCollisionRecs(*game_->player.collider(), *collider_.collider())) {
-    enemy_event_publisher_.notifySubscriber("OnEnemyTouched");
+    enemy_event_publisher_.notify_subscriber("OnEnemyTouched");
   }
 
   if (player_x < collider_.collider()->x) {
-    transform_.moveToDirection(-1.f);
+    transform_.move_to_direction(-1.f);
   }
   else {
-    transform_.moveToDirection(1.f);
+    transform_.move_to_direction(1.f);
   }
 }
 
 void 
-Enemy::jump() {
+enemy::jump() {
   if (
       transform_.is_grounded()
       && is_alive_
       && current_jump_cooldonw_ <= 0
   ) {
-    PlaySound(config::kEnemyJumpSound);
+    PlaySound(config::enemy_jump_sound);
     transform_.jump(-250.f);
     current_jump_cooldonw_ = jump_cooldown;
   }
@@ -108,16 +108,16 @@ Enemy::jump() {
 }
 
 void
-Enemy::death() {
+enemy::death() {
   std::cout << "enemy killed" << std::endl;
   is_alive_ = false;
   transform_.jump(-250.f);
-  enemy_event_publisher_.notifySubscriber("OnEnemyDeath");
+  enemy_event_publisher_.notify_subscriber("OnEnemyDeath");
 }
 
 // return ints for the score
 void
-Enemy::handleDeath() {
+enemy::handle_death() {
   // Preventing from enemy checking collision after death
   if (!is_alive_) {
     return;

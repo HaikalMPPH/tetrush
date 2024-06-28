@@ -4,38 +4,38 @@
 #include <functional>
 #include "../utils/typedefs.hpp"
 
-class EventSubscriber {
+class event_subscriber {
 public:
-  using NotifyCallback = std::function<void()>;
+  using notify_callback = std::function<void()>;
 
 private:
-  Map<const char*, NotifyCallback> notify_fn_;
+  map<const char*, notify_callback> notify_fn_;
 
 public:
-  EventSubscriber();
+  event_subscriber();
 
 public:
-  EventSubscriber* addNotifyCallback(const char* key, NotifyCallback fn);
+  event_subscriber* add_notify_callback(const char* key, notify_callback fn);
 
   // WARNING: DO NOT USE THIS DIRECTLY!
-  void onNotify(const char* key);
+  void on_notify(const char* key);
 };
 
 // ================================================================================
 
-class EventPublisher {
+class event_publisher {
 private:
-  using NotifyCallback = EventSubscriber::NotifyCallback;
-  Vector<EventSubscriber*> subscribers_;
+  using notify_callback = event_subscriber::notify_callback;
+  vector<event_subscriber*> subscribers_;
 
 public:
-  EventPublisher();
+  event_publisher();
 
 public:
-  EventPublisher* addSubscriber(EventSubscriber* sub);
-  EventPublisher* removeSubscriber(EventSubscriber* sub);
-  EventPublisher* addNotifyCallbackToAllSubscriber(const char* key, NotifyCallback fn);
-  void notifySubscriber(const char* key);
+  event_publisher* add_subscriber(event_subscriber* sub);
+  event_publisher* remove_subscriber(event_subscriber* sub);
+  event_publisher* add_notify_callback_to_all_subscriber(const char* key, notify_callback fn);
+  void notify_subscriber(const char* key);
 };
 
 #endif // SUBSCRIBER_PUBLISHER_HPP

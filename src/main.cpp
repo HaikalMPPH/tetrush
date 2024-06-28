@@ -11,17 +11,17 @@ int main() {
     srand(time(nullptr));
 
 
-    InitWindow(config::kWinW, config::kWinH, "Tetrush");
+    InitWindow(config::win_w, config::win_h, "Tetrush");
     SetTargetFPS(60);
 
     InitAudioDevice();
     std::cout << GetWorkingDirectory() << std::endl;
 
-    Game game;
+    ::game game;
 
-    config::initAudioRes();
+    config::init_audio_res();
 
-    PlayMusicStream(config::kGameMusic);
+    PlayMusicStream(config::game_music);
 
     while (!WindowShouldClose()) {
     BeginDrawing();
@@ -33,7 +33,7 @@ int main() {
     EndDrawing();
     }
 
-    config::deinitAudioRes();
+    config::deinit_audio_res();
 
     CloseAudioDevice();
 

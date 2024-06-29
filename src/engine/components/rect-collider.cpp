@@ -4,10 +4,10 @@
 
 rect_collider::rect_collider(Rectangle collider)
   : collider_ {collider}
-  , right_coll_fn {}
-  , left_coll_fn {}
-  , up_coll_fn {}
-  , down_coll_fn {}
+  , right_coll_fn_ {}
+  , left_coll_fn_ {}
+  , up_coll_fn_ {}
+  , down_coll_fn_ {}
 {}
 
 Rectangle*
@@ -50,20 +50,20 @@ rect_collider::handle_collision(const Rectangle* rect) {
       collider_.x += dist_x * (center_delta.x / fabsf(center_delta.x));
 
       if (collider_center.x < rect_center.x) {
-        (right_coll_fn != nullptr) ? right_coll_fn() : void();
+        (right_coll_fn_ != nullptr) ? right_coll_fn_() : void();
         
       }
       else {
-        (left_coll_fn != nullptr) ? left_coll_fn() : void();
+        (left_coll_fn_ != nullptr) ? left_coll_fn_() : void();
       }
     }
     // collide from top or bottom
     else {
       if (collider_center.y < rect_center.y) {
-        (down_coll_fn != nullptr) ? down_coll_fn() : void();
+        (down_coll_fn_ != nullptr) ? down_coll_fn_() : void();
       }
       else {
-        (up_coll_fn != nullptr) ? up_coll_fn() : void();
+        (up_coll_fn_ != nullptr) ? up_coll_fn_() : void();
       }
 
       collider_.y += dist_y * (center_delta.y / fabsf(center_delta.y));
@@ -80,21 +80,21 @@ rect_collider::batch_handle_collision(const vector<Rectangle>* rects) {
 
 rect_collider*
 rect_collider::add_left_collision_callback(collider_callback callback) {
-  left_coll_fn = callback;
+  left_coll_fn_ = callback;
   return this;
 }
 rect_collider*
 rect_collider::add_down_collision_callback(collider_callback callback) {
-  down_coll_fn = callback;
+  down_coll_fn_ = callback;
   return this;
 }
 rect_collider*
 rect_collider::add_up_collision_callback(collider_callback callback) {
-  up_coll_fn = callback;
+  up_coll_fn_ = callback;
   return this;
 }
 rect_collider*
 rect_collider::add_right_collision_callback(collider_callback callback) {
-  right_coll_fn = callback;
+  right_coll_fn_ = callback;
   return this;
 }

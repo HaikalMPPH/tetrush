@@ -11,10 +11,10 @@ public:
 
 private:
   Rectangle collider_;
-  collider_callback right_coll_fn;
-  collider_callback left_coll_fn;
-  collider_callback up_coll_fn;
-  collider_callback down_coll_fn;
+  collider_callback right_coll_fn_;
+  collider_callback left_coll_fn_;
+  collider_callback up_coll_fn_;
+  collider_callback down_coll_fn_;
 
 public:
   rect_collider(Rectangle collider);

@@ -36,9 +36,6 @@ public:
   void handle_input();
   void death();
   void handle_death();
-
-private:
-
 };
 
 #endif // PLAYER_HPP

@@ -114,7 +114,14 @@ void
 game::render() {
   grid.draw();
 
-
+  if (!is_game_started) {
+    DrawText(
+      "PRESS [ESC] TO EXIT", 
+      config::win_w * 3/5, config::grid_off_y + 10, 
+      30, 
+      colors::grey
+    );
+  }
   if (screen_state_ == screen_state::main_game) {
     if (!is_game_started) {
       DrawText(
@@ -171,7 +178,7 @@ game::render() {
     );
     DrawText(
       help_menu_str, 
-      config::grid_off_x + 10 , config::grid_off_y + 40, 
+      config::grid_off_x + 10 , config::grid_off_y + 75, 
       50, 
       colors::grey
     );

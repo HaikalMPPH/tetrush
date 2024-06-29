@@ -21,6 +21,18 @@ public:
 
   ::screen_state screen_state_ { screen_state::main_game };
   bool on_help_menu { false };
+  const char* help_menu_str {
+    "PLAYER:\n\n\n"
+    "  A: Move Right\n\n\n"
+    "  D: Move Left\n\n\n"
+    "  SPACE: Jump\n\n\n"
+    "\n\n"
+    "TETROMINOS:\n\n\n"
+    "  J: Move Block Left\n\n\n"
+    "  L: Move Block Right\n\n\n"
+    "  K: Lock Block to Ground\n\n\n"
+    "  I: Rotate Block"
+  };
 
   int score { 0 };
   bool is_game_over { false };

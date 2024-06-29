@@ -11,7 +11,6 @@
 #include "tetromino.hpp"
 #include "colors.hpp"
 
-game::game() 
   //: score {0}
   //, is_game_over {false}
   //, is_game_started {false}
@@ -28,6 +27,7 @@ game::game()
   //, current_block_rect {}
   //, game_event_publisher_ {}
   //, subscriber_ {}
+game::game() 
 {
   create_current_block_rect();
   update_projection();
@@ -125,12 +125,11 @@ game::render() {
       );
 
       DrawText(
-        "PRESS [?] FOR HELP", 
+        "PRESS [/] FOR HELP", 
         config::grid_off_x + 10 , config::grid_off_y + 10, 
-        25, 
+        30, 
         colors::grey
       );
-
     }
     
     // score
@@ -163,6 +162,21 @@ game::render() {
     player.render();
   }
 
+  if (screen_state_ == screen_state::help_menu) {
+    DrawText(
+      "PRESS [/] AGAIN TO GO BACK", 
+      config::grid_off_x + 10 , config::grid_off_y + 10, 
+      30, 
+      colors::grey
+    );
+    DrawText(
+      help_menu_str, 
+      config::grid_off_x + 10 , config::grid_off_y + 40, 
+      50, 
+      colors::grey
+    );
+  }
+
   //debugRenderRect();
 
   // DEBUG
@@ -176,7 +190,11 @@ game::update() {
   player.update();
   handle_input();
 
-  if (!is_game_over && is_game_started) {
+  if (
+    !is_game_over 
+    && is_game_started
+    && screen_state_ == screen_state::main_game
+  ) {
     UpdateMusicStream(config::game_music);
     // Restart music after done playing
     if (
@@ -254,6 +272,16 @@ game::handle_input() {
         on_game_restart();
       }
       break;
+    case KEY_SLASH:
+      if (
+        screen_state_ == screen_state::main_game
+        && !is_game_started
+      ) {
+        screen_state_ = screen_state::help_menu;
+      }
+      else if (screen_state_ == screen_state::help_menu) {
+        screen_state_ = screen_state::main_game;
+      }
   }
 }
 

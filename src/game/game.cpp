@@ -11,22 +11,6 @@
 #include "tetromino.hpp"
 #include "colors.hpp"
 
-  //: score {0}
-  //, is_game_over {false}
-  //, is_game_started {false}
-  //, block {::el(), ::jay(), ::straight(), ::square(), ::tee(), ::skew_s(), ::skew_z()}
-  //, current_block {pick_random_block()}
-  //, next_block {pick_random_block()}
-  //, block_projection {current_block}
-  //, last_update_time {0.0}
-  //, enemy_spawn_cooldown {10.f}
-  //, current_enemy_spawn_cooldown {0.f}
-  //, player {this}
-  //, enemies {}
-  //, landed_block_rect {}
-  //, current_block_rect {}
-  //, game_event_publisher_ {}
-  //, subscriber_ {}
 game::game() 
 {
   create_current_block_rect();
@@ -123,6 +107,14 @@ game::render() {
     );
   }
   if (screen_state_ == screen_state::main_game) {
+    if (!is_game_started && !is_game_over) {
+      DrawText(
+        "TETRUSH", 
+        config::win_w * 3 / 8 - 175 , config::win_h / 2 - 200, 
+        150, 
+        colors::grey
+      );
+    }
     if (!is_game_started) {
       DrawText(
         "PRESS [SPACE] TO START", 

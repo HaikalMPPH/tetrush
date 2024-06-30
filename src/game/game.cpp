@@ -24,6 +24,7 @@ game::game()
       for (::enemy* enemy : enemies) {
         if (enemy->marked_for_delete) {
           game_event_publisher_.remove_subscriber(enemy->subscriber());
+          delete enemy;
           enemies.erase(
             std::remove(
                 enemies.begin(),
@@ -32,7 +33,6 @@ game::game()
             ),
             enemies.end()
           );
-          delete enemy;
         }
       }
     })
@@ -143,8 +143,8 @@ game::render() {
       
 
     if (!is_game_over && is_game_started) {
-      current_block.draw();
       block_projection.draw();
+      current_block.draw();
       for (::enemy* enemy : enemies) {
         enemy->render();
       }

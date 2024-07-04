@@ -17,7 +17,7 @@ enum class screen_state {
 
 class game {
 public:
-  ::grid grid { *this };
+  ::grid grid { this };
 
   ::screen_state screen_state_ { screen_state::main_game };
   bool on_help_menu { false };

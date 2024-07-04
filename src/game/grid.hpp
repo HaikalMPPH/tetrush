@@ -9,7 +9,7 @@ class game;
 
 class grid {
 public:
-    grid(::game& t_game);
+    grid(::game* t_game);
 
     void debug();
     void draw();
@@ -39,7 +39,7 @@ public:
 
 private:
     // ::Game instance reference to manage the rect collider
-    ::game& game_ref;
+    ::game* game_ref;
 };
 
 

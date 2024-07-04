@@ -6,7 +6,7 @@
 #include "config.hpp"
 #include "game.hpp"
 
-grid::grid(::game& game) 
+grid::grid(::game* game) 
     : grid_cell {}
     , cell_size {config::cell_size}
     , colors {colors::get_color()}
@@ -71,9 +71,9 @@ grid::clear_row(int row) {
         grid_cell[row][col] = 0;
 
         // erase block collider
-        for (int i = 0; i < game_ref.landed_block_rect.size(); i++) {
-            if (game_ref.landed_block_rect[i].y == row * config::cell_size + config::grid_off_y) {
-                game_ref.landed_block_rect.erase(game_ref.landed_block_rect.begin() + i);
+        for (int i = 0; i < game_ref->landed_block_rect.size(); i++) {
+            if (game_ref->landed_block_rect[i].y == row * config::cell_size + config::grid_off_y) {
+                game_ref->landed_block_rect.erase(game_ref->landed_block_rect.begin() + i);
             }
         }
     }
@@ -91,9 +91,9 @@ grid::move_row_down(int row, int nTimes) {
 void
 grid::move_grid_row_down(int row, int nTimes) {
     // Move down the corresponding rect with the same height n times
-    for (int i = 0; i < game_ref.landed_block_rect.size(); i++) {
-        if (game_ref.landed_block_rect[i].y == row * config::cell_size + config::grid_off_y) {
-            game_ref.landed_block_rect[i].y += config::cell_size * nTimes;
+    for (int i = 0; i < game_ref->landed_block_rect.size(); i++) {
+        if (game_ref->landed_block_rect[i].y == row * config::cell_size + config::grid_off_y) {
+            game_ref->landed_block_rect[i].y += config::cell_size * nTimes;
         }
     }
 }

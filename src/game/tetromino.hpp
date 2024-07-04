@@ -22,7 +22,7 @@ public:
     straight();
 };
 
-// O
+// []
 class square : public ::block {
 public:
     square();

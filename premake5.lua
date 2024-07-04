@@ -4,6 +4,7 @@ workspace "tetrush"
 project "tetrush"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++latest"
     toolset "clang"
     links { "raylib" }
     warnings "High"

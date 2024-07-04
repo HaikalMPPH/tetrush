@@ -126,7 +126,6 @@ enemy::handle_death() {
   for (const Rectangle& rect : game_->current_block_rect) {
     if (CheckCollisionRecs(*collider_.collider(), rect)) {
       death();
-      return;
     }
   }
 }

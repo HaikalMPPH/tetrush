@@ -211,7 +211,6 @@ game::update() {
 
     if (event_triggered(0.5)) {
       block_move_down(current_block);
-      update_current_block_rect();
     }
   }
 }
@@ -315,6 +314,7 @@ void
 game::block_move_down(::block& block) {
   block.move(1, 0);
 
+  update_current_block_rect();
   if (!is_block_outside(current_block)) {
     game_event_publisher_.notify_subscriber("OnBlockMove");
   }

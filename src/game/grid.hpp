@@ -11,7 +11,6 @@ class grid {
 public:
     grid(::game* t_game);
 
-    void debug();
     void draw();
     bool is_cell_outside(int row, int col);
     bool is_grid_empty(int row, int col);

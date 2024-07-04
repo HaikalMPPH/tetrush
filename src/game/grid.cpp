@@ -13,16 +13,6 @@ grid::grid(::game* game)
     , game_ref {game}
 {}
 
-void
-grid::debug() {
-    for (int y = 0; y < config::n_rows; y++) {
-        for (int x = 0; x < config::n_cols ; x++) {
-            std::cout << grid_cell[y][x] << " ";
-        }
-        std::cout << std::endl;
-    }
-}
-
 void grid::draw() {
     for (int row = 0; row < config::n_rows; row++) {
         for (int col = 0; col < config::n_cols; col++) {

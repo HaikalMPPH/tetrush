@@ -48,7 +48,7 @@ TARGET = $(TARGETDIR)/tetrush
 OBJDIR = obj/Debug
 DEFINES += -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -Wall
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -Wall
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -Wall -std=c++11
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
@@ -56,7 +56,7 @@ TARGET = $(TARGETDIR)/tetrush
 OBJDIR = obj/Release
 DEFINES +=
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -Wall
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -Wall
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -Wall -std=c++11
 
 endif
 
@@ -78,7 +78,6 @@ GENERATED += $(OBJDIR)/grid.o
 GENERATED += $(OBJDIR)/input-handler.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/player.o
-GENERATED += $(OBJDIR)/position.o
 GENERATED += $(OBJDIR)/rect-collider.o
 GENERATED += $(OBJDIR)/rect-renderer.o
 GENERATED += $(OBJDIR)/subscriber-publisher.o
@@ -92,7 +91,6 @@ OBJECTS += $(OBJDIR)/grid.o
 OBJECTS += $(OBJDIR)/input-handler.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/player.o
-OBJECTS += $(OBJDIR)/position.o
 OBJECTS += $(OBJDIR)/rect-collider.o
 OBJECTS += $(OBJDIR)/rect-renderer.o
 OBJECTS += $(OBJDIR)/subscriber-publisher.o
@@ -192,9 +190,6 @@ $(OBJDIR)/grid.o: src/game/grid.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/player.o: src/game/player.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/position.o: src/game/position.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/tetromino.o: src/game/tetromino.cpp

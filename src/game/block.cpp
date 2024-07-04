@@ -26,10 +26,9 @@ block::color_id(int color_id) {
 
 void
 block::draw() {
-    // Const reference to make things cleaner
     for (::position color_pos : get_cell_position()) {
         DrawRectangle(
-            color_pos.col * cell_size_ + config::grid_off_x, // following the grid offset. Change this later.
+            color_pos.col * cell_size_ + config::grid_off_x, 
             color_pos.row * cell_size_ + 10,
             cell_size_,
             cell_size_,
@@ -65,9 +64,6 @@ block::undo_rotate() {
 std::vector<::position>
 block::get_cell_position() {
     std::vector<::position> currentPos = cells_[rotation_state_];
-
-    // note to self: moved_pos is always initialize to empty whenever this method is called. So
-    // no, it won't continously adding position to the vector.
     std::vector<::position> movedPos {};
 
     for (::position blockCell : currentPos) {

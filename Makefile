@@ -9,29 +9,29 @@ ifndef verbose
 endif
 
 ifeq ($(config),debug)
-  platformer_proto_config = debug
+  tetrush_config = debug
 
 else ifeq ($(config),release)
-  platformer_proto_config = release
+  tetrush_config = release
 
 else
   $(error "invalid configuration $(config)")
 endif
 
-PROJECTS := platformer-proto
+PROJECTS := tetrush
 
 .PHONY: all clean help $(PROJECTS) 
 
 all: $(PROJECTS)
 
-platformer-proto:
-ifneq (,$(platformer_proto_config))
-	@echo "==== Building platformer-proto ($(platformer_proto_config)) ===="
-	@${MAKE} --no-print-directory -C . -f platformer-proto.make config=$(platformer_proto_config)
+tetrush:
+ifneq (,$(tetrush_config))
+	@echo "==== Building tetrush ($(tetrush_config)) ===="
+	@${MAKE} --no-print-directory -C . -f tetrush.make config=$(tetrush_config)
 endif
 
 clean:
-	@${MAKE} --no-print-directory -C . -f platformer-proto.make clean
+	@${MAKE} --no-print-directory -C . -f tetrush.make clean
 
 help:
 	@echo "Usage: make [config=name] [target]"
@@ -43,6 +43,6 @@ help:
 	@echo "TARGETS:"
 	@echo "   all (default)"
 	@echo "   clean"
-	@echo "   platformer-proto"
+	@echo "   tetrush"
 	@echo ""
 	@echo "For more information, see https://github.com/premake/premake-core/wiki"

@@ -1,10 +1,10 @@
-workspace "platformer-proto"
+workspace "tetrush"
     configurations { "Debug", "Release" }
 
-project "platformer-proto"
+project "tetrush"
     kind "ConsoleApp"
     language "C++"
-    toolset "clang"
+    toolset "gcc"
     links { "raylib" }
     warnings "High"
     targetdir "bin/%{cfg.buildcfg}"
@@ -16,5 +16,4 @@ project "platformer-proto"
         defines { "DEBUG" }
         symbols "On"
     filter "configurations:Release"
-        defines { "NDEBUG" }
         optimize "On"

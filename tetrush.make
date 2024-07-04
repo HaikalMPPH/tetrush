@@ -18,13 +18,22 @@ endif
 # Configurations
 # #############################################
 
-RESCOMP = windres
+ifeq ($(origin CC), default)
+  CC = clang
+endif
+ifeq ($(origin CXX), default)
+  CXX = clang++
+endif
+ifeq ($(origin AR), default)
+  AR = ar
+endif
 INCLUDES +=
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
 LIBS += -lraylib
 LDDEPS +=
+ALL_LDFLAGS += $(LDFLAGS)
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -40,7 +49,6 @@ OBJDIR = obj/Debug
 DEFINES += -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -Wall
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -Wall
-ALL_LDFLAGS += $(LDFLAGS)
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
@@ -49,7 +57,6 @@ OBJDIR = obj/Release
 DEFINES +=
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -Wall
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -Wall
-ALL_LDFLAGS += $(LDFLAGS) -s
 
 endif
 

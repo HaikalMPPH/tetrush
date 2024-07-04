@@ -4,7 +4,7 @@ workspace "tetrush"
 project "tetrush"
     kind "ConsoleApp"
     language "C++"
-    toolset "gcc"
+    toolset "clang"
     links { "raylib" }
     warnings "High"
     targetdir "bin/%{cfg.buildcfg}"

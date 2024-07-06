@@ -9,8 +9,6 @@
 
 player::player(::game* game)
   : collider_ {::Rectangle {
-      //config::kWinW/2.f, 
-      //config::kWinH/2.f, 
       -10, -10,
       config::cell_size / 2.f, 
       config::cell_size / 2.f
@@ -21,7 +19,6 @@ player::player(::game* game)
   , player_event_publisher_ {}
   , is_alive_ {true}
   , game_ {game}
-  //, jump_sound_ {LoadSound("res/audio/jump.wav")}
 {
   collider_
     .add_down_collision_callback([this](){
@@ -35,7 +32,6 @@ player::player(::game* game)
       handle_death();
     })
     ->add_notify_callback("OnBlockMove", [this](){
-      //std::cout << "Player: On Block Move Down" << std::endl;
       handle_death();
     })
     ->add_notify_callback("OnStackFull", [this](){
@@ -54,7 +50,6 @@ player::player(::game* game)
   player_event_publisher_.add_subscriber(&game->subscriber_);
 }
 player::~player() {
-  //UnloadSound(jump_sound_);
 }
 
 ::Rectangle*
@@ -110,7 +105,6 @@ player::death() {
   player_event_publisher_.notify_subscriber("OnPlayerDeath");
 }
 
-// TODO: Rework this.
 void
 player::handle_death() {
   for (const Rectangle& rect : game_->current_block_rect) {

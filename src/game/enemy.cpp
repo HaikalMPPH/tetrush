@@ -30,11 +30,9 @@ enemy::enemy(::game* game, int xPos)
 
   subscriber_
     .add_notify_callback("OnBlockLock", [this](){
-        //std::cout << "Enemy: On Block Lock" << std::endl;
         handle_death();
     })
     ->add_notify_callback("OnBlockMove", [this](){
-        //std::cout << "Enemy: On Block Move Down" << std::endl;
         handle_death();
     });
 
@@ -52,7 +50,6 @@ enemy::subscriber() {
 
 void
 enemy::render() {
-  //DrawRectangleRec(*collider_.collider(), RED);
   renderer_.render(RED);
 }
 

@@ -48,7 +48,7 @@ TARGET = $(TARGETDIR)/tetrush
 OBJDIR = obj/Debug
 DEFINES += -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -Wall
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -Wall -std=c++11
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -Wall -std=c++20
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
@@ -56,7 +56,7 @@ TARGET = $(TARGETDIR)/tetrush
 OBJDIR = obj/Release
 DEFINES +=
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -Wall
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -Wall -std=c++11
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -Wall -std=c++20
 
 endif
 
@@ -71,7 +71,6 @@ GENERATED :=
 OBJECTS :=
 
 GENERATED += $(OBJDIR)/block.o
-GENERATED += $(OBJDIR)/colors.o
 GENERATED += $(OBJDIR)/enemy.o
 GENERATED += $(OBJDIR)/game.o
 GENERATED += $(OBJDIR)/grid.o
@@ -84,7 +83,6 @@ GENERATED += $(OBJDIR)/subscriber-publisher.o
 GENERATED += $(OBJDIR)/tetromino.o
 GENERATED += $(OBJDIR)/transform-component.o
 OBJECTS += $(OBJDIR)/block.o
-OBJECTS += $(OBJDIR)/colors.o
 OBJECTS += $(OBJDIR)/enemy.o
 OBJECTS += $(OBJDIR)/game.o
 OBJECTS += $(OBJDIR)/grid.o
@@ -175,9 +173,6 @@ $(OBJDIR)/transform-component.o: src/engine/components/transform-component.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/block.o: src/game/block.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/colors.o: src/game/colors.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/enemy.o: src/game/enemy.cpp

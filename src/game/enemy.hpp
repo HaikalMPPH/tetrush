@@ -20,7 +20,6 @@ public:
 public:
   void render();
   void update();
-  // The int will be used as a score.
 
 private:
   void move_to_player();

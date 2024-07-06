@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 #include "config.hpp"
-#include "../engine/utils/typedefs.hpp"
+#include <vector>
 
 class game;
 
@@ -34,7 +34,7 @@ public:
 public:
     int grid_cell[config::n_rows][config::n_cols]; // row, column or y. x
     int cell_size;
-    vector<Color> colors;
+    std::vector<Color> colors;
 
 private:
     // ::Game instance reference to manage the rect collider

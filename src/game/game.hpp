@@ -39,7 +39,7 @@ public:
   bool is_game_started { false };
 
   // list of the available tetraminos.
-  vector<::block> block { create_tetrominos() };
+  std::vector<::block> block { create_tetrominos() };
   ::block current_block { pick_random_block() };
   ::block next_block { pick_random_block() };
 
@@ -54,12 +54,12 @@ public:
   ::player player { this };
 
   // ::Enemy are created on the fly
-  vector<::enemy*> enemies {};
+  std::vector<::enemy*> enemies {};
 
   // Vector of rect that the position is matched with the color grid.
   // The rect is used for the player collision
-  vector<::Rectangle> landed_block_rect {};     // collider of a block that are on the ground.
-  vector<::Rectangle> current_block_rect {};    // collider of the current falling block.
+  std::vector<::Rectangle> landed_block_rect {};     // collider of a block that are on the ground.
+  std::vector<::Rectangle> current_block_rect {};    // collider of the current falling block.
   ::event_publisher game_event_publisher_ {};
   ::event_subscriber subscriber_ {};
 
@@ -70,7 +70,7 @@ public:
 public:
   ::block pick_random_block();
 
-  vector<::block> create_tetrominos();
+  std::vector<::block> create_tetrominos();
   ::enemy* create_enemy();
   void append_enemy();
 
@@ -97,9 +97,9 @@ public:
   // Called when the block reaches the ground.
   // Also processed if player/enemy is "squashable"
   void lock_block();
-  void update_grid_color(vector<position>* cell);
-  void update_landed_block_rect(vector<position>* cell);
-  void check_if_stack_full(vector<position>* cell);
+  void update_grid_color(std::vector<position>* cell);
+  void update_landed_block_rect(std::vector<position>* cell);
+  void check_if_stack_full(std::vector<position>* cell);
 
   void create_current_block_rect();
   void clear_current_block_rect();

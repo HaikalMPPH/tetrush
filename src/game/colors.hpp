@@ -15,6 +15,19 @@ namespace colors {
   constexpr Color purple  = (Color) { 0xae, 0x81, 0xff, 0xff };
   constexpr Color grey    = (Color) { 0xc2, 0xc2, 0xc3, 0xff };
 
-  std::vector<Color> get_color();
-};
+  inline std::vector<Color> get_color() {
+      return {
+        colors::empty, 
+        colors::red,
+        colors::orange, 
+        colors::yellow, 
+        colors::green, 
+        colors::blue, 
+        colors::magenta, 
+        colors::purple,
+        colors::grey
+    }; 
+  }
+}
+
 #endif // COLORS_HPP

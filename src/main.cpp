@@ -3,7 +3,6 @@
 #include "game/game.hpp"
 #include <cstdlib>
 #include <ctime>
-#include <iostream>
 #include "game/config.hpp"
 
 int main() {
@@ -15,7 +14,6 @@ int main() {
     SetTargetFPS(60);
 
     InitAudioDevice();
-    std::cout << GetWorkingDirectory() << std::endl;
 
     ::game game;
 

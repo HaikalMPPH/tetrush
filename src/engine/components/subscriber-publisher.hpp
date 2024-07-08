@@ -10,6 +10,7 @@ public:
 
 private:
   map<const char*, notify_callback> notify_fn_;
+  friend class event_publisher;
 
 public:
   event_subscriber();
@@ -17,6 +18,7 @@ public:
 public:
   event_subscriber* add_notify_callback(const char* key, notify_callback fn);
 
+private:
   // WARNING: DO NOT USE THIS DIRECTLY!
   void on_notify(const char* key);
 };

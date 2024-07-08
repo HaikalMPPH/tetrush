@@ -1,12 +1,10 @@
 #include "transform-component.hpp"
 #include "../../game/config.hpp"
 
-
 transform_component::transform_component(Rectangle* rect, float speed)
   : rect_ {rect}
   , speed_ {speed}
   , vertical_speed_ {0.f}
-  , gravity_ {config::game_gravity}
   , is_grounded_ {false}
 {}
 
@@ -48,6 +46,8 @@ transform_component::jump(float y_impulse) {
 
 void
 transform_component::handle_gravity() {
-  vertical_speed_ += gravity_; 
+  //vertical_speed_ += gravity_; 
+  vertical_speed_ += config::game_gravity;
+
   rect_->y += vertical_speed_ * GetFrameTime();
 }

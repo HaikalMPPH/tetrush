@@ -1,5 +1,4 @@
 #include <raylib.h>
-#include <iostream>
 
 #include "colors.hpp"
 #include "grid.hpp"

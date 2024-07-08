@@ -8,7 +8,6 @@ private:
   Rectangle* rect_;
   float speed_;
   float vertical_speed_;
-  float gravity_;
   bool is_grounded_;
 
 public: // ctor, get, set

@@ -27,14 +27,10 @@ protected:
     int color_id_; // It's used for color. Might change this later.
     int rotation_state_;
     std::map<int, std::vector<::position>> cells_;
-    int cell_size_;
 
     // for moving the block
     int row_offset_;
     int column_offset_;
-
-    // Determine the color of the tetromino.
-    std::vector<Color> color_;
 };
 
 #endif // BLOCK_HPP

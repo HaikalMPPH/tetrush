@@ -11,8 +11,7 @@
 #include "tetromino.hpp"
 #include "colors.hpp"
 
-game::game() 
-{
+game::game() {
   create_current_block_rect();
   update_projection();
 
@@ -52,16 +51,16 @@ game::~game() {
 
 ::block
 game::pick_random_block() {
-  if (block.empty()) {
-    block = create_tetrominos();
+  if (blocks.empty()) {
+    blocks = create_tetrominos();
   }
 
   // spawn random tetraminos from the list of tetrominos in game_s::blocks vector.
-  const int rand_index = rand() % block.size();
-  ::block rand_block = block[rand_index];
+  const int rand_index = rand() % blocks.size();
+  ::block rand_block = blocks[rand_index];
   
   // remove block from the block vector after randomly picked.
-  block.erase(block.begin() + rand_index); // pointer arithmatics.
+  blocks.erase(blocks.begin() + rand_index); // pointer arithmatics.
   
   return rand_block;
 }
@@ -97,15 +96,13 @@ game::append_enemy() {
 void 
 game::render() {
   grid.draw();
-
-  if (!is_game_started) {
     DrawText(
       "PRESS [ESC] TO EXIT", 
       config::win_w * 3/5, config::grid_off_y + 10, 
       30, 
       colors::grey
     );
-  }
+
   if (screen_state_ == screen_state::main_game) {
     if (!is_game_started && !is_game_over) {
       DrawText(
@@ -325,7 +322,7 @@ game::block_move_down(::block& block) {
   }
 }
 void
-game::blockw_instant_move_down(::block& block) {
+game::block_instant_move_down(::block& block) {
   while(true) {
     block.move(1, 0);
 
@@ -477,20 +474,7 @@ void
 game::update_projection() {
   block_projection = current_block;
   block_projection.color_id(8);
-  blockw_instant_move_down(block_projection);
-}
-
-void
-game::debug_render_rect() {
-  // DEBUG: 
-  // Render landed_block_rect
-  for (Rectangle rect : landed_block_rect) {
-    DrawRectangleRec(rect, PINK);
-  }
-  // Render current_block_rect
-  for (Rectangle rect : current_block_rect) {
-    DrawRectangleRec(rect, SKYBLUE);
-  }
+  block_instant_move_down(block_projection);
 }
 
 void

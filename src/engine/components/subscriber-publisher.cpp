@@ -43,14 +43,6 @@ event_publisher::remove_subscriber(event_subscriber* sub) {
   return this;
 }
 
-event_publisher*
-event_publisher::add_notify_callback_to_all_subscriber(const char* key, notify_callback fn) {
-  for (event_subscriber* subs : subscribers_) {
-    subs->add_notify_callback(key, fn);
-  }
-  return this;
-}
-
 void
 event_publisher::notify_subscriber(const char* key) {
   for (event_subscriber* subs : subscribers_) {

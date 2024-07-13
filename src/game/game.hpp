@@ -19,7 +19,6 @@ public:
   ::grid grid { this };
 
   ::screen_state screen_state_ { screen_state::main_game };
-  bool on_help_menu { false };
   const char* help_menu_str {
     "PLAYER:\n\n\n"
     "\tA: Move Left\n\n\n"
@@ -38,7 +37,7 @@ public:
   bool is_game_started { false };
 
   // list of the available tetraminos.
-  std::vector<::block> block { create_tetrominos() };
+  std::vector<::block> blocks { create_tetrominos() };
   ::block current_block { pick_random_block() };
   ::block next_block { pick_random_block() };
 
@@ -84,7 +83,7 @@ public:
   void block_move_left(::block& block);
   void block_move_right(::block& block);
   void block_move_down(::block& block);
-  void blockw_instant_move_down(::block& block);
+  void block_instant_move_down(::block& block);
   void current_block_instant_move_down();
   void rotate_block(::block& block);
 
@@ -103,9 +102,6 @@ public:
 
   void update_projection();
 
-  // DEBUG: render tetromino collider.
-  void debug_render_rect();
-  
   void handle_game_over();
   void on_game_restart();
 };

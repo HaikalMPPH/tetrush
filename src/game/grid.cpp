@@ -7,7 +7,6 @@
 
 grid::grid(::game* game) 
     : grid_cell {}
-    , cell_size {config::cell_size}
     , colors {colors::get_color()}
     , game_ref {game}
 {}
@@ -17,10 +16,12 @@ void grid::draw() {
         for (int col = 0; col < config::n_cols; col++) {
             int cell_val = grid_cell[row][col];
             DrawRectangle(
-                col * cell_size + config::grid_off_x,
-                row * cell_size + config::grid_off_y,
-                cell_size,
-                cell_size,
+                col * config::cell_size + config::grid_off_x,
+                row * config::cell_size + config::grid_off_y,
+                // cell_size,
+                // cell_size,
+                config::cell_size,
+                config::cell_size,
                 colors[cell_val]
             );
         }

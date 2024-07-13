@@ -9,11 +9,10 @@ block::block()
     : color_id_ {0}
     , rotation_state_ {0}
     , cells_ {}
-    , cell_size_ {config::cell_size} // match the grid cell_size
     , row_offset_ {0}
     , column_offset_ {config::n_cols / 2}
-    , color_ {colors::get_color()}
 {}
+
 int
 block::color_id() {
   return color_id_;
@@ -28,11 +27,12 @@ void
 block::draw() {
     for (::position color_pos : get_cell_position()) {
         DrawRectangle(
-            color_pos.col * cell_size_ + config::grid_off_x, 
-            color_pos.row * cell_size_ + 10,
-            cell_size_,
-            cell_size_,
-            color_ [color_id()]
+            color_pos.col * config::cell_size + config::grid_off_x, 
+            color_pos.row * config::cell_size + 10,
+            config::cell_size,
+            config::cell_size,
+            //color_ [color_id()]
+            colors::get_color()[color_id_]
         );
     }
 }

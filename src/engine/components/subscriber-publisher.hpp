@@ -19,7 +19,6 @@ public:
   event_subscriber* add_notify_callback(const char* key, notify_callback fn);
 
 private:
-  // WARNING: DO NOT USE THIS DIRECTLY!
   void on_notify(const char* key);
 };
 
@@ -36,7 +35,6 @@ public:
 public:
   event_publisher* add_subscriber(event_subscriber* sub);
   event_publisher* remove_subscriber(event_subscriber* sub);
-  event_publisher* add_notify_callback_to_all_subscriber(const char* key, notify_callback fn);
   void notify_subscriber(const char* key);
 };
 

@@ -33,7 +33,6 @@ public:
 
 public:
     int grid_cell[config::n_rows][config::n_cols]; // row, column or y. x
-    int cell_size;
     std::vector<Color> colors;
 
 private:
